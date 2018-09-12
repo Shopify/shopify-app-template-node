@@ -1,0 +1,51 @@
+{
+  "name": "your-app-name",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "sewing-kit dev",
+    "test": "sewing-kit test",
+    "lint": "sewing-kit lint",
+    "format": "sewing-kit format",
+    "build": "sewing-kit build",
+    "nuke": "sewing-kit nuke",
+    "tunnel": "node server/tunnel.js"
+  },
+  "dependencies": {
+    "@shopify/javascript-utilities": "^2.1.0",
+    "@shopify/koa-shopify-auth": "^3.0.4",
+    "@shopify/koa-shopify-graphql-proxy": "^2.0.3",
+    "@shopify/polaris": "^2.2.0",
+    "@shopify/react-compose": "^0.1.5",
+    "@shopify/react-html": "^3.0.2",
+    "@shopify/react-serialize": "^1.0.0",
+    "@shopify/react-utilities": "^2.0.2",
+    "apollo-boost": "^0.1.10",
+    "dotenv": "^6.0.0",
+    "graphql": "^0.13.2",
+    "http-proxy": "^1.17.0",
+    "isomorphic-fetch": "^2.2.1",
+    "koa": "^2.5.1",
+    "koa-session": "^5.8.1",
+    "koa-session-mongo": "^1.1.0",
+    "qrcode": "^1.2.2",
+    "react": "^16.4.1",
+    "react-apollo": "^2.1.9",
+    "react-dom": "^16.4.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1"
+  },
+  "devDependencies": {
+    "@shopify/enzyme-utilities": "^1.0.9",
+    "@shopify/jest-mock-apollo": "^2.1.1",
+    "@shopify/sewing-kit": "^0.53.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "fs-extra": "^7.0.0",
+    "graphql-fixtures": "^0.2.2",
+    "jest-enzyme": "^6.0.2",
+    "lodash.merge": "^4.6.1",
+    "ngrok": "^3.0.1",
+    "react-hot-loader": "^4.3.4"
+  }
+}
