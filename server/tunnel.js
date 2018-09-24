@@ -4,8 +4,19 @@ const {writeFileSync, unlinkSync} = require('fs-extra');
 const {port, tunnelFile} = require('../config/server');
 
 (async function() {
-  const url = await ngrok.connect(port);
-  writeFileSync(tunnelFile, url);
+  let url;
+
+  try {
+    url = await ngrok.connect(port);
+    writeFileSync(tunnelFile, url);
+  } catch (error) {
+    if (error.code === 'ECONNREFUSED') {
+      console.log(`Port ${port} not open, ngrok is probably running elsewhere`);
+      return;
+    } else {
+      console.log(error);
+    }
+  }
 
   console.log(`Tunnel open to ${url}`);
   console.log(`Be sure to add ${url}/auth/callback to the whitelisted redirection URLs in Partners Dashboard under App Setup.`);
