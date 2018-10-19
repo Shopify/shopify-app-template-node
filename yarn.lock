@@ -258,17 +258,17 @@
     "@shopify/react-serialize" "^1.0.6"
     react-helmet "^5.2.0"
 
-"@shopify/react-serialize@^1.0.0":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@shopify/react-serialize/-/react-serialize-1.0.9.tgz#3d1fa7172e7bfb62b0f90fb6a77d27d6bdf71b3c"
-  integrity sha512-+LBi4AcaChCwVE1e1Xe25jtw1GJ/lFVGECGo7TSCRv0oEabHPeWOvgzM/V+EFPw/LXmMOgtdAf+6e8ke4HYrqw==
-  dependencies:
-    serialize-javascript "^1.5.0"
-
 "@shopify/react-serialize@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@shopify/react-serialize/-/react-serialize-1.0.6.tgz#35c95eaae3a6b1cb75f483e3f832cd57c895d92b"
   integrity sha512-whJRZEJf4kJvJ+1t7mRiY425xWpSd5bYscvnvpYnWbjARzk5XjAWDnMYB42uixb3wLk+5pRothCffqC/xRyEUw==
+  dependencies:
+    serialize-javascript "^1.5.0"
+
+"@shopify/react-serialize@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@shopify/react-serialize/-/react-serialize-1.0.9.tgz#3d1fa7172e7bfb62b0f90fb6a77d27d6bdf71b3c"
+  integrity sha512-+LBi4AcaChCwVE1e1Xe25jtw1GJ/lFVGECGo7TSCRv0oEabHPeWOvgzM/V+EFPw/LXmMOgtdAf+6e8ke4HYrqw==
   dependencies:
     serialize-javascript "^1.5.0"
 
