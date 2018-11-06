@@ -18,7 +18,7 @@
     "@shopify/polaris": "^2.2.0",
     "@shopify/react-compose": "^0.1.5",
     "@shopify/react-html": "^3.0.2",
-    "@shopify/react-serialize": "^1.0.0",
+    "@shopify/react-serialize": "^1.0.9",
     "@shopify/react-utilities": "^2.0.2",
     "apollo-boost": "^0.1.10",
     "dotenv": "^6.0.0",
