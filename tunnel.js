@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const ngrok = require('ngrok');
 const {writeFileSync, unlinkSync} = require('fs-extra');
-const {port, tunnelFile} = require('../config/server');
+const {port, tunnelFile} = require('./config/server');
 
 (async function() {
   let url;
