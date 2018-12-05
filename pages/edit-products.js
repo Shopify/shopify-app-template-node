@@ -49,17 +49,20 @@ class EditProduct extends React.Component {
           mutation={UPDATE_PRICE}
         >
         {(handleSubmit, {error, data}) => {
-          if (error) return <Banner status="critical">{error.message}</Banner>;
-          if (data && data.productVariantUpdate) return this.setState({ showToast: true })
+          const showError = error && (
+            <Banner status="critical">{error.message}</Banner>
+          );
+          const showToast = data && data.productVariantUpdate && (
+            <Toast
+              content="Sucessfully updated"
+              onDismiss={() => this.setState({ showToast: false })}
+            />
+          );
           return (
           <Page>
             <Layout>
-            {showToast && (
-               <Toast
-                 content="Sucessfully updated"
-                 onDismiss={() => this.setState({ showToast: false })}
-               />
-            )}
+              {showToast}
+              {showError}
               <Layout.Section>
                 <DisplayText size="large">{name}</DisplayText>
                 <Form>

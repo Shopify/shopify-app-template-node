@@ -10,27 +10,27 @@ class Index extends React.Component {
     return (
       <React.Fragment>
         {emptyState ? (
-        <Page
-          primaryAction={{
-            content: 'Select products',
-            onAction: () => this.setState({ open: true }),
-          }}>
-          <Layout>
-            {this.state.open && <ReusableResourcePicker update={this.handler} open={this.state.open} />}
-            <EmptyState
-              heading="Select products to start"
-              action={{
-                content: 'Select Products',
-                onAction: () => this.setState({open: true}),
-              }}
-              image="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg"
-            >
-              <p>Select products and change their price temporarily.</p>
-            </EmptyState>
-          </Layout>
-        </Page>
+          <Page
+            primaryAction={{
+              content: 'Select products',
+              onAction: () => this.setState({ open: true }),
+            }}>
+            <Layout>
+              {this.state.open && <ReusableResourcePicker update={this.handler} open={this.state.open} />}
+              <EmptyState
+                heading="Select products to start"
+                action={{
+                  content: 'Select Products',
+                  onAction: () => this.setState({open: true}),
+                }}
+                image="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg"
+              >
+                <p>Select products and change their price temporarily.</p>
+              </EmptyState>
+            </Layout>
+          </Page>
         ) : (
-        <ResourceListWithProducts />
+          <ResourceListWithProducts />
         )}
       </React.Fragment>
     );
