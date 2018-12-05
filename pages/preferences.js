@@ -11,7 +11,7 @@ import {
   TextStyle,
 } from '@shopify/polaris';
 
-class AnnotatedLayout extends React.Component {
+class Preferences extends React.Component {
   state = {
     discount: '10%',
     enabled: false,
@@ -82,4 +82,4 @@ class AnnotatedLayout extends React.Component {
   };
 }
 
-export default AnnotatedLayout;
+export default Preferences;
