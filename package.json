@@ -21,6 +21,7 @@
     "graphql": "^14.0.2",
     "isomorphic-fetch": "^2.2.1",
     "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.0",
     "next": "^7.0.2",

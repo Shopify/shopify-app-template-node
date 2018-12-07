@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import Koa from 'koa';
 import next from 'next';
 import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
 import {readFileSync} from 'fs-extra';
 import createShopifyAuth from '@shopify/koa-shopify-auth';
 import dotenv from 'dotenv';
@@ -10,6 +11,7 @@ import session from 'koa-session';
 import graphQLProxy from '@shopify/koa-shopify-graphql-proxy';
 import {port, dev, tunnelFile} from './config/server';
 import {processPayment} from './server/router';
+import validateWebhook from './server/webhooks';
 
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -22,6 +24,8 @@ app.prepare().then(() => {
   const router = new Router();
   server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
+
+  router.post('/webhooks/products/create', validateWebhook);
 
   router.get('/', processPayment);
 
@@ -43,14 +47,43 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         const { shop, accessToken } = ctx.session;
 
+        console.log('We did it!', shop, accessToken);
+
+        const tunnelUrl = readFileSync(tunnelFile).toString();
+
         const stringifiedBillingParams = JSON.stringify({
           recurring_application_charge: {
             name: 'Recurring charge',
             price: 20.01,
-            return_url: readFileSync(tunnelFile).toString(),
+            return_url: tunnelUrl,
             test: true
           }
         })
+
+        const stringifiedWebhookParams = JSON.stringify({
+          webhook: {
+            topic: 'products/create',
+            address: `${tunnelUrl}/webhooks/products/create`,
+            format: 'json',
+          },
+        });
+
+        const webhookOptions = {
+          method: 'POST',
+          body: stringifiedWebhookParams,
+          credentials: 'include',
+          headers: {
+            'X-Shopify-Access-Token': accessToken,
+            'Content-Type': 'application/json',
+          },
+        };
+        await fetch(`https://${shop}/admin/webhooks.json`, webhookOptions)
+          .then((response) => response.json())
+          .then((jsonData) =>
+            console.log('webhook response', JSON.stringify(jsonData)),
+          )
+          .catch((error) => console.log('webhook error', error));
+
         const options = {
           method: 'POST',
           body: stringifiedBillingParams,
@@ -60,8 +93,6 @@ app.prepare().then(() => {
             'Content-Type': 'application/json',
           },
         };
-
-        console.log('We did it!', shop, accessToken);
 
         const confirmationURL = await fetch(
           `https://${shop}/admin/recurring_application_charges.json`, options)
@@ -74,6 +105,7 @@ app.prepare().then(() => {
     }),
   );
   server.use(graphQLProxy());
+  server.use(bodyParser());
   server.use(router.routes());
   server.use(verifyRequest({authRoute: '/auth'}));
 
