@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "babel-node --presets='env,stage-2' server.js",
+    "start": "yarn run dev",
     "tunnel": "node tunnel.js"
   },
   "license": "ISC",
