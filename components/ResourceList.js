@@ -66,14 +66,13 @@ class ResourceListWithProducts extends React.Component {
               primaryAction={{
                content: 'Add products',
                onAction: () => this.setState({ open: true })
-             }}
-           >
+             }}>
              {this.state.open && (
                <ReusableResourcePicker
                  update={this.handler}
                  open={this.state.open}
                />
-             )}>
+             )}
               <Card sectioned>
                 <ResourceList
                  showHeader
