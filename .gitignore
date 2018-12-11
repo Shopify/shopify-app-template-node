@@ -7,22 +7,15 @@ node_modules
 # Test coverage directory
 coverage
 
-# Build output directory
-build
-
-# Built style type definitions
-*.scss.d.ts
-
 # Ignore Apple macOS Desktop Services Store
 .DS_Store
 
 # Logs
 logs
 *.log
-.sewing-kit
 
-# Built graphql type definitions
-*.graphql.d.ts
-app/types/graphql.ts
-
+# ngrok tunnel file
 config/tunnel.pid
+
+# next build output
+.next/

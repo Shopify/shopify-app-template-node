@@ -1,77 +1,113 @@
-/* eslint-disable no-console */
 import 'isomorphic-fetch';
-
-import * as Koa from 'koa';
-import * as session from 'koa-session';
-import shopifyAuth, {verifyRequest} from '@shopify/koa-shopify-auth';
+import Koa from 'koa';
+import next from 'next';
+import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
+import session from 'koa-session';
+import createShopifyAuth from '@shopify/koa-shopify-auth';
+import { verifyRequest } from '@shopify/koa-shopify-auth';
 import graphQLProxy from '@shopify/koa-shopify-graphql-proxy';
-import {pathExistsSync, readFileSync} from 'fs-extra';
-import httpProxy from 'http-proxy';
+import {
+  PORT,
+  DEV,
+  SHOPIFY_API_SECRET_KEY,
+  SHOPIFY_API_KEY,
+  getTunnelUrl,
+} from '../config';
+import {processPayment} from './router';
+import validateWebhook from './webhooks';
 
-import {ip, port, tunnelFile} from '../config/server';
-import config from '../config/app';
-import renderApp from './render-app';
+const app = next({ dev: DEV });
+const handle = app.getRequestHandler();
 
-process.on('unhandledRejection', (error) => console.log(error));
 
-const {apiKey, secret, scopes, hostName} = config;
-const app = new Koa();
-app.keys = [secret];
+app.prepare().then(() => {
+  const server = new Koa();
+  const router = new Router();
+  server.use(session(server));
+  server.keys = [SHOPIFY_API_SECRET_KEY];
 
-app.use(session(app));
+  router.post('/webhooks/products/create', validateWebhook);
 
-app.use(
-  shopifyAuth({
-    apiKey,
-    secret,
-    scopes,
-    afterAuth(ctx) {
-      ctx.redirect('/');
-    },
-  }),
-);
+  router.get('/', processPayment);
 
-const proxy = httpProxy.createProxyServer();
+  server.use(
+    createShopifyAuth({
+      apiKey: SHOPIFY_API_KEY,
+      secret: SHOPIFY_API_SECRET_KEY,
+      scopes: ['read_products', 'write_products'],
+      async afterAuth(ctx) {
+        const { shop, accessToken } = ctx.session;
 
-app.use((ctx, next) => {
-  if (/^\/webpack\//.test(ctx.path)) {
+        console.log('We did it!', shop, accessToken);
+
+        const tunnelUrl = getTunnelUrl();
+
+        const stringifiedBillingParams = JSON.stringify({
+          recurring_application_charge: {
+            name: 'Recurring charge',
+            price: 20.01,
+            return_url: tunnelUrl,
+            test: true
+          }
+        })
+
+        const stringifiedWebhookParams = JSON.stringify({
+          webhook: {
+            topic: 'products/create',
+            address: `${tunnelUrl}/webhooks/products/create`,
+            format: 'json',
+          },
+        });
+
+        const webhookOptions = {
+          method: 'POST',
+          body: stringifiedWebhookParams,
+          credentials: 'include',
+          headers: {
+            'X-Shopify-Access-Token': accessToken,
+            'Content-Type': 'application/json',
+          },
+        };
+        await fetch(`https://${shop}/admin/webhooks.json`, webhookOptions)
+          .then((response) => response.json())
+          .then((jsonData) =>
+            console.log('webhook response', JSON.stringify(jsonData)),
+          )
+          .catch((error) => console.log('webhook error', error));
+
+        const options = {
+          method: 'POST',
+          body: stringifiedBillingParams,
+          credentials: 'include',
+          headers: {
+            'X-Shopify-Access-Token': accessToken,
+            'Content-Type': 'application/json',
+          },
+        };
+
+        const confirmationURL = await fetch(
+          `https://${shop}/admin/recurring_application_charges.json`, options)
+          .then((response) => response.json())
+          .then((jsonData) => jsonData.recurring_application_charge.confirmation_url)
+          .catch((error) => console.log('error', error));
+
+        await ctx.redirect(confirmationURL);
+      },
+    }),
+  );
+  server.use(graphQLProxy());
+  server.use(bodyParser());
+  server.use(router.routes());
+  server.use(verifyRequest({authRoute: '/auth'}));
+  server.use(async (ctx) => {
+    await handle(ctx.req, ctx.res);
     ctx.respond = false;
-    return proxy.web(ctx.req, ctx.res, {target: 'http://localhost:8080'});
-  } else {
-    return next();
-  }
-});
-
-const fallbackRoute = hostName === '' ? undefined : `/auth?shop=${hostName}`;
-app.use(
-  verifyRequest({
-    fallbackRoute,
-  }),
-);
-
-app.use(graphQLProxy());
-
-app.use(renderApp);
-
-let server;
-if (process.env.NODE_ENV === 'development') {
-  server = app.listen(port, () => {
-    console.log(`[init] listening on ${ip}:${port}`);
-    if (pathExistsSync(tunnelFile)) {
-      const url = readFileSync(tunnelFile).toString();
-      console.log(`App accessible via ${url}`);
-    } else {
-      console.log('Run `yarn tunnel` in another terminal to use your access your app from a development shop.');
-    }
+    ctx.res.statusCode = 200;
+    return;
   });
-} else {
-  server = app.listen(port, () => {
-    console.log(`[init] listening on ${ip}:${port}`);
+
+  server.listen(PORT, () => {
+    console.log(`> Ready on http://localhost:${PORT}`);
   });
-}
-
-server.on('upgrade', (req, socket, head) => {
-  proxy.ws(req, socket, head, {target: 'http://localhost:8080'});
 });
-
-export default app;
