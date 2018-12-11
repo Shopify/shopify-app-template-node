@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "babel-node --presets='env,stage-2' server.js",
+    "dev": "babel-node --presets='env,stage-2' server/index.js",
     "start": "yarn run dev",
     "tunnel": "node tunnel.js"
   },

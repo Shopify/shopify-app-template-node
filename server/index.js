@@ -3,21 +3,23 @@ import Koa from 'koa';
 import next from 'next';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import {readFileSync} from 'fs-extra';
-import createShopifyAuth from '@shopify/koa-shopify-auth';
-import dotenv from 'dotenv';
-import { verifyRequest } from '@shopify/koa-shopify-auth';
 import session from 'koa-session';
+import createShopifyAuth from '@shopify/koa-shopify-auth';
+import { verifyRequest } from '@shopify/koa-shopify-auth';
 import graphQLProxy from '@shopify/koa-shopify-graphql-proxy';
-import {port, dev, tunnelFile} from './config/server';
-import {processPayment} from './server/router';
-import validateWebhook from './server/webhooks';
+import {
+  PORT,
+  DEV,
+  SHOPIFY_API_SECRET_KEY,
+  SHOPIFY_API_KEY,
+  getTunnelUrl,
+} from '../config';
+import {processPayment} from './router';
+import validateWebhook from './webhooks';
 
-const app = next({ dev });
+const app = next({ dev: DEV });
 const handle = app.getRequestHandler();
 
-dotenv.config();
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 
 app.prepare().then(() => {
   const server = new Koa();
@@ -49,7 +51,7 @@ app.prepare().then(() => {
 
         console.log('We did it!', shop, accessToken);
 
-        const tunnelUrl = readFileSync(tunnelFile).toString();
+        const tunnelUrl = getTunnelUrl();
 
         const stringifiedBillingParams = JSON.stringify({
           recurring_application_charge: {
@@ -109,7 +111,7 @@ app.prepare().then(() => {
   server.use(router.routes());
   server.use(verifyRequest({authRoute: '/auth'}));
 
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  server.listen(PORT, () => {
+    console.log(`> Ready on http://localhost:${PORT}`);
   });
 });
