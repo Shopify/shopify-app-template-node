@@ -31,16 +31,6 @@ app.prepare().then(() => {
 
   router.get('/', processPayment);
 
-  router.get('*', async (ctx) => {
-    await handle(ctx.req, ctx.res);
-    ctx.respond = false;
-  });
-
-  server.use(async (ctx, next) => {
-    ctx.res.statusCode = 200;
-    await next();
-  });
-
   server.use(
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
@@ -110,6 +100,12 @@ app.prepare().then(() => {
   server.use(bodyParser());
   server.use(router.routes());
   server.use(verifyRequest({authRoute: '/auth'}));
+  server.use(async (ctx) => {
+    await handle(ctx.req, ctx.res);
+    ctx.respond = false;
+    ctx.res.statusCode = 200;
+    return;
+  });
 
   server.listen(PORT, () => {
     console.log(`> Ready on http://localhost:${PORT}`);
