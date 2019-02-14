@@ -13,7 +13,7 @@ import {
   SHOPIFY_API_SECRET_KEY,
   SHOPIFY_API_KEY,
   SHOPIFY_DOMAIN,
-  getTunnelUrl,
+  HOST,
 } from '../config';
 import {processPayment} from './router';
 import validateWebhook from './webhooks';
@@ -43,7 +43,7 @@ app.prepare().then(() => {
 
         console.log('We did it!', shop, accessToken);
 
-        const tunnelUrl = getTunnelUrl();
+        const tunnelUrl = HOST;
 
         const stringifiedBillingParams = JSON.stringify({
           recurring_application_charge: {

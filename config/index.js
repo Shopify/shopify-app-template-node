@@ -9,6 +9,7 @@ const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 const DEV = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || '8081';
 const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN || 'shopify.com';
+const HOST = process.env.HOST;
 
 const tunnelFile = 'config/tunnel.pid';
 
@@ -24,4 +25,5 @@ module.exports = {
   DEV,
   tunnelFile,
   getTunnelUrl,
+  HOST,
 };
