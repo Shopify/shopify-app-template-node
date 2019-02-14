@@ -12,6 +12,7 @@ import {
   DEV,
   SHOPIFY_API_SECRET_KEY,
   SHOPIFY_API_KEY,
+  SHOPIFY_DOMAIN,
   getTunnelUrl,
 } from '../config';
 import {processPayment} from './router';
@@ -35,6 +36,7 @@ app.prepare().then(() => {
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
+      myShopifyDomain: SHOPIFY_DOMAIN,
       scopes: ['read_products', 'write_products'],
       async afterAuth(ctx) {
         const { shop, accessToken } = ctx.session;
