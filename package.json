@@ -1,35 +1,54 @@
 {
-  "name": "your-app-name",
-  "version": "0.1.0",
-  "private": true,
   "scripts": {
-    "dev": "babel-node --presets='env,stage-2' server/index.js",
-    "start": "yarn run dev",
-    "tunnel": "node tunnel.js"
+    "dev": "cross-env NODE_ENV=development nodemon server.js --exec babel-node --presets babel-preset-env --watch server.js",
+    "build": "yarn build:next && yarn build:server",
+    "build:next": "next build",
+    "build:server": "cross-env NODE_ENV=production babel server.js --out-dir .next/dist",
+    "start": "cross-env NODE_ENV=production node .next/dist/server.js"
   },
-  "license": "ISC",
   "dependencies": {
-    "@shopify/koa-shopify-auth": "^3.1.7",
-    "@shopify/koa-shopify-graphql-proxy": "^2.1.3",
-    "@shopify/polaris": "^3.1.1",
-    "@zeit/next-css": "^1.0.1",
-    "apollo-boost": "^0.1.22",
+    "cross-env": "^5.1.3",
+    "next": "^4.2.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "dotenv": "^6.1.0",
-    "fs-extra": "^7.0.1",
-    "graphql": "^14.0.2",
-    "isomorphic-fetch": "^2.2.1",
-    "koa": "^2.6.2",
-    "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0",
-    "koa-session": "^5.10.0",
-    "next": "^7.0.2",
-    "ngrok": "^3.1.0",
-    "react": "^16.6.3",
-    "react-apollo": "^2.3.2",
-    "react-dom": "^16.6.3",
-    "store-js": "^2.0.4"
+    "babel-preset-env": "^1.6.1",
+    "nodemon": "^1.18.11"
+  },
+  "babel": {
+    "env": {
+      "development": {
+        "presets": [
+          "next/babel"
+        ]
+      },
+      "production": {
+        "presets": [
+          "next/babel",
+          [
+            "env",
+            {
+              "targets": {
+                "node": "8"
+              }
+            }
+          ]
+        ]
+      },
+      "test": {
+        "presets": [
+          [
+            "next/babel",
+            {
+              "preset-env": {
+                "modules": "commonjs"
+              }
+            }
+          ]
+        ]
+      }
+    }
   }
 }
