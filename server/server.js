@@ -1,3 +1,4 @@
+import '@babel/polyfill'
 require('isomorphic-fetch');
 import Koa from 'koa';
 import next from 'next';

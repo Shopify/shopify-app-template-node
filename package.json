@@ -1,54 +1,33 @@
 {
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon server.js --exec babel-node --presets babel-preset-env --watch server.js",
-    "build": "yarn build:next && yarn build:server",
-    "build:next": "next build",
-    "build:server": "cross-env NODE_ENV=production babel server.js --out-dir .next/dist",
-    "start": "cross-env NODE_ENV=production node .next/dist/server.js"
+    "test": "jest",
+    "dev": "NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node ./server/index.js"
   },
   "dependencies": {
-    "cross-env": "^5.1.3",
-    "next": "^4.2.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "@shopify/koa-shopify-auth": "^3.1.23",
+    "babel-preset-env": "^1.7.0",
+    "dotenv": "^7.0.0",
+    "koa": "^2.7.0",
+    "koa-session": "^5.10.1",
+    "next": "^8.1.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "nodemon": "^1.18.11"
-  },
-  "babel": {
-    "env": {
-      "development": {
-        "presets": [
-          "next/babel"
-        ]
-      },
-      "production": {
-        "presets": [
-          "next/babel",
-          [
-            "env",
-            {
-              "targets": {
-                "node": "8"
-              }
-            }
-          ]
-        ]
-      },
-      "test": {
-        "presets": [
-          [
-            "next/babel",
-            {
-              "preset-env": {
-                "modules": "commonjs"
-              }
-            }
-          ]
-        ]
-      }
-    }
+    "@babel/core": "7.3.4",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-stage-3": "^7.0.0",
+    "@babel/register": "^7.4.0",
+    "babel-jest": "24.1.0",
+    "babel-register": "^6.26.0",
+    "enzyme": "3.4.3",
+    "enzyme-adapter-react-16": "1.2.0",
+    "jest": "24.1.0",
+    "nodemon": "^1.18.11",
+    "react-addons-test-utils": "15.6.2",
+    "react-test-renderer": "16.4.2"
   }
 }
