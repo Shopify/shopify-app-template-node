@@ -1,9 +1,21 @@
 {
+  "name": "webgen-embeddedapp",
+  "version": "1.0.0",
+  "description": "Shopify's node app for CLI tool",
   "scripts": {
     "test": "jest",
     "dev": "NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
     "build": "next build",
     "start": "NODE_ENV=production node ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shopify/webgen-embeddedapp.git"
+  },
+  "author": "Shopify Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shopify/webgen-embeddedapp/issues"
   },
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.1.23",
