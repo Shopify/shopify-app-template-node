@@ -1,6 +1,6 @@
 language: node_js
 script:
-  - npm test
-  - npm build
+  - npm run test
+  - npm run build
 node_js:
   - '8'
