@@ -5,6 +5,8 @@ import next from 'next';
 import createShopifyAuth, { verifyRequest } from '@shopify/koa-shopify-auth'
 import dotenv from 'dotenv';
 import session from 'koa-session';
+import { GraphQLClient } from 'graphql-request'
+
 dotenv.config();
 
 const port = parseInt(process.env.PORT, 10) || 3000;
@@ -26,7 +28,56 @@ app.prepare().then(() => {
       scopes: ['read_products'],
       afterAuth(ctx) {
         const { shop, accessToken } = ctx.session;
-
+        const endpoint = `https://${shop}/admin/api/unstable/graphql.json`
+        const options = {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/graphql',
+            'X-Shopify-Access-Token': accessToken,
+            'Accept': '*/*',
+          },
+          body: JSON.stringify({ mutation })
+        }
+        const mutation = `
+          mutation {
+            appSubscriptionCreate(
+                name: "Super Duper Plan"
+                returnUrl: "https://15a2f115.ngrok.io"
+                test: true
+                lineItems: [
+                {
+                    plan: {
+                      appUsagePricingDetails: {
+                          cappedAmount: { amount: 10, currencyCode: USD }
+                          terms: "$1 for 1000 emails"
+                      }
+                    }
+                }
+                {
+                    plan: {
+                      appRecurringPricingDetails: {
+                          price: { amount: 10, currencyCode: USD }
+                      }
+                    }
+                }
+                ]
+              ) {
+                  userErrors {
+                    field
+                    message
+                  }
+                  confirmationUrl
+                  appSubscription {
+                    id
+                  }
+              }
+          }
+          `
+        fetch(endpoint, options)
+          .then(res => res.json())
+          .then(console.log)
+          .catch(console.error);
         ctx.redirect('/');
       },
     }),
@@ -34,6 +85,7 @@ app.prepare().then(() => {
 
   server.use(verifyRequest());
   server.use(async (ctx) => {
+
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;

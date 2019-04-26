@@ -19,9 +19,11 @@
     "url": "https://github.com/shopify/webgen-embeddedapp/issues"
   },
   "dependencies": {
-    "@shopify/koa-shopify-auth": "^3.1.23",
+    "@shopify/koa-shopify-auth": "^3.1.25",
+    "@shopify/koa-shopify-graphql-proxy": "^3.1.0",
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
+    "graphql-request": "^1.8.2",
     "koa": "^2.7.0",
     "koa-session": "^5.10.1",
     "next": "^8.1.0",
