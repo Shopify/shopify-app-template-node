@@ -18,6 +18,9 @@
   "bugs": {
     "url": "https://github.com/shopify/webgen-embeddedapp/issues"
   },
+  "engines": {
+    "node": "^v10.11.0"
+  },
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.1.23",
     "babel-preset-env": "^1.7.0",
