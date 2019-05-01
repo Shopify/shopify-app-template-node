@@ -7,7 +7,8 @@
     "dev": "NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
     "build": "next build",
     "start": "NODE_ENV=production node ./server/index.js",
-    "generate-page": "node scripts/index.js generate-page"
+    "generate-page": "node scripts/index.js generate-page",
+    "add-billing": "node scripts/index.js add-billing"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,13 @@
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
     "graphql-request": "^1.8.2",
+    "jscodeshift": "^0.6.4",
     "koa": "^2.7.0",
     "koa-session": "^5.10.1",
+    "lodash": "^4.17.11",
     "next": "^8.1.0",
+    "prettier": "^1.17.0",
+    "ramda": "^0.26.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
