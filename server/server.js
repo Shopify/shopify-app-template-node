@@ -1,5 +1,5 @@
 import '@babel/polyfill'
-require('isomorphic-fetch');
+import 'isomorphic-fetch';
 import Koa from 'koa';
 import next from 'next';
 import createShopifyAuth, { verifyRequest } from '@shopify/koa-shopify-auth'
@@ -28,7 +28,7 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         //Auth token and shop available in sesssion
         const { shop } = ctx.session;
-        await callBilling(ctx, 'recurring')
+        await callBilling(ctx, 'recurring');
       },
     }),
   );

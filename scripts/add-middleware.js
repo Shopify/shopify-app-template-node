@@ -25,8 +25,7 @@ const addMiddleware = (fileToWrite, line) => {
     }
   })
 
-  const type = 'recurring'
-  const code = `callBilling(ctx, ${type})`
+  const code = line
   sessionAssignment.insertAfter(parser(code, { sourceType: 'module' }));
 
   const newCode = generate(ast).code
@@ -36,6 +35,7 @@ const addMiddleware = (fileToWrite, line) => {
     if (err) throw new Error(`${err}`)
     console.log(`Billing scaffold was successfully added to ${fileToWrite}!`)
   });
+
 };
 
 module.exports = addMiddleware;
