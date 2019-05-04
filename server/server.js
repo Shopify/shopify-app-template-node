@@ -5,7 +5,7 @@ import next from 'next';
 import createShopifyAuth, { verifyRequest } from '@shopify/koa-shopify-auth'
 import dotenv from 'dotenv';
 import session from 'koa-session';
-import { confirmationUrl } from './middlewares/recurring-billing'
+import { callBilling } from './middlewares/mutation'
 dotenv.config();
 
 const port = parseInt(process.env.PORT, 10) || 3000;
@@ -26,15 +26,13 @@ app.prepare().then(() => {
       secret: SHOPIFY_API_SECRET_KEY,
       scopes: ['read_products'],
       async afterAuth(ctx) {
-
-        const { shop, accessToken } = ctx.session;
-        ctx.redirect('/');
+        const confirmationUrl = await callBilling(ctx, 'recurring')
+        ctx.redirect(confirmationUrl)
       },
     }),
   );
   server.use(verifyRequest());
   server.use(async (ctx) => {
-
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
