@@ -26,6 +26,8 @@ app.prepare().then(() => {
       secret: SHOPIFY_API_SECRET_KEY,
       scopes: ['read_products'],
       async afterAuth(ctx) {
+        //Auth token and shop available in sesssion
+        const { shop } = ctx.session;
         await callBilling(ctx, 'recurring')
       },
     }),

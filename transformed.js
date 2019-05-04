@@ -7,7 +7,7 @@ import next from "next";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import dotenv from "dotenv";
 import session from "koa-session";
-import { confirmationUrl } from "./middlewares/recurring-billing";
+import { callBilling } from "./middlewares/mutation";
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -27,8 +27,11 @@ app.prepare().then(() => {
       scopes: ["read_products"],
 
       async afterAuth(ctx) {
-        const { shop, accessToken } = ctx.session;
-        ctx.redirect("/");
+        //Auth token and shop available in sesssion
+        const { shop } = ctx.session;
+        callBilling(ctx, recurring);
+
+        await callBilling(ctx, "recurring");
       }
     })
   );
