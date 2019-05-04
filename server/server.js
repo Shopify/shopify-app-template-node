@@ -26,8 +26,7 @@ app.prepare().then(() => {
       secret: SHOPIFY_API_SECRET_KEY,
       scopes: ['read_products'],
       async afterAuth(ctx) {
-        const confirmationUrl = await callBilling(ctx, 'recurring')
-        ctx.redirect(confirmationUrl)
+        await callBilling(ctx, 'recurring')
       },
     }),
   );
