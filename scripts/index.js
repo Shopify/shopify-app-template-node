@@ -1,5 +1,5 @@
 const generatePage = require('./generate-page');
-const addMiddleware = require('./add-middleware');
+const addMiddleware = require('./add-billing');
 
 
 function receiveArgs() {
@@ -8,8 +8,11 @@ function receiveArgs() {
     case 'generate-page':
       generatePage('pages', process.argv);
       break;
-    case 'add-billing':
-      addMiddleware('server/server.js', 'foo');
+    case 'add-recurring-billing':
+      addMiddleware('server/server.js', "await callBilling(ctx, 'recurring')");
+      break
+    case 'add-one-time-billing':
+      addMiddleware('server/server.js', "callBilling(ctx, 'one time')");
       break
     default:
       console.log('Please provide a command');

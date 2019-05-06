@@ -1,9 +1,9 @@
+import dotenv from 'dotenv';
 import '@babel/polyfill'
 import 'isomorphic-fetch';
 import Koa from 'koa';
 import next from 'next';
 import createShopifyAuth, { verifyRequest } from '@shopify/koa-shopify-auth'
-import dotenv from 'dotenv';
 import session from 'koa-session';
 import { callBilling } from './middlewares/mutation'
 dotenv.config();
@@ -28,7 +28,8 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         //Auth token and shop available in sesssion
         const { shop } = ctx.session;
-        await callBilling(ctx, 'recurring');
+        //Redirect to shop upon auth
+        ctx.redirect("/")
       },
     }),
   );

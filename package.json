@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "NODE_ENV=production node ./server/index.js",
     "generate-page": "node scripts/index.js generate-page",
-    "add-billing": "node scripts/index.js add-billing"
+    "add-recurring-billing": "node scripts/index.js add-recurring-billing",
+    "add-one-time-billing": "node scripts/index.js add-one-time-billing"
   },
   "repository": {
     "type": "git",
