@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 /* generates a file in the pages folder, usage:
   npm run-script generate-page <handle>
 */
