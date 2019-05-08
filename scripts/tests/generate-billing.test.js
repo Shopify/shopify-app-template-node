@@ -1,22 +1,31 @@
-const generateRecurringBilling = require('../generate-recurring-billing.js')
+const generateRecurringBilling = require('../generate-recurring-billing')
+const parser = require('@babel/parser').parse;
+const transform = require('../transform');
+const generate = require('@babel/generator').default;
+const fs = require('fs');
 
-const server = `server.use(
-  createShopifyAuth({
-    apiKey: 'randomstring',
-    secret: 'randomstring2',
-    scopes: ["read_products"],
 
+const server = `createShopifyAuth({
     async afterAuth(ctx) {
-      //Auth token and shop available in sesssion
-      //Redirect to shop upon auth
       const { shop } = ctx.session;
       ctx.redirect("/")
     }
-  })
-)`;
+  })`;
 
+const transformed = `createShopifyAuth({
+  async afterAuth(ctx) {
+    const {
+      shop
+    } = ctx.session;
+    server.context.client = handlers.createClient(ctx.session);
+    await handlers.getSubscriptionUrl(ctx);
+  }
 
-it('should return an ast', () => {
-  generateRecurringBilling('server/server.js', server)
-  expect(traverse).toHaveBeenCalled();
+});`
+
+it('Should return the new code with call to billing api', () => {
+  const ast = parser(server, { sourceType: 'module' });
+  const parsedAst = generateRecurringBilling(ast);
+  const newCode = generate(parsedAst).code
+  expect(newCode).toBe(transformed)
 });

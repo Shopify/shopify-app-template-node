@@ -1,4 +1,4 @@
-const generatePage = require('../scripts/generate-page.js')
+const generatePage = require('../generate-page');
 const fs = require('fs');
 
 jest.mock('fs') // this auto mocks all methods on fs
