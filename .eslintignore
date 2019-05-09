@@ -1,6 +1,5 @@
 node_modules
 build
 coverage
-app/types/graphql.ts
-*.graphql.d.ts
+
 
