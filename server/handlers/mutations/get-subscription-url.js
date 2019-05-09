@@ -1,11 +1,13 @@
 import 'isomorphic-fetch';
 import { gql } from 'apollo-boost';
 
-export const RECURRING_CREATE = gql`
+
+export function RECURRING_CREATE(url) {
+  return gql`
   mutation {
     appSubscriptionCreate(
         name: "Super Duper Plan"
-        returnUrl: tunnel url from env
+        returnUrl: "${url}"
         test: true
         lineItems: [
         {
@@ -35,11 +37,12 @@ export const RECURRING_CREATE = gql`
           }
       }
   }`;
+}
 
 export const getSubscriptionUrl = async (ctx) => {
   const { client } = ctx
   const confirmationUrl = await client.mutate({
-    mutation: RECURRING_CREATE,
+    mutation: RECURRING_CREATE(process.env.TUNNEL_URL),
   }).then((response) => (response.data.appSubscriptionCreate.confirmationUrl))
 
   return ctx.redirect(confirmationUrl)

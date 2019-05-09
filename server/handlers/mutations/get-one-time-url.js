@@ -1,12 +1,13 @@
 import 'isomorphic-fetch';
 import { gql } from 'apollo-boost';
 
-const ONETIME_CREATE = gql`
+export function ONETIME_CREATE(url) {
+  return gql`
     mutation {
       appPurchaseOneTimeCreate(
-        name: "Super Duper Expensive action"
+        name: "test"
         price: { amount: 10, currencyCode: USD }
-        returnUrl: tunnel url from env
+        returnUrl: '${url}'
         test: true
       ) {
         userErrors {
@@ -14,14 +15,18 @@ const ONETIME_CREATE = gql`
           message
         }
         confirmationUrl
+        appPurchaseOneTime {
+          id
+        }
       }
     }
   `;
+}
 
 export const getOneTimeUrl = async (ctx) => {
   const { client } = ctx
   const confirmationUrl = await client.mutate({
-    mutation: ONETIME_CREATE,
+    mutation: ONETIME_CREATE(process.env.TUNNEL_URL),
   }).then((response) => (response.data.appPurchaseOneTimeCreate.confirmationUrl))
   //need to fix get correct reponse
   return ctx.redirect(confirmationUrl)

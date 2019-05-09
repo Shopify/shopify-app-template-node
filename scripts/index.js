@@ -1,3 +1,8 @@
+require('@babel/register')({
+  presets: ['@babel/preset-env'],
+  ignore: ['node_modules']
+});
+
 function receiveArgs(args) {
   const type = args[2];
   switch (type) {
