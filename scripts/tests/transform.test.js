@@ -1,19 +1,23 @@
-const transform = require('../transform');
-const fs = require('fs');
+const transform = require("../transform");
+const fs = require("fs");
 
 jest.mock("fs", () => ({
-  readFileSync: () => 'sum(1 *2)',
+  readFileSync: () => "sum(1 *2)",
   writeFileSync: jest.fn(),
   existsSync: () => true
 }));
 
-jest.mock('prettier', () => ({
+jest.mock("prettier", () => ({
   format: code => code
 }));
 
-const mockTransformer = file => file
+const mockTransformer = file => file;
 
 it("reads, transforms and write a file", () => {
   transform("/any/path.js", mockTransformer);
-  expect(fs.writeFileSync).toHaveBeenCalledWith("/any/path.js", "sum(1 * 2);", expect.any(Function))
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    "/any/path.js",
+    "sum(1 * 2);",
+    expect.any(Function)
+  );
 });
