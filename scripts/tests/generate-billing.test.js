@@ -1,9 +1,6 @@
 const generateRecurringBilling = require('../generate-recurring-billing')
 const parser = require('@babel/parser').parse;
-const transform = require('../transform');
 const generate = require('@babel/generator').default;
-const fs = require('fs');
-
 
 const server = `createShopifyAuth({
     async afterAuth(ctx) {
