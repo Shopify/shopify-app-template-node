@@ -12,7 +12,7 @@ function generatePage(dir, args) {
     console.log(`${page} already exists`)
   }
   else {
-    fs.writeFile(page, content, (err) => {
+    fs.writeFileSync(page, content, (err) => {
       if (err) throw err;
       console.log(`${page} was successfully created!`);
     });

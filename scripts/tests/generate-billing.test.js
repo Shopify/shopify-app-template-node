@@ -20,7 +20,7 @@ const transformed = `createShopifyAuth({
 
 });`
 
-it('Should return the new code with call to billing api', () => {
+it('should return the new code with call to billing api', () => {
   const ast = parser(server, { sourceType: 'module' });
   const parsedAst = generateRecurringBilling(ast);
   const newCode = generate(parsedAst).code

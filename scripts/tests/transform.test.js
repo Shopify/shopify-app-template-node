@@ -8,7 +8,7 @@ jest.mock("fs", () => ({
 }));
 
 jest.mock('prettier', () => ({
-  format: jest.fn((code) => code)
+  format: code => code
 }));
 
 const mockTransformer = file => file
