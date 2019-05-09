@@ -33,7 +33,6 @@
     "koa-session": "^5.10.1",
     "lodash": "^4.17.11",
     "next": "^8.1.0",
-    "prettier": "^1.17.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
@@ -47,9 +46,23 @@
     "babel-register": "^6.26.0",
     "enzyme": "3.4.3",
     "enzyme-adapter-react-16": "1.2.0",
+    "husky": "^2.2.0",
     "jest": "24.1.0",
+    "lint-staged": "^8.1.6",
     "nodemon": "^1.18.11",
+    "prettier": "1.17.0",
     "react-addons-test-utils": "15.6.2",
     "react-test-renderer": "16.4.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
