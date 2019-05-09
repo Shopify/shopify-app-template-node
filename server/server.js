@@ -28,8 +28,7 @@ app.prepare().then(() => {
         //Auth token and shop available in sesssion
         //Redirect to shop upon auth
         const { shop } = ctx.session;
-        server.context.client = handlers.createClient(ctx.session);
-        await handlers.getSubscriptionUrl(ctx);
+        ctx.redirect("/");
       }
     })
   );

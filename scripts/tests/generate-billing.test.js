@@ -14,7 +14,7 @@ const transformed = `createShopifyAuth({
     const {
       shop
     } = ctx.session;
-    server.context.client = handlers.createClient(ctx.session);
+    server.context.client = await handlers.createClient(ctx.session);
     await handlers.getSubscriptionUrl(ctx);
   }
 

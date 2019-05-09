@@ -28,6 +28,5 @@ export const getOneTimeUrl = async (ctx) => {
   const confirmationUrl = await client.mutate({
     mutation: ONETIME_CREATE(process.env.TUNNEL_URL),
   }).then((response) => (response.data.appPurchaseOneTimeCreate.confirmationUrl))
-  //need to fix get correct reponse
   return ctx.redirect(confirmationUrl)
 }

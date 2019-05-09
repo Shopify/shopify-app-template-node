@@ -4,39 +4,39 @@ import { gql } from 'apollo-boost';
 
 export function RECURRING_CREATE(url) {
   return gql`
-  mutation {
-    appSubscriptionCreate(
-        name: "Super Duper Plan"
-        returnUrl: "${url}"
-        test: true
-        lineItems: [
-        {
+    mutation {
+      appSubscriptionCreate(
+          name: "Super Duper Plan"
+          returnUrl: "${url}"
+          test: true
+          lineItems: [
+          {
             plan: {
               appUsagePricingDetails: {
                   cappedAmount: { amount: 10, currencyCode: USD }
                   terms: "$1 for 1000 emails"
               }
             }
-        }
-        {
+          }
+          {
             plan: {
               appRecurringPricingDetails: {
                   price: { amount: 10, currencyCode: USD }
               }
             }
+          }
+          ]
+        ) {
+            userErrors {
+              field
+              message
+            }
+            confirmationUrl
+            appSubscription {
+              id
+            }
         }
-        ]
-      ) {
-          userErrors {
-            field
-            message
-          }
-          confirmationUrl
-          appSubscription {
-            id
-          }
-      }
-  }`;
+    }`;
 }
 
 export const getSubscriptionUrl = async (ctx) => {
