@@ -1,16 +1,14 @@
-import ApolloClient from 'apollo-boost';
+import ApolloClient from "apollo-boost";
 
-export const createClient = (session) => {
-  const { shop, accessToken } = session;
-
+export const createClient = (shop, accessToken) => {
   return new ApolloClient({
     uri: `https://${shop}/admin/api/unstable/graphql.json`,
     request: operation => {
       operation.setContext({
         headers: {
-          'X-Shopify-Access-Token': accessToken,
-        },
+          "X-Shopify-Access-Token": accessToken
+        }
       });
-    },
+    }
   });
 };

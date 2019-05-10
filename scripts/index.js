@@ -18,6 +18,14 @@ function receiveArgs(args) {
       transform("server/server.js", generateOneTimeCharge);
       break;
     }
+    case "generate-webhooks": {
+      const type = args[3].toString();
+      const url = args[4].toString();
+      const generateWebhooks = require("./generate-webhooks");
+      const transform = require("./transform");
+      transform("server/server.js", generateWebhooks, type, url);
+      break;
+    }
     default:
       console.log("Please provide a command");
   }

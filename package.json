@@ -9,7 +9,8 @@
     "start": "NODE_ENV=production node ./server/index.js",
     "generate-page": "node scripts/index.js generate-page",
     "generate-recurring-billing": "node scripts/index.js generate-recurring-billing",
-    "generate-one-time-billing": "node scripts/index.js generate-one-time-billing"
+    "generate-one-time-billing": "node scripts/index.js generate-one-time-billing",
+    "generate-webhooks": "node scripts/index.js generate-webhooks"
   },
   "repository": {
     "type": "git",
@@ -25,11 +26,13 @@
   },
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.1.25",
+    "@shopify/koa-shopify-webhooks": "^1.1.8",
     "apollo-boost": "^0.3.1",
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
     "graphql": "^14.2.1",
     "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
     "lodash": "^4.17.11",
     "next": "^8.1.0",
