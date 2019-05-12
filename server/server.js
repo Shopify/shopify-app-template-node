@@ -7,7 +7,6 @@ import next from "next";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import session from "koa-session";
 import * as handlers from "./handlers/index";
-import { receiveWebhook } from "@shopify/koa-shopify-webhooks";
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -20,36 +19,22 @@ const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
-  const webhook = receiveWebhook({
-    secret: SHOPIFY_API_SECRET_KEY
-  });
-
   server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
   server.use(
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
-      scopes: ["read_products", "write_products"],
+      scopes: ["read_products"],
 
       async afterAuth(ctx) {
         //Auth token and shop available in sesssion
         //Redirect to shop upon auth
         const { shop, accessToken } = ctx.session;
-        handlers.registerWebhooks(
-          shop,
-          accessToken,
-          PRODUCTS_CREATE,
-          "/webhooks/products/create"
-        );
-
         ctx.redirect("/");
       }
     })
   );
-  router.post("/webhooks/products/create", webhook, ctx => {
-    console.log("received webhook: ", ctx.state.webhook);
-  });
 
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);

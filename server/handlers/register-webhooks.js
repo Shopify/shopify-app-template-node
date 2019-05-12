@@ -2,7 +2,7 @@ import { registerWebhook } from "@shopify/koa-shopify-webhooks";
 
 export const registerWebhooks = async (shop, accessToken, type, url) => {
   const registration = await registerWebhook({
-    address: `${process.env.TUNNEL_URL}/${url}`,
+    address: `${process.env.TUNNEL_URL}${url}`,
     topic: type,
     accessToken,
     shop
