@@ -1,6 +1,6 @@
 const parser = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
-const get = require("lodash/get");
+const get = require("lodash.get");
 
 const code = `server.context.client = await handlers.createClient(shop, accessToken);
 await handlers.getSubscriptionUrl(ctx);

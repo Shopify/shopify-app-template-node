@@ -1,6 +1,6 @@
 const parser = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
-const get = require("lodash/get");
+const get = require("lodash.get");
 const generateWebhooksSubcription = require("./generate-webhhoks-subscription");
 const { createWebhooksUrl } = require("../utilities");
 

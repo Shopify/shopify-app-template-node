@@ -1,5 +1,5 @@
 const traverse = require("@babel/traverse").default;
-const get = require("lodash/get");
+const get = require("lodash.get");
 const t = require("@babel/types");
 
 const generateWebhooks = ast => {
