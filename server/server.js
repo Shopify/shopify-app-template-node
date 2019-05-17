@@ -2,6 +2,7 @@ import "isomorphic-fetch";
 import dotenv from "dotenv";
 import "@babel/polyfill";
 import Koa from "koa";
+import Router from "koa-router";
 import next from "next";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import session from "koa-session";
@@ -16,6 +17,7 @@ const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
+  const router = new Router();
   server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
   server.use(
@@ -27,18 +29,20 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         //Auth token and shop available in sesssion
         //Redirect to shop upon auth
-        const { shop } = ctx.session;
+        const { shop, accessToken } = ctx.session;
+
         ctx.redirect("/");
       }
     })
   );
-  server.use(verifyRequest());
-  server.use(async ctx => {
+
+  router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
-    return;
   });
+  server.use(router.allowedMethods());
+  server.use(router.routes());
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });

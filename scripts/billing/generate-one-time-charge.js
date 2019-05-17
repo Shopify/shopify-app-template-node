@@ -1,11 +1,11 @@
 const parser = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
-const get = require("lodash/get");
+const get = require("lodash.get");
 
-const code = `server.context.client = await handlers.createClient(ctx.session);
-await handlers.getSubscriptionUrl(ctx);
+const code = `server.context.client = await createClient(shop, accessToken);
+await getOneTimeUrl(ctx);
 `;
-const generateRecurringBilling = ast => {
+const generateOneTimeCharge = ast => {
   let redirectAfterAuth;
   traverse(ast, {
     ExpressionStatement(path) {
@@ -32,4 +32,4 @@ const generateRecurringBilling = ast => {
   return ast;
 };
 
-module.exports = generateRecurringBilling;
+module.exports = generateOneTimeCharge;

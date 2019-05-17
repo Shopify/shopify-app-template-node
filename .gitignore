@@ -21,4 +21,4 @@ config/tunnel.pid
 .next/
 
 #shopify cli
-./shopify-cli.yml
+.shopify-cli.yml
