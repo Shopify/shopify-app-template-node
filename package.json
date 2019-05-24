@@ -25,11 +25,15 @@
     "clearMocks": true
   },
   "dependencies": {
+    "@shopify/app-bridge": "^1.4.1",
     "@shopify/koa-shopify-auth": "^3.1.25",
     "@shopify/koa-shopify-webhooks": "^1.1.8",
+    "@shopify/polaris": "^3.16.0",
+    "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.3.1",
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
+    "dotenv-load": "^2.0.0",
     "graphql": "^14.2.1",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
