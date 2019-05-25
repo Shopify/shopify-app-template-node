@@ -1,7 +1,6 @@
 import { registerWebhook } from "@shopify/koa-shopify-webhooks";
 
 export const registerWebhooks = async (shop, accessToken, type, url) => {
-  console.log(process.env.HOST);
   const registration = await registerWebhook({
     address: `${process.env.HOST}${url}`,
     topic: type,

@@ -25,7 +25,7 @@
     "clearMocks": true
   },
   "dependencies": {
-    "@shopify/app-bridge": "^1.4.1",
+    "@shopify/app-bridge-react": "^1.5.3",
     "@shopify/koa-shopify-auth": "^3.1.25",
     "@shopify/koa-shopify-webhooks": "^1.1.8",
     "@shopify/polaris": "^3.16.0",
@@ -33,13 +33,13 @@
     "apollo-boost": "^0.3.1",
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
-    "dotenv-load": "^2.0.0",
     "graphql": "^14.2.1",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
     "lodash.get": "^4.4.2",
     "next": "^8.1.0",
+    "next-env": "^1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
