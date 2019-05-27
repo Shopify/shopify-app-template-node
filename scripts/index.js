@@ -18,11 +18,11 @@ function receiveArgs(args) {
       transform("server/server.js", generateOneTimeCharge);
       break;
     }
-    case "generate-webhooks": {
+    case "generate-webhook": {
       const type = args[3];
-      const generateWebhooks = require("./webhooks/generate-webhooks");
+      const generateWebhook = require("./webhook/generate-webhook");
       const transform = require("./transform");
-      transform("server/server.js", generateWebhooks, type);
+      transform("server/server.js", generateWebhook, type);
       break;
     }
     default:

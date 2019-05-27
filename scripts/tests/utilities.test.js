@@ -1,5 +1,5 @@
-const { createWebhooksUrl } = require("../utilities");
+const { createWebhookUrl } = require("../utilities");
 
 it("should transform string into webhooks specific url", () => {
-  expect(createWebhooksUrl("TEST_CREATE")).toBe("/webhooks/test/create");
+  expect(createWebhookUrl("TEST_CREATE")).toBe("/webhooks/test/create");
 });

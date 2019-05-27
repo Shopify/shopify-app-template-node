@@ -1,10 +1,10 @@
 const parser = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
 const get = require("lodash.get");
-const generateWebhooksSubcription = require("./generate-webhhoks-subscription");
-const { createWebhooksUrl } = require("../utilities");
+const generateWebhookSubcription = require("./generate-webhook-subscription");
+const { createWebhookUrl } = require("../utilities");
 
-const generateWebhooks = (ast, type) => {
+const generateWebhook = (ast, type) => {
   let sessionAssignment;
   traverse(ast, {
     VariableDeclaration(path) {
@@ -22,13 +22,13 @@ const generateWebhooks = (ast, type) => {
   if (!sessionAssignment) {
     return ast;
   }
-  const code = `await handlers.registerWebhooks(shop, accessToken, '${type}', '${createWebhooksUrl(
+  const code = `await handlers.registerWebhooks(shop, accessToken, '${type}', '${createWebhookUrl(
     type
   )}'); `;
   sessionAssignment.insertAfter(
     parser(code, { sourceType: "module", allowAwaitOutsideFunction: true })
   );
-  return generateWebhooksSubcription(ast, type);
+  return generateWebhookSubcription(ast, type);
 };
 
-module.exports = generateWebhooks;
+module.exports = generateWebhook;
