@@ -22,3 +22,4 @@ config/tunnel.pid
 
 #shopify cli
 .shopify-cli.yml
+.accesss_token
