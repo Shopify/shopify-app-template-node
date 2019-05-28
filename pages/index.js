@@ -1,7 +1,9 @@
-const Index = () => (
-  <div>
-    <p>Shopify app with Node and React 🎉</p>
-  </div>
-)
+import { Heading, Page } from "@shopify/polaris";
 
-export default Index
+const Index = () => (
+  <Page>
+    <Heading>Shopify app with Node and React 🎉</Heading>
+  </Page>
+);
+
+export default Index;

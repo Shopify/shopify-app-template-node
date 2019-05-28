@@ -30,7 +30,6 @@ app.prepare().then(() => {
         //Auth token and shop available in sesssion
         //Redirect to shop upon auth
         const { shop, accessToken } = ctx.session;
-
         ctx.redirect("/");
       }
     })
