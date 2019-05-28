@@ -10,7 +10,7 @@
     "generate-page": "node scripts/index.js generate-page",
     "generate-recurring-billing": "node scripts/index.js generate-recurring-billing",
     "generate-one-time-billing": "node scripts/index.js generate-one-time-billing",
-    "generate-webhooks": "node scripts/index.js generate-webhooks"
+    "generate-webhook": "node scripts/index.js generate-webhook"
   },
   "repository": {
     "type": "git",

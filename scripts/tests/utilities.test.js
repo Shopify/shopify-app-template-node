@@ -1,8 +1,8 @@
-const { createWebhooksUrl } = require("../utilities");
+const { createWebhookUrl } = require("../utilities");
 const { toPascalCase } = require("../utilities");
 
 it("should transform string into webhooks specific url", () => {
-  expect(createWebhooksUrl("TEST_CREATE")).toBe("/webhooks/test/create");
+  expect(createWebhookUrl("TEST_CREATE")).toBe("/webhooks/test/create");
 });
 
 it("should transform string and remove characters to create PascalCase string", () => {

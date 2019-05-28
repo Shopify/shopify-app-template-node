@@ -1,9 +1,8 @@
 const parseExpression = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
 const get = require("lodash.get");
-const generateScopes = require("./generate-scopes");
 
-const generateWebhooksEnvironment = ast => {
+const generateWebhookEnvironment = ast => {
   const code = `const webhook = receiveWebhook({secret: SHOPIFY_API_SECRET_KEY});`;
   const importPackage = `import { receiveWebhook } from '@shopify/koa-shopify-webhooks';`;
   let webhookDeclaration;
@@ -37,7 +36,7 @@ const generateWebhooksEnvironment = ast => {
   });
 
   if (webhookDeclaration) {
-    return generateScopes(ast);
+    return ast;
   }
   routerDeclaration.insertAfter(
     parseExpression(code, {
@@ -49,7 +48,7 @@ const generateWebhooksEnvironment = ast => {
       sourceType: "module"
     })
   );
-  return generateScopes(ast);
+  return ast;
 };
 
-module.exports = generateWebhooksEnvironment;
+module.exports = generateWebhookEnvironment;

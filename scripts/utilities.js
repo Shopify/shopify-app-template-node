@@ -1,4 +1,4 @@
-const createWebhooksUrl = type => {
+const createWebhookUrl = type => {
   const transformedString = type.replace("_", "/");
   return `/webhooks/${transformedString.toLowerCase()}`;
 };
@@ -13,6 +13,6 @@ toPascalCase = input => {
 };
 
 module.exports = {
-  createWebhooksUrl,
+  createWebhookUrl,
   toPascalCase
 };

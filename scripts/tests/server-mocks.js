@@ -123,13 +123,10 @@ app.prepare().then(() => {
   });
 });`;
 
-const scopes = `scopes: ["read_products", "write_products"];`;
-
 module.exports = {
   transformedWithMoreWebhooks,
   transformedWithWebhooksandEnv,
   server,
   auth,
-  transformedAuth,
-  scopes
+  transformedAuth
 };

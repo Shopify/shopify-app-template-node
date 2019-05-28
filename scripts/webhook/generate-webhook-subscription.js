@@ -1,10 +1,10 @@
 const parseExpression = require("@babel/parser").parse;
 const traverse = require("@babel/traverse").default;
 const get = require("lodash.get");
-const { createWebhooksUrl } = require("../utilities");
-const generateWebhooksEnvironment = require("./generate-webhooks-environment");
+const { createWebhookUrl } = require("../utilities");
+const generateWebhookEnvironment = require("./generate-webhook-environment");
 
-const generateWebhooksSubscription = (ast, type) => {
+const generateWebhookSubscription = (ast, type) => {
   let verifyMiddleware;
   traverse(ast, {
     CallExpression(path) {
@@ -18,7 +18,7 @@ const generateWebhooksSubscription = (ast, type) => {
   if (!verifyMiddleware) {
     return ast;
   }
-  const code = `router.post('${createWebhooksUrl(type)}', webhook, (ctx) => {
+  const code = `router.post('${createWebhookUrl(type)}', webhook, (ctx) => {
     console.log('received webhook: ', ctx.state.webhook);
   });`;
 
@@ -27,7 +27,7 @@ const generateWebhooksSubscription = (ast, type) => {
       sourceType: "module"
     })
   );
-  return generateWebhooksEnvironment(ast);
+  return generateWebhookEnvironment(ast);
 };
 
-module.exports = generateWebhooksSubscription;
+module.exports = generateWebhookSubscription;
