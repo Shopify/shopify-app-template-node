@@ -1,3 +1,4 @@
+const { toPascalCase } = require("./utilities");
 const fs = require("fs");
 /* generates a file in the pages folder, usage:
   npm run-script generate-page <handle>
@@ -6,7 +7,7 @@ const fs = require("fs");
 function generatePage(dir, args) {
   const handle = args[3];
   const page = `${dir}/${handle}.js`;
-  const componentName = handle.replace(/\w/, c => c.toUpperCase());
+  const componentName = toPascalCase(handle);
   const content = `const ${componentName} = () => <div>${componentName}</div>;\nexport default ${componentName};`;
   if (fs.existsSync(page)) {
     console.log(`${page} already exists`);
