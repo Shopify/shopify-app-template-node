@@ -7,7 +7,7 @@ const {
   transformedWithWebhooksandEnv
 } = require("./server-mocks");
 
-it("should return the new code with call to billing api", () => {
+it("should return the new code with registered webhooks", () => {
   const ast = parser(server, { sourceType: "module" });
   const parsedAst = generateWebhook(ast, "TEST_TYPE");
   const newCode = generate(parsedAst).code;

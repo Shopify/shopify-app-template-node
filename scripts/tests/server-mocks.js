@@ -61,9 +61,9 @@ app.prepare().then(() => {
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-}); `;
+});`;
 
-const transformedWithWebhooksandEnv = `import * as handlers from "./handlers/index";
+const transformedWithWebhooksandEnv = `import * as handlers from \"./handlers/index\";
 const {
   SHOPIFY_API_SECRET_KEY,
   SHOPIFY_API_KEY
@@ -79,7 +79,7 @@ app.prepare().then(() => {
   });
 
   server.use(createShopifyAuth({
-    scopes: ["read_products", "write_products"],
+    scopes: [\"read_products\", \"write_products\"],
 
     async afterAuth(ctx) {
       const {
@@ -88,7 +88,7 @@ app.prepare().then(() => {
       } = ctx.session;
       await handlers.registerWebhooks(shop, accessToken, 'TEST_TYPE', '/webhooks/test/type');
 
-      ctx.redirect("/");
+      ctx.redirect(\"/\");
     }
 
   }));
@@ -96,14 +96,14 @@ app.prepare().then(() => {
     console.log('received webhook: ', ctx.state.webhook);
   });
 
-  router.get("*", verifyRequest(), async ctx => {
+  router.get(\"*\", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-}); `;
+});`;
 
-const transformedWithMoreWebhooks = `import * as handlers from "./handlers/index";
+const transformedWithMoreWebhooks = `import * as handlers from \"./handlers/index\";
 const {
   SHOPIFY_API_SECRET_KEY,
   SHOPIFY_API_KEY
@@ -117,7 +117,7 @@ app.prepare().then(() => {
     secret: SHOPIFY_API_SECRET_KEY
   });
   server.use(createShopifyAuth({
-    scopes: ["read_products", "write_products"],
+    scopes: [\"read_products\", \"write_products\"],
 
     async afterAuth(ctx) {
       const {
@@ -127,7 +127,7 @@ app.prepare().then(() => {
       await handlers.registerWebhooks(shop, accessToken, 'TEST_TWO', '/webhooks/test/two');
 
       await handlers.registerWebhooks(shop, accessToken, 'TEST_TYPE', '/webhooks/test/type');
-      ctx.redirect("/");
+      ctx.redirect(\"/\");
     }
 
   }));
@@ -138,12 +138,12 @@ app.prepare().then(() => {
     console.log('received webhook: ', ctx.state.webhook);
   });
 
-  router.get("*", verifyRequest(), async ctx => {
+  router.get(\"*\", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-}); `;
+});`;
 
 module.exports = {
   transformedWithMoreWebhooks,
