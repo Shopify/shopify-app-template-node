@@ -2,7 +2,7 @@ function receiveArgs(args) {
   const type = args[2];
   switch (type) {
     case "generate-page": {
-      const generatePage = require("./generate-page");
+      const generatePage = require("./page/generate-page");
       generatePage("pages", args);
       break;
     }
