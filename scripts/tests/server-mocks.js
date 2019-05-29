@@ -5,6 +5,27 @@ const auth = `createShopifyAuth({
   }
 })`;
 
+const authWithHandler = `createShopifyAuth({
+  async afterAuth(ctx) {
+    const { shop, accessToken } = ctx.session;
+    server.context.client = await handlers.createClient(shop, accessToken);
+    await handlers.getOneTimeUrl(ctx);
+
+  }
+})`;
+
+const transformedAuthWithHandler = `createShopifyAuth({
+  async afterAuth(ctx) {
+    const {
+      shop,
+      accessToken
+    } = ctx.session;
+    server.context.client = await handlers.createClient(shop, accessToken);
+    await handlers.getSubscriptionUrl(ctx);
+  }
+
+});`;
+
 const transformedAuth = `createShopifyAuth({
   async afterAuth(ctx) {
     const {
@@ -12,6 +33,7 @@ const transformedAuth = `createShopifyAuth({
       accessToken
     } = ctx.session;
     server.context.client = await handlers.createClient(shop, accessToken);
+
     await handlers.getSubscriptionUrl(ctx);
   }
 
@@ -39,7 +61,7 @@ app.prepare().then(() => {
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-});`;
+}); `;
 
 const transformedWithWebhooksandEnv = `import * as handlers from "./handlers/index";
 const {
@@ -79,7 +101,7 @@ app.prepare().then(() => {
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-});`;
+}); `;
 
 const transformedWithMoreWebhooks = `import * as handlers from "./handlers/index";
 const {
@@ -121,12 +143,14 @@ app.prepare().then(() => {
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
-});`;
+}); `;
 
 module.exports = {
   transformedWithMoreWebhooks,
   transformedWithWebhooksandEnv,
   server,
   auth,
-  transformedAuth
+  transformedAuth,
+  authWithHandler,
+  transformedAuthWithHandler
 };
