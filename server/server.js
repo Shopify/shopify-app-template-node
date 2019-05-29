@@ -34,7 +34,6 @@ app.prepare().then(() => {
       }
     })
   );
-
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
