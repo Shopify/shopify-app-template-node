@@ -25,6 +25,9 @@
     "clearMocks": true
   },
   "dependencies": {
+    "@babel/core": "7.3.4",
+    "@babel/register": "^7.4.0",
+    "@babel/polyfill": "^7.4.3",
     "@shopify/app-bridge-react": "^1.5.3",
     "@shopify/koa-shopify-auth": "^3.1.25",
     "@shopify/koa-shopify-webhooks": "^1.1.8",
@@ -34,6 +37,7 @@
     "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
     "graphql": "^14.2.1",
+    "isomorphic-fetch": "^2.1.1",
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
@@ -44,11 +48,8 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@babel/core": "7.3.4",
     "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/polyfill": "^7.4.3",
     "@babel/preset-stage-3": "^7.0.0",
-    "@babel/register": "^7.4.0",
     "babel-jest": "24.1.0",
     "babel-register": "^6.26.0",
     "enzyme": "3.4.3",
