@@ -6,7 +6,9 @@ import Router from "koa-router";
 import next from "next";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import session from "koa-session";
+import proxy, { ApiVersion } from "@shopify/koa-shopify-graphql-proxy";
 import * as handlers from "./handlers/index";
+
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
@@ -20,12 +22,12 @@ app.prepare().then(() => {
   const router = new Router();
   server.use(session(server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
+
   server.use(
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
       scopes: ["read_products"],
-
       async afterAuth(ctx) {
         //Auth token and shop available in sesssion
         //Redirect to shop upon auth
@@ -34,13 +36,18 @@ app.prepare().then(() => {
       }
     })
   );
+
+  server.use(proxy({ version: ApiVersion.April19 }));
+
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
   });
+
   server.use(router.allowedMethods());
   server.use(router.routes());
+
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
