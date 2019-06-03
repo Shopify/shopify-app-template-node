@@ -20,7 +20,13 @@ class MyApp extends App {
     return (
       <Container>
         <AppProvider>
-          <Provider config={{ apiKey: API_KEY, shopOrigin: shopOrigin }}>
+          <Provider
+            config={{
+              apiKey: API_KEY,
+              shopOrigin: shopOrigin,
+              forceRedirect: true
+            }}
+          >
             <ApolloProvider client={client}>
               <Component {...pageProps} />
             </ApolloProvider>
