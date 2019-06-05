@@ -6,7 +6,7 @@ const createPageTemplate = require("./page-template");
 
 function generatePage(dir, args) {
   const handle = args[3];
-  const page = `${dir}/${handle}.js`;
+  const page = `${dir}/${handle.toLowerCase()}.js`;
   if (fs.existsSync(page)) {
     console.log(`${page} already exists`);
   } else {
