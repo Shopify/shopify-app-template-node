@@ -1,6 +1,6 @@
-const generateWebhook = require("../webhook/generate-webhook");
-const parser = require("@babel/parser").parse;
 const generate = require("@babel/generator").default;
+const parser = require("@babel/parser").parse;
+const generateWebhook = require("../webhook/generate-webhook");
 const {
   server,
   transformedWithMoreWebhooks,

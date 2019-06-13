@@ -1,5 +1,5 @@
-const transform = require("../transform");
 const fs = require("fs");
+const transform = require("../transform");
 
 jest.mock("fs", () => ({
   readFileSync: () => "sum(1 *2)",

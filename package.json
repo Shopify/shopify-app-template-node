@@ -1,5 +1,5 @@
 {
-  "name": "webgen-embeddedapp",
+  "name": "shopify-node-app",
   "version": "1.0.0",
   "description": "Shopify's node app for CLI tool",
   "scripts": {
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shopify/webgen-embeddedapp.git"
+    "url": "git+https://github.com/Shopify/shopify-node-app.git"
   },
   "author": "Shopify Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shopify/webgen-embeddedapp/issues"
+    "url": "https://github.com/shopify/shopify-node-app/issues"
   },
   "jest": {
     "clearMocks": true
