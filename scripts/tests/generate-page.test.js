@@ -1,5 +1,5 @@
-const generatePage = require("../page/generate-page");
 const fs = require("fs");
+const generatePage = require("../page/generate-page");
 
 const content = `import { Heading, Page } from \"@shopify/polaris\";
 

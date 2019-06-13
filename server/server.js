@@ -1,12 +1,12 @@
-import "isomorphic-fetch";
-import dotenv from "dotenv";
 import "@babel/polyfill";
-import Koa from "koa";
-import Router from "koa-router";
-import next from "next";
+import dotenv from "dotenv";
+import "isomorphic-fetch";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
+import graphQLProxy, { ApiVersion } from "@shopify/koa-shopify-graphql-proxy";
+import Koa from "koa";
+import next from "next";
+import Router from "koa-router";
 import session from "koa-session";
-import proxy, { ApiVersion } from "@shopify/koa-shopify-graphql-proxy";
 import * as handlers from "./handlers/index";
 
 dotenv.config();
@@ -29,7 +29,7 @@ app.prepare().then(() => {
       secret: SHOPIFY_API_SECRET_KEY,
       scopes: ["read_products"],
       async afterAuth(ctx) {
-        //Auth token and shop available in sesssion
+        //Auth token and shop available in session
         //Redirect to shop upon auth
         const { shop, accessToken } = ctx.session;
         ctx.redirect("/");
@@ -37,7 +37,7 @@ app.prepare().then(() => {
     })
   );
 
-  server.use(proxy({ version: ApiVersion.April19 }));
+  server.use(graphQLProxy({ version: ApiVersion.April19 }));
 
   router.get("*", verifyRequest(), async ctx => {
     await handle(ctx.req, ctx.res);
