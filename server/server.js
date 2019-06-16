@@ -16,7 +16,7 @@ const app = next({
   dev
 });
 const handle = app.getRequestHandler();
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
+const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, SCOPES } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
@@ -27,7 +27,7 @@ app.prepare().then(() => {
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
-      scopes: ["read_products"],
+      scopes: [SCOPES],
       async afterAuth(ctx) {
         //Auth token and shop available in session
         //Redirect to shop upon auth
