@@ -8,10 +8,10 @@ function generatePage(dir, args) {
   const handle = args[3];
   const page = `${dir}/${handle.toLowerCase()}.js`;
   if (fs.existsSync(page)) {
-    console.log(`${page} already exists`);
+    process.exitCode = 2;
   } else {
     fs.writeFileSync(page, createPageTemplate(handle), err => {
-      if (err) throw err;
+      if (err) process.exitCode = 1;
       console.log(`${page} was successfully created!`);
     });
   }
