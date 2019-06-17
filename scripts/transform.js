@@ -9,7 +9,7 @@ const transform = (fileToWrite, transformer, type) => {
   const newCode = generate(transformer(ast, type)).code;
   const prettifiedCode = prettier.format(newCode, { parser: "babel" });
   fs.writeFileSync(fileToWrite, prettifiedCode, err => {
-    if (err) throw new Error(`${err}`);
+    if (err) process.exitCode = 1;
     console.log(`Scaffold was successfully added to ${fileToWrite}!`);
   });
 };
