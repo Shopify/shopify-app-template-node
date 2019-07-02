@@ -3,7 +3,14 @@ const createWebhookUrl = type => {
   return `/webhooks/${transformedString.toLowerCase()}`;
 };
 
-toPascalCase = input => {
+const checkCasing = input => {
+  return /[A-Z]/.test(input) && !input.includes("_") && !input.includes(" ");
+};
+
+const toPascalCase = input => {
+  if (checkCasing(input)) {
+    return input;
+  }
   return input
     .match(/[a-z]+/gi)
     .map(function(word) {

@@ -9,4 +9,5 @@ it("should transform string and remove characters to create PascalCase string", 
   expect(toPascalCase("TEST_CREATE")).toBe("TestCreate");
   expect(toPascalCase("test cREATE")).toBe("TestCreate");
   expect(toPascalCase("test create!~")).toBe("TestCreate");
+  expect(toPascalCase("TestCreate")).toBe("TestCreate");
 });
