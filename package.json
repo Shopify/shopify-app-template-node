@@ -27,6 +27,7 @@
   "dependencies": {
     "@babel/core": "7.3.4",
     "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.5.0",
     "@babel/register": "^7.4.0",
     "@shopify/app-bridge-react": "^1.5.3",
     "@shopify/koa-shopify-auth": "^3.1.28",
@@ -35,7 +36,6 @@
     "@shopify/polaris": "^3.16.0",
     "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.4.3",
-    "babel-preset-env": "^1.7.0",
     "dotenv": "^7.0.0",
     "graphql": "^14.2.1",
     "isomorphic-fetch": "^2.1.1",
