@@ -3,6 +3,7 @@ import { ApolloProvider } from "react-apollo";
 import App, { Container } from "next/app";
 import { AppProvider } from "@shopify/polaris";
 import { Provider } from "@shopify/app-bridge-react";
+import Cookies from "js-cookie";
 import "@shopify/polaris/styles.css";
 
 const client = new ApolloClient({
@@ -11,12 +12,9 @@ const client = new ApolloClient({
   }
 });
 class MyApp extends App {
-  static async getInitialProps(server) {
-    const shopOrigin = server.ctx.query.shop;
-    return { shopOrigin };
-  }
   render() {
-    const { Component, pageProps, shopOrigin } = this.props;
+    const { Component, pageProps } = this.props;
+    const shopOrigin = Cookies.get("shopOrigin");
     return (
       <Container>
         <AppProvider>
