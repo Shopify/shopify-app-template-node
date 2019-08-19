@@ -3,7 +3,20 @@ function receiveArgs(args) {
   switch (type) {
     case "generate-page": {
       const generatePage = require("./page/generate-page");
-      generatePage("pages", args);
+      const createPageTemplate = require("./page/page-template");
+      generatePage(createPageTemplate, "pages", args);
+      break;
+    }
+    case "generate-empty-state": {
+      const generatePage = require("./page/generate-page");
+      const createEmptyStateTemplate = require("./page/empty-state-template");
+      generatePage(createEmptyStateTemplate, "pages", args);
+      break;
+    }
+    case "generate-list-page": {
+      const generatePage = require("./page/generate-page");
+      const createListTemplate = require("./page/list-template");
+      generatePage(createListTemplate, "pages", args);
       break;
     }
     case "generate-recurring-billing": {
