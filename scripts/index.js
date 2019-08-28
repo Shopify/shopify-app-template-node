@@ -7,10 +7,16 @@ function receiveArgs(args) {
       generatePage(createPageTemplate, "pages", args);
       break;
     }
-    case "generate-empty-state": {
+    case "generate-empty-state-page": {
       const generatePage = require("./page/generate-page");
       const createEmptyStateTemplate = require("./page/empty-state-template");
       generatePage(createEmptyStateTemplate, "pages", args);
+      break;
+    }
+    case "generate-two-column-page": {
+      const generatePage = require("./page/generate-page");
+      const createTwoColumnTemplate = require("./page/two-column-template");
+      generatePage(createTwoColumnTemplate, "pages", args);
       break;
     }
     case "generate-list-page": {
