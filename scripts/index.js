@@ -19,6 +19,12 @@ function receiveArgs(args) {
       generatePage(createTwoColumnTemplate, "pages", args);
       break;
     }
+    case "generate-settings-page": {
+      const generatePage = require("./page/generate-page");
+      const createSettingsTemplate = require("./page/settings-template");
+      generatePage(createSettingsTemplate, "pages", args);
+      break;
+    }
     case "generate-list-page": {
       const generatePage = require("./page/generate-page");
       const createListTemplate = require("./page/list-template");
