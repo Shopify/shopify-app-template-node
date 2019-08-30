@@ -6,11 +6,7 @@
     "test": "jest",
     "dev": "NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
     "build": "next build",
-    "start": "NODE_ENV=production node ./server/index.js",
-    "generate-page": "node scripts/index.js generate-page",
-    "generate-recurring-billing": "node scripts/index.js generate-recurring-billing",
-    "generate-one-time-billing": "node scripts/index.js generate-one-time-billing",
-    "generate-webhook": "node scripts/index.js generate-webhook"
+    "start": "NODE_ENV=production node ./server/index.js"
   },
   "repository": {
     "type": "git",
@@ -43,7 +39,6 @@
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "koa-session": "^5.10.1",
-    "lodash.get": "^4.4.2",
     "next": "^8.1.0",
     "next-env": "^1.1.0",
     "react": "^16.8.6",
