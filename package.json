@@ -17,9 +17,6 @@
   "bugs": {
     "url": "https://github.com/shopify/shopify-node-app/issues"
   },
-  "jest": {
-    "clearMocks": true
-  },
   "dependencies": {
     "@babel/core": "7.3.4",
     "@babel/polyfill": "^7.4.3",
