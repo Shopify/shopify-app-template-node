@@ -23,6 +23,7 @@
     "@babel/preset-env": "^7.5.0",
     "@babel/register": "^7.4.0",
     "@shopify/app-bridge-react": "^1.5.3",
+    "@shopify/app-cli-node-generator-helper": "^1.0.1",
     "@shopify/koa-shopify-auth": "^3.1.31",
     "@shopify/koa-shopify-graphql-proxy": "^3.1.1",
     "@shopify/koa-shopify-webhooks": "^1.1.8",
