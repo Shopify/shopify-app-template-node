@@ -15,16 +15,16 @@ const app = next({
   dev
 });
 const handle = app.getRequestHandler();
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, SCOPES } = process.env;
+const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
   server.use(session(server));
-  server.keys = [SHOPIFY_API_SECRET_KEY];
+  server.keys = [SHOPIFY_API_SECRET];
   server.use(
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
-      secret: SHOPIFY_API_SECRET_KEY,
+      secret: SHOPIFY_API_SECRET,
       scopes: [SCOPES],
 
       async afterAuth(ctx) {
