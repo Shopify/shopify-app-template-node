@@ -51,7 +51,7 @@
     "enzyme": "3.4.3",
     "enzyme-adapter-react-16": "1.2.0",
     "husky": "^2.7.0",
-    "jest": "24.1.0",
+    "jest": "24.9.0",
     "lint-staged": "^8.2.1",
     "nodemon": "^1.19.3",
     "prettier": "1.17.0",
