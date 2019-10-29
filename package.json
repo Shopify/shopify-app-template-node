@@ -48,7 +48,7 @@
     "@babel/preset-stage-3": "^7.0.0",
     "babel-jest": "24.1.0",
     "babel-register": "^6.26.0",
-    "enzyme": "3.4.3",
+    "enzyme": "3.10.0",
     "enzyme-adapter-react-16": "1.2.0",
     "husky": "^2.7.0",
     "jest": "24.9.0",
