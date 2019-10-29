@@ -1,0 +1,10 @@
+version: 1
+update_configs:
+  # Keep package.json up to date as soon as
+  # new versions are published to the npm registry
+  - package_manager: "javascript"
+    directory: "/"
+    update_schedule: "live"
+    default_reviewers:
+      - "Shopify/platform-dev-tools-education"
+    version_requirement_updates: "auto"
