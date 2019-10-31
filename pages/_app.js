@@ -5,6 +5,7 @@ import { AppProvider } from "@shopify/polaris";
 import { Provider } from "@shopify/app-bridge-react";
 import Cookies from "js-cookie";
 import "@shopify/polaris/styles.css";
+import translations from "@shopify/polaris/locales/en.json";
 
 const client = new ApolloClient({
   fetchOptions: {
@@ -17,7 +18,7 @@ class MyApp extends App {
     const shopOrigin = Cookies.get("shopOrigin");
     return (
       <Container>
-        <AppProvider>
+        <AppProvider i18n={translations}>
           <Provider
             config={{
               apiKey: API_KEY,
