@@ -12,7 +12,7 @@ export const registerWebhooks = async (
     topic: type,
     accessToken,
     shop,
-    apiVersion: apiVersion
+    apiVersion
   });
 
   if (registration.success) {
