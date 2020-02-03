@@ -19,7 +19,15 @@ const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
-  server.use(session(server));
+  server.use(
+    session(
+      {
+        sameSite: "none",
+        secure: true
+      },
+      server
+    )
+  );
   server.keys = [SHOPIFY_API_SECRET];
   server.use(
     createShopifyAuth({
@@ -32,7 +40,9 @@ app.prepare().then(() => {
         //Redirect to shop upon auth
         const { shop, accessToken } = ctx.session;
         ctx.cookies.set("shopOrigin", shop, {
-          httpOnly: false
+          httpOnly: false,
+          secure: true,
+          sameSite: "none"
         });
         ctx.redirect("/");
       }
