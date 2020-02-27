@@ -56,7 +56,7 @@
     "nodemon": "^2.0.0",
     "prettier": "1.19.1",
     "react-addons-test-utils": "15.6.2",
-    "react-test-renderer": "16.12.0"
+    "react-test-renderer": "16.13.0"
   },
   "husky": {
     "hooks": {
