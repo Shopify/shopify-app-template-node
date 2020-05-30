@@ -35,7 +35,7 @@
     "isomorphic-fetch": "^2.1.1",
     "js-cookie": "^2.2.1",
     "koa": "^2.8.2",
-    "koa-router": "^8.0.6",
+    "koa-router": "^9.0.1",
     "koa-session": "^5.13.1",
     "next": "^8.1.0",
     "next-env": "^1.1.0",
