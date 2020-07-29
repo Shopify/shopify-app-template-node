@@ -7,7 +7,7 @@ export function ONETIME_CREATE(url) {
       appPurchaseOneTimeCreate(
         name: "test"
         price: { amount: 10, currencyCode: USD }
-        returnUrl: '${url}'
+        returnUrl: "${url}"
         test: true
       ) {
         userErrors {
@@ -23,12 +23,12 @@ export function ONETIME_CREATE(url) {
   `;
 }
 
-export const getOneTimeUrl = async ctx => {
+export const getOneTimeUrl = async (ctx) => {
   const { client } = ctx;
   const confirmationUrl = await client
     .mutate({
-      mutation: ONETIME_CREATE(process.env.HOST)
+      mutation: ONETIME_CREATE(process.env.HOST),
     })
-    .then(response => response.data.appPurchaseOneTimeCreate.confirmationUrl);
+    .then((response) => response.data.appPurchaseOneTimeCreate.confirmationUrl);
   return ctx.redirect(confirmationUrl);
 };
