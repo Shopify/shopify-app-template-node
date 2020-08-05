@@ -4,9 +4,9 @@
   "description": "Shopify's node app for CLI tool",
   "scripts": {
     "test": "jest",
-    "dev": "NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
+    "dev": "cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",
     "build": "next build",
-    "start": "NODE_ENV=production node ./server/index.js"
+    "start": "cross-env NODE_ENV=production node ./server/index.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "@shopify/polaris": "^4.13.0",
     "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.4.4",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^2.1.1",
