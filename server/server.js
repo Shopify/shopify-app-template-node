@@ -12,7 +12,7 @@ dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
-  dev
+  dev,
 });
 const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
@@ -23,7 +23,7 @@ app.prepare().then(() => {
     session(
       {
         sameSite: "none",
-        secure: true
+        secure: true,
       },
       server
     )
@@ -42,18 +42,18 @@ app.prepare().then(() => {
         ctx.cookies.set("shopOrigin", shop, {
           httpOnly: false,
           secure: true,
-          sameSite: "none"
+          sameSite: "none",
         });
         ctx.redirect("/");
-      }
+      },
     })
   );
   server.use(
     graphQLProxy({
-      version: ApiVersion.October19
+      version: ApiVersion.October19,
     })
   );
-  router.get("*", verifyRequest(), async ctx => {
+  router.get("(.*)", verifyRequest(), async (ctx) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
