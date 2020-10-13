@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-stage-3": "^7.0.0",
-    "babel-jest": "26.3.0",
+    "babel-jest": "26.5.2",
     "babel-register": "^6.26.0",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.5",
