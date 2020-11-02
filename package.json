@@ -1,5 +1,5 @@
 {
-  "name": "shopify-node-app",
+  "name": "shopify-app-node",
   "version": "1.0.0",
   "description": "Shopify's node app for CLI tool",
   "scripts": {
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shopify/shopify-node-app.git"
+    "url": "git+https://github.com/Shopify/shopify-app-node.git"
   },
   "author": "Shopify Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shopify/shopify-node-app/issues"
+    "url": "https://github.com/shopify/shopify-app-node/issues"
   },
   "dependencies": {
     "@babel/core": "7.12.3",
