@@ -10,4 +10,4 @@ jobs:
     steps:
     - name: Dummy step
       run: |
-        echo $GITHUB_ACTOR, $GITHUB_REPOSITORY, $GITHUB_WORKSPACE
+        echo $GITHUB_ACTOR, $GITHUB_REPOSITORY, $GITHUB_WORKSPACE, $GITHUB_EVENT_NAME
