@@ -10,26 +10,13 @@ jobs:
     steps:
     - name: Extract issue id
       id: issue
-      run: |
-        echo "::set-output name=id::$(jq -r '.issue.id' < "$GITHUB_EVENT_PATH")"
-        echo Issue ID is ${{ steps.issue.outputs.id }}
+      run: echo "::set-output name=id::$(jq -r '.issue.id' < "$GITHUB_EVENT_PATH")"
 
-    - name: Extract column id
-      id: column
+    - name: Create card
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
-        columns=$(curl -s -X GET -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --retry 3 -H 'Accept: application/vnd.github.inertia-preview+json' https://api.github.com/projects/1154/columns )
-        echo "::set-output name=id::$(jq -r ".[] | select(.name == \"Needs triage\").id < "${columns}")"
-        echo Column ID is ${{ steps.column.outputs.id }}
-
-    # - name: Create card
-    #   uses: actions/github-script@v3
-    #   with:
-    #     github-token: ${{secrets.GITHUB_TOKEN}}
-    #     script: |
-    #       github.projects.createCard({
-    #         column_id: 10507989,
-    #         content_id: ${{ steps.issue.outputs.id }},
-    #         content_type: 'Issue'
-    #       })
+        curl -s -X POST -u "$GITHUB_ACTOR:$GITHUB_TOKEN" --retry 3 \
+          -H 'Accept: application/vnd.github.inertia-preview+json' \
+          -d "{\"content_type\": \"Issue\", \"content_id\": ${{ steps.issue.outputs.id }}}" \
+          "https://api.github.com/projects/columns/10507989/cards"
