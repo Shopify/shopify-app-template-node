@@ -7,7 +7,7 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 import session from "koa-session";
-import * as handlers from "./handlers/index";
+
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
@@ -36,15 +36,11 @@ app.prepare().then(() => {
       scopes: [SCOPES],
 
       async afterAuth(ctx) {
-        //Auth token and shop available in session
-        //Redirect to shop upon auth
-        const { shop, accessToken } = ctx.session;
-        ctx.cookies.set("shopOrigin", shop, {
-          httpOnly: false,
-          secure: true,
-          sameSite: "none",
-        });
-        ctx.redirect("/");
+        // Access token and shop available in ctx.state.shopify
+        const { shop } = ctx.state.shopify;
+
+        // Redirect to app with shop parameter upon auth
+        ctx.redirect(`/?shop=${shop}`);
       },
     })
   );

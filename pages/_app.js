@@ -1,10 +1,9 @@
 import fetch from "node-fetch";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import App, { Container } from "next/app";
+import App from "next/app";
 import { AppProvider } from "@shopify/polaris";
 import { Provider } from "@shopify/app-bridge-react";
-import Cookies from "js-cookie";
 import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 
@@ -16,8 +15,7 @@ const client = new ApolloClient({
 });
 class MyApp extends App {
   render() {
-    const { Component, pageProps } = this.props;
-    const shopOrigin = Cookies.get("shopOrigin");
+    const { Component, pageProps, shopOrigin } = this.props;
     return (
       <AppProvider i18n={translations}>
         <Provider
@@ -35,5 +33,11 @@ class MyApp extends App {
     );
   }
 }
+
+MyApp.getInitialProps = async ({ ctx }) => {
+  return {
+    shopOrigin: ctx.query.shop,
+  };
+};
 
 export default MyApp;
