@@ -45,7 +45,7 @@
     "react-dom": "^16.10.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-stage-3": "^7.0.0",
     "babel-jest": "26.6.2",
     "babel-register": "^6.26.0",
