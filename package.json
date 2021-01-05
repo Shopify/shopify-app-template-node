@@ -30,7 +30,7 @@
     "@shopify/polaris": "^5.3.1",
     "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.4.9",
-    "cross-env": "^7.0.2",
+    "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "isomorphic-fetch": "^3.0.0",
