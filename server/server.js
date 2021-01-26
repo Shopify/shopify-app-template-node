@@ -1,12 +1,15 @@
 import "@babel/polyfill";
 import dotenv from "dotenv";
 import "isomorphic-fetch";
-import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
-import graphQLProxy, { ApiVersion } from "@shopify/koa-shopify-graphql-proxy";
+import createShopifyAuth, {
+  verifyRequest,
+  initializeShopifyKoa,
+} from "@shopify/koa-shopify-auth";
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
+import graphQLProxy from "@shopify/koa-shopify-graphql-proxy";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
-import session from "koa-session";
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -16,18 +19,22 @@ const app = next({
 });
 const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES } = process.env;
+
+Shopify.Context.initialize({
+  API_KEY: process.env.SHOPIFY_API_KEY,
+  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
+  SCOPES: process.env.SCOPES.split(","),
+  HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
+  API_VERSION: ApiVersion.October20,
+  IS_EMBEDDED_APP: true,
+  // This should be replaced with your preferred storage strategy
+  SESSION_STORAGE: new Shopify.Auth.Session.MemorySessionStorage(),
+});
+initializeShopifyKoa(Shopify.Context);
+
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
-  server.use(
-    session(
-      {
-        sameSite: "none",
-        secure: true,
-      },
-      server
-    )
-  );
   server.keys = [SHOPIFY_API_SECRET];
   server.use(
     createShopifyAuth({
