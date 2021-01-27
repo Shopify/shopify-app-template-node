@@ -6,7 +6,6 @@ import createShopifyAuth, {
   initializeShopifyKoa,
 } from "@shopify/koa-shopify-auth";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
-import graphQLProxy from "@shopify/koa-shopify-graphql-proxy";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
@@ -49,11 +48,6 @@ app.prepare().then(() => {
         // Redirect to app with shop parameter upon auth
         ctx.redirect(`/?shop=${shop}`);
       },
-    })
-  );
-  server.use(
-    graphQLProxy({
-      version: ApiVersion.October19,
     })
   );
   router.get("(.*)", verifyRequest(), async (ctx) => {
