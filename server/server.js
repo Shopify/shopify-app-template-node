@@ -28,7 +28,7 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October20,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Auth.Session.MemorySessionStorage(),
+  SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
 });
 initializeShopifyKoa(Shopify.Context);
 
