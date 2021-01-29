@@ -1,9 +1,7 @@
-import { Heading, Page } from "@shopify/polaris";
-
 const Index = () => (
-  <Page>
-    <Heading>Shopify app with Node and React 🎉</Heading>
-  </Page>
+  <div>
+    <p>Sample app using React and Next.js</p>
+  </div>
 );
 
 export default Index;
