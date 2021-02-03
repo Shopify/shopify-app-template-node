@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import "isomorphic-fetch";
 import createShopifyAuth, {
   verifyRequest,
-  initializeShopifyKoa,
+  initializeShopifyKoaMiddleware,
 } from "@shopify/koa-shopify-auth";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import Koa from "koa";
@@ -29,7 +29,7 @@ Shopify.Context.initialize({
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
 });
-initializeShopifyKoa(Shopify.Context);
+initializeShopifyKoaMiddleware(Shopify.Context);
 
 app.prepare().then(() => {
   const server = new Koa();
