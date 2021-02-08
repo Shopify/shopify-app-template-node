@@ -22,7 +22,7 @@
     "@babel/polyfill": "^7.6.0",
     "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
-    "@shopify/app-bridge-react": "^1.15.0",
+    "@shopify/app-bridge-react": "^1.29.0",
     "@shopify/app-bridge-utils": "^1.28.0",
     "@shopify/koa-shopify-auth": "^4.0.2",
     "@shopify/polaris": "^5.12.0",
