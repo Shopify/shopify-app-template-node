@@ -6,7 +6,6 @@ import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
-import bodyParser from "koa-bodyparser";
 
 dotenv.config();
 const port = parseInt(process.env.PORT, 10) || 8081;
@@ -80,14 +79,13 @@ app.prepare().then(async () => {
     }
   });
 
-  router.post("/webhooks", bodyParser(), async (ctx) => {
-    const response = await Shopify.Webhooks.Registry.process({
-      headers: ctx.req.headers,
-      body: ctx.request.rawBody,
-    });
-
-    console.log(`Webhook processed with status code ${response.statusCode}`);
-    ctx.res.statusCode = response.statusCode;
+  router.post("/webhooks", async (ctx) => {
+    try {
+      await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
+      console.log(`Webhook processed, returned status code 200`);
+    } catch (error) {
+      console.log(`Failed to process webhook: ${error}`);
+    }
   });
 
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
