@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/core": "7.12.10",
     "@babel/polyfill": "^7.6.0",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-env": "^7.13.8",
     "@babel/register": "^7.12.10",
     "@shopify/app-bridge-react": "^1.15.0",
     "@shopify/app-bridge-utils": "^1.28.0",
