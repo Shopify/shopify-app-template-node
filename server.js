@@ -42,7 +42,7 @@ app.prepare().then(() => {
     }),
   );
 
-  router.post("/graphql", verifyRequest(), async (ctx, next) => {
+  router.post("/graphql", verifyRequest({returnHeader: true}), async (ctx, next) => {
     await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
   });
 

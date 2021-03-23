@@ -15,7 +15,7 @@
   "dependencies": {
     "@shopify/app-bridge-react": "^1.28.0",
     "@shopify/app-bridge-utils": "^1.29.0",
-    "@shopify/koa-shopify-auth": "^4.0.0",
+    "@shopify/koa-shopify-auth": "^4.1.0",
     "@shopify/polaris": "^6.0.1",
     "apollo-boost": "^0.4.9",
     "dotenv": "^8.2.0",
