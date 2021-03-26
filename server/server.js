@@ -88,9 +88,13 @@ app.prepare().then(async () => {
     }
   });
 
-  router.post("/graphql", verifyRequest(), async (ctx, next) => {
-    await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
-  });
+  router.post(
+    "/graphql",
+    verifyRequest({ returnHeader: true }),
+    async (ctx, next) => {
+      await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
+    }
+  );
 
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
