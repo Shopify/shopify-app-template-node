@@ -18,7 +18,7 @@
     "url": "https://github.com/shopify/shopify-app-node/issues"
   },
   "dependencies": {
-    "@babel/core": "7.12.10",
+    "@babel/core": "7.13.15",
     "@babel/polyfill": "^7.6.0",
     "@babel/preset-env": "^7.12.11",
     "@babel/register": "^7.12.10",
