@@ -2,9 +2,9 @@ require('isomorphic-fetch');
 const dotenv = require('dotenv');
 const Koa = require('koa');
 const next = require('next');
-const { default: createShopifyAuth } = require('@shopify/koa-shopify-auth');
-const { verifyRequest } = require('@shopify/koa-shopify-auth');
-const { default: Shopify, ApiVersion } = require('@shopify/shopify-api');
+const {default: createShopifyAuth} = require('@shopify/koa-shopify-auth');
+const {verifyRequest} = require('@shopify/koa-shopify-auth');
+const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
 const Router = require('koa-router');
 const getSubscriptionUrl = require('./server/getSubscriptionUrl');
 
@@ -22,7 +22,7 @@ Shopify.Context.initialize({
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const app = next({dev: dev});
 const handle = app.getRequestHandler();
 
 const ACTIVE_SHOPIFY_SHOPS = {};
@@ -35,10 +35,10 @@ app.prepare().then(() => {
   server.use(
     createShopifyAuth({
       async afterAuth(ctx) {
-        const { shop, scope, accessToken } = ctx.state.shopify;
+        const {shop, scope, accessToken} = ctx.state.shopify;
         ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-        const returnUrl = `https://${Shopify.Context.HOST_NAME}?shop=${shop}`;
+        const returnUrl = `https://${Shopify.Context.HOST_NAME}/?shop=${shop}`;
         const subscriptionUrl = await getSubscriptionUrl(accessToken, shop, returnUrl);
         ctx.redirect(subscriptionUrl);
       },
