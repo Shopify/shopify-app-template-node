@@ -77,6 +77,7 @@ class MyApp extends App {
 MyApp.getInitialProps = async ({ ctx }) => {
   return {
     shopOrigin: ctx.query.shop,
+    host: ctx.query.host,
   }
 }
 

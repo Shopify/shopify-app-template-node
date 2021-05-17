@@ -27,6 +27,11 @@ const handle = app.getRequestHandler();
 
 const ACTIVE_SHOPIFY_SHOPS = {};
 
+function extractHostParameter(ctx) {
+  const parts = new URL(`https://${ctx.request.header.host}${ctx.request.url}`);
+  return parts.searchParams.get('host');
+}
+
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router();
@@ -36,9 +41,11 @@ app.prepare().then(() => {
     createShopifyAuth({
       async afterAuth(ctx) {
         const {shop, scope, accessToken} = ctx.state.shopify;
+        const host = extractHostParameter(ctx);
+        
         ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-        const returnUrl = `https://${Shopify.Context.HOST_NAME}/?shop=${shop}`;
+        const returnUrl = `https://${Shopify.Context.HOST_NAME}/?host=${host}&shop=${shop}`;
         const subscriptionUrl = await getSubscriptionUrl(accessToken, shop, returnUrl);
         ctx.redirect(subscriptionUrl);
       },
