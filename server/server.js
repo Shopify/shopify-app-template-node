@@ -69,17 +69,6 @@ app.prepare().then(async () => {
     ctx.res.statusCode = 200;
   };
 
-  router.get("/", async (ctx) => {
-    const shop = ctx.query.shop;
-
-    // This shop hasn't been seen yet, go through OAuth to create a session
-    if (ACTIVE_SHOPIFY_SHOPS[shop] === undefined) {
-      ctx.redirect(`/auth?shop=${shop}`);
-    } else {
-      await handleRequest(ctx);
-    }
-  });
-
   router.post("/webhooks", async (ctx) => {
     try {
       await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
@@ -99,7 +88,16 @@ app.prepare().then(async () => {
 
   router.get("(/_next/static/.*)", handleRequest); // Static content is clear
   router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
-  router.get("(.*)", verifyRequest(), handleRequest); // Everything else must have sessions
+  router.get("(.*)", async (ctx) => {
+    const shop = ctx.query.shop;
+
+    // This shop hasn't been seen yet, go through OAuth to create a session
+    if (ACTIVE_SHOPIFY_SHOPS[shop] === undefined) {
+      ctx.redirect(`/auth?shop=${shop}`);
+    } else {
+      await handleRequest(ctx);
+    }
+  });
 
   server.use(router.allowedMethods());
   server.use(router.routes());
