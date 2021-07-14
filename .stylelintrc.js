@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['stylelint-config-shopify/prettier'],
+  extends: ['@shopify/stylelint-plugin'],
 };
