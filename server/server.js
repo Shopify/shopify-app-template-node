@@ -4,16 +4,17 @@ import "isomorphic-fetch";
 import createShopifyAuth, { verifyRequest } from "@shopify/koa-shopify-auth";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import Koa from "koa";
-import next from "next";
 import Router from "koa-router";
+import koaWebpack from "koa-webpack";
+import fs from "fs";
+import path from "path";
+import serveStatic from "koa-static";
 
 dotenv.config();
+
 const port = parseInt(process.env.PORT, 10) || 8081;
+const webpackConfig = require("../webpack.config.js");
 const dev = process.env.NODE_ENV !== "production";
-const app = next({
-  dev,
-});
-const handle = app.getRequestHandler();
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -30,10 +31,19 @@ Shopify.Context.initialize({
 // persist this object in your app.
 const ACTIVE_SHOPIFY_SHOPS = {};
 
-app.prepare().then(async () => {
+async function createAppServer() {
   const server = new Koa();
   const router = new Router();
   server.keys = [Shopify.Context.API_SECRET_KEY];
+
+  let middleware;
+  if (dev) {
+    middleware = await koaWebpack({
+      config: { ...webpackConfig, mode: process.env.NODE_ENV },
+    });
+    server.use(middleware);
+  }
+
   server.use(
     createShopifyAuth({
       async afterAuth(ctx) {
@@ -63,12 +73,6 @@ app.prepare().then(async () => {
     })
   );
 
-  const handleRequest = async (ctx) => {
-    await handle(ctx.req, ctx.res);
-    ctx.respond = false;
-    ctx.res.statusCode = 200;
-  };
-
   router.post("/webhooks", async (ctx) => {
     try {
       await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
@@ -86,8 +90,9 @@ app.prepare().then(async () => {
     }
   );
 
-  router.get("(/_next/static/.*)", handleRequest); // Static content is clear
-  router.get("/_next/webpack-hmr", handleRequest); // Webpack content is clear
+  if (!dev) {
+    server.use(serveStatic(path.resolve(__dirname, "../dist")));
+  }
   router.get("(.*)", async (ctx) => {
     const shop = ctx.query.shop;
 
@@ -95,7 +100,16 @@ app.prepare().then(async () => {
     if (ACTIVE_SHOPIFY_SHOPS[shop] === undefined) {
       ctx.redirect(`/auth?shop=${shop}`);
     } else {
-      await handleRequest(ctx);
+      ctx.response.type = "html";
+      if (dev) {
+        ctx.response.body = middleware.devMiddleware.fileSystem.createReadStream(
+          path.resolve(webpackConfig.output.path, "index.html")
+        );
+      } else {
+        ctx.response.body = fs.readFileSync(
+          path.resolve(__dirname, "../dist/index.html")
+        );
+      }
     }
   });
 
@@ -104,4 +118,6 @@ app.prepare().then(async () => {
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
-});
+}
+
+createAppServer();
