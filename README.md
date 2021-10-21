@@ -25,11 +25,11 @@ Or, fork and clone repo
 
 This repository is used by [Shopify-App-CLI](https://github.com/Shopify/shopify-app-cli) as a scaffold for Node apps. You can clone or fork it yourself, but it’s faster and easier to use Shopify App CLI, which handles additional routine development tasks for you.
 
-## Migration guides
+## Update history
 
-This repository may undergo major changes as we update the technologies used and the backend / frontend stacks to make sure we're providing a modern app for partners. If you want to update an app you've created before we made the changes, you can follow these guides:
+### October 2021: Removing Next.js from the backend stack
 
-- October 2021: [Removing Next.js from the backend stack](docs/migrations/remove-next-js.md)
+Our sample app was previously using both Koa and Next.js, which made the server-side unnecessarily complex, so we decided to remove Next.js from the backend stack. Since Next.js was what included webpack in the project, we had to add webpack as a direct dependency so we could continue to build the client React app.
 
 ## License
 
