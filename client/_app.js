@@ -1,8 +1,11 @@
 import React from "react";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import { AppProvider } from "@shopify/polaris";
-import { Provider, useAppBridge } from "@shopify/app-bridge-react";
+import { AppProvider as PolarisProvider } from "@shopify/polaris";
+import {
+  Provider as AppBridgeProvider,
+  useAppBridge,
+} from "@shopify/app-bridge-react";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import "@shopify/polaris/dist/styles.css";
@@ -45,8 +48,8 @@ const MyProvider = ({ children }) => {
 
 const MyApp = ({ children }) => {
   return (
-    <AppProvider i18n={translations}>
-      <Provider
+    <PolarisProvider i18n={translations}>
+      <AppBridgeProvider
         config={{
           apiKey: API_KEY,
           host: new URL(location).searchParams.get("host"),
@@ -54,8 +57,8 @@ const MyApp = ({ children }) => {
         }}
       >
         <MyProvider>{children}</MyProvider>
-      </Provider>
-    </AppProvider>
+      </AppBridgeProvider>
+    </PolarisProvider>
   );
 };
 
