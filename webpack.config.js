@@ -16,8 +16,8 @@ module.exports = {
     }),
   ],
   output: {
-    path: path.resolve(__dirname, "dist"),
-    publicPath: "/",
+    path: path.resolve(__dirname, "dist/client"),
+    publicPath: "/client",
   },
   devtool: "eval-source-map",
   module: {

@@ -107,7 +107,7 @@ async function createAppServer() {
         );
       } else {
         ctx.response.body = fs.readFileSync(
-          path.resolve(__dirname, "../dist/index.html")
+          path.resolve(__dirname, "../dist/client/index.html")
         );
       }
     }
