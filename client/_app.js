@@ -1,6 +1,10 @@
 import React from "react";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  HttpLink,
+} from "@apollo/client";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import {
   Provider as AppBridgeProvider,
@@ -37,10 +41,11 @@ const MyProvider = ({ children }) => {
   const app = useAppBridge();
 
   const client = new ApolloClient({
-    fetch: userLoggedInFetch(app),
-    fetchOptions: {
+    cache: new InMemoryCache(),
+    link: new HttpLink({
       credentials: "include",
-    },
+      fetch: userLoggedInFetch(app),
+    }),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
