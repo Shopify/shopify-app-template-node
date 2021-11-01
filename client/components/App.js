@@ -14,8 +14,8 @@ import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
-import ProductsPage from "./components/ProductsPage";
-import PageLayout from "./components/PageLayout";
+import ProductsPage from "./ProductsPage";
+import PageLayout from "./PageLayout";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -53,7 +53,7 @@ const MyProvider = ({ children }) => {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
-const MyApp = () => {
+const App = () => {
   return (
     <PolarisProvider i18n={translations}>
       <AppBridgeProvider
@@ -73,4 +73,4 @@ const MyApp = () => {
   );
 };
 
-export default MyApp;
+export default App;

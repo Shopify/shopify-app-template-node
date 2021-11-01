@@ -2,17 +2,11 @@ import { ResourceItem, ResourceList, TextStyle } from "@shopify/polaris";
 import React from "react";
 
 export function ProductsList({ data }) {
-  const products = data.products.edges.map((edge) => {
-    return {
-      id: edge.node.id,
-      title: edge.node.title,
-    };
-  });
   return (
     <ResourceList
       showHeader
       resourceName={{ singular: "product", plural: "products" }}
-      items={products}
+      items={data}
       renderItem={({ id, title }) => {
         return (
           <ResourceItem

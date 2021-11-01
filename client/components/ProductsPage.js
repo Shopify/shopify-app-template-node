@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { Banner } from "@shopify/polaris";
+import { Banner, Layout, Card } from "@shopify/polaris";
 import React from "react";
 import { ProductsList } from "./ProductsList";
 import { Loading } from "@shopify/app-bridge-react";
@@ -29,7 +29,20 @@ function ProductsPage() {
       <Banner status="critical">There was an issue loading products.</Banner>
     );
 
-  return <ProductsList data={data} />;
+  const products = data.products.edges.map((edge) => {
+    return {
+      id: edge.node.id,
+      title: edge.node.title,
+    };
+  });
+
+  return (
+    <Layout.Section>
+      <Card>
+        <ProductsList data={products} />
+      </Card>
+    </Layout.Section>
+  );
 }
 
 export default ProductsPage;
