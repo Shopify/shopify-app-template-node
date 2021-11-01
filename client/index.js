@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Heading, Page } from "@shopify/polaris";
-import MyApp from "./_app";
+import MyApp from "./App";
 
 ReactDOM.render(
   <MyApp>
