@@ -16,6 +16,7 @@ import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 import ProductsPage from "./ProductsPage";
 import PageLayout from "./PageLayout";
+import EmptyStatePage from "./EmptyStatePage";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -53,7 +54,8 @@ const MyProvider = ({ children }) => {
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
 
-const App = () => {
+function App() {
+  const [selection, setSelection] = React.useState([]);
   return (
     <PolarisProvider i18n={translations}>
       <AppBridgeProvider
@@ -65,12 +67,16 @@ const App = () => {
       >
         <MyProvider>
           <PageLayout>
-            <ProductsPage />
+            {selection.length > 0 ? (
+              <ProductsPage productIds={selection} />
+            ) : (
+              <EmptyStatePage setSelection={setSelection} />
+            )}
           </PageLayout>
         </MyProvider>
       </AppBridgeProvider>
     </PolarisProvider>
   );
-};
+}
 
 export default App;

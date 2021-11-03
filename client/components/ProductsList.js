@@ -1,22 +1,42 @@
-import { ResourceItem, ResourceList, TextStyle } from "@shopify/polaris";
+import { ResourceList, TextStyle, Stack, Thumbnail } from "@shopify/polaris";
 import React from "react";
 
 export function ProductsList({ data }) {
   return (
-    <ResourceList
+    <ResourceList // Defines your resource list component
       showHeader
-      resourceName={{ singular: "product", plural: "products" }}
-      items={data}
-      renderItem={({ id, title }) => {
+      resourceName={{ singular: "Product", plural: "Products" }}
+      items={data.nodes}
+      renderItem={(item) => {
+        const media = (
+          <Thumbnail
+            source={
+              item.images.edges[0] ? item.images.edges[0].node.originalSrc : ""
+            }
+            alt={item.images.edges[0] ? item.images.edges[0].node.altText : ""}
+          />
+        );
+        const price = item.variants.edges[0].node.price;
         return (
-          <ResourceItem
-            id={id}
-            accessibilityLabel={`View details for ${title}`}
+          <ResourceList.Item
+            id={item.id}
+            media={media}
+            accessibilityLabel={`View details for ${item.title}`}
+            onClick={() => {
+              store.set("item", item);
+            }}
           >
-            <h3>
-              <TextStyle variation="strong">{title}</TextStyle>
-            </h3>
-          </ResourceItem>
+            <Stack>
+              <Stack.Item fill>
+                <h3>
+                  <TextStyle variation="strong">{item.title}</TextStyle>
+                </h3>
+              </Stack.Item>
+              <Stack.Item>
+                <p>${price}</p>
+              </Stack.Item>
+            </Stack>
+          </ResourceList.Item>
         );
       }}
     />
