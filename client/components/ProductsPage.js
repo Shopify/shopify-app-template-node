@@ -3,6 +3,7 @@ import { Banner, Layout, Card } from "@shopify/polaris";
 import React from "react";
 import { ProductsList } from "./ProductsList";
 import { Loading } from "@shopify/app-bridge-react";
+import ApplyRandomPrices from "./ApplyRandomPrices";
 
 // GraphQL query to retrieve products by IDs.
 // The price field belongs to the variants object because
@@ -37,7 +38,7 @@ const GET_PRODUCTS_BY_ID = gql`
 `;
 
 function ProductsPage({ productIds }) {
-  const { loading, error, data } = useQuery(GET_PRODUCTS_BY_ID, {
+  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS_BY_ID, {
     variables: { ids: productIds },
   });
   if (loading) return <Loading />;
@@ -53,6 +54,7 @@ function ProductsPage({ productIds }) {
     <Layout.Section>
       <Card>
         <ProductsList data={data} />
+        <ApplyRandomPrices selectedItems={data.nodes} onUpdate={refetch} />
       </Card>
     </Layout.Section>
   );
