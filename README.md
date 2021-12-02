@@ -7,13 +7,44 @@ Boilerplate to create an embedded Shopify app made with Node, [Polaris](https://
 
 ## Installation
 
-Using the [Shopify-App-CLI](https://github.com/Shopify/shopify-app-cli) run:
+Using the [Shopify CLI](https://github.com/Shopify/shopify-cli) run:
 
 ```sh
-~/ $ shopify node create -n APP_NAME
+shopify app create node -n APP_NAME
 ```
 
-Or, fork and clone repo
+Or, you can run `npx degit shopify/shopify-app-node` and create a `.env` file containing the following values:
+
+```
+SHOPIFY_API_KEY={api key}           # Your API key
+SHOPIFY_API_SECRET={api secret key} # Your API secret key
+SCOPES={scopes}                     # Your app's required scopes, comma-separated
+HOST={your app's host}              # Your app's host, without the protocol prefix
+```
+
+## What do I need to know about this app?
+
+This is a sample app to help developers bootstrap their Shopify app development.
+
+It leverages the [Shopify API Library](https://github.com/Shopify/shopify-node-api) package to create [an embedded app](https://shopify.dev/apps/tools/app-bridge/getting-started#embed-your-app-in-the-shopify-admin).
+
+Here are some of the key features of this sample app:
+
+1. The backend is a [Koa server](/server/server.js) that sets up the main functions you'll need to create an app
+
+   - OAuth to create [access tokens](https://shopify.dev/apps/auth/oauth) for the app
+   - Webhook subscription / processing, if needed
+   - A GraphQL proxy endpoint that forwards queries from the frontend to the Shopify Admin API
+
+1. The frontend is a client-side rendered React app
+
+   - It uses Shopify App Bridge to create [session tokens](https://shopify.dev/apps/auth/session-tokens/how-session-tokens-work)
+   - It is set up to make requests to the GraphQL API via an [Apollo client](/client/components/App.js) that hits the server proxy mentioned above
+   - To add more pages to your app, we recommend using the [`react-router-dom`](https://www.npmjs.com/package/react-router-dom) package to create a client-side router
+
+1. Because this app is embedded, the server can only verify requests that are made using the `authenticatedFetch` function from App Bridge
+   - You will not be able to authenticate requests that are made by changing your browser's URL, since they won't carry the session token in the `Authorization` HTTP header
+   - For more information, see [this tutorial on session tokens](https://shopify.dev/apps/auth/session-tokens/app-bridge-utilities)
 
 ## Requirements
 
