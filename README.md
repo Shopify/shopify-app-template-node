@@ -7,10 +7,10 @@ Boilerplate to create an embedded Shopify app made with Node, [Next.js](https://
 
 ## Installation
 
-Using the [Shopify-App-CLI](https://github.com/Shopify/shopify-app-cli) run:
+Using the [Shopify CLI](https://github.com/Shopify/shopify-cli) run:
 
 ```sh
-~/ $ shopify create project APP_NAME
+~/ $ shopify node create -n APP_NAME
 ```
 
 Or, fork and clone repo
@@ -23,7 +23,7 @@ Or, fork and clone repo
 
 ## Usage
 
-This repository is used by [Shopify-App-CLI](https://github.com/Shopify/shopify-app-cli) as a scaffold for Node apps. You can clone or fork it yourself, but it’s faster and easier to use Shopify App CLI, which handles additional routine development tasks for you.
+This repository is used by [Shopify CLI](https://github.com/Shopify/shopify-cli) as a scaffold for Node apps. You can clone or fork it yourself, but it’s faster and easier to use Shopify App CLI, which handles additional routine development tasks for you.
 
 ## License
 
