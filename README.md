@@ -10,7 +10,7 @@ Boilerplate to create an embedded Shopify app made with Node, [Next.js](https://
 Using the [Shopify CLI](https://github.com/Shopify/shopify-cli) run:
 
 ```sh
-~/ $ shopify node create -n APP_NAME
+~/ $ shopify app create node
 ```
 
 Or, fork and clone repo
