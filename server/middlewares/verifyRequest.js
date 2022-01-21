@@ -8,18 +8,14 @@ const TEST_GRAPHQL_QUERY = `
 }`;
 
 export default function verifyRequest({ isOnline, returnHeader }) {
-  return async (ctx, next) => {
-    const session = await Shopify.Utils.loadCurrentSession(
-      ctx.req,
-      ctx.res,
-      isOnline
-    );
+  return async (req, res, next) => {
+    const session = await Shopify.Utils.loadCurrentSession(req, res, isOnline);
 
-    let shop = ctx.query.shop;
+    let shop = req.query.shop;
 
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect immediately
-      ctx.redirect(`/auth?shop=${shop}`);
+      res.redirect(`/auth?shop=${shop}`);
     }
 
     if (session?.isActive()) {
@@ -47,7 +43,7 @@ export default function verifyRequest({ isOnline, returnHeader }) {
         if (session) {
           shop = session.shop;
         } else if (Shopify.Context.IS_EMBEDDED_APP) {
-          const authHeader = ctx.req.headers.authorization;
+          const authHeader = req.headers.authorization;
           const matches = authHeader?.match(/Bearer (.*)/);
           if (matches) {
             const payload = Shopify.Utils.decodeSessionToken(matches[1]);
@@ -56,14 +52,14 @@ export default function verifyRequest({ isOnline, returnHeader }) {
         }
       }
 
-      ctx.res.statusCode = 403;
-      ctx.res.setHeader("X-Shopify-API-Request-Failure-Reauthorize", "1");
-      ctx.res.setHeader(
+      res.status(403);
+      res.header("X-Shopify-API-Request-Failure-Reauthorize", "1");
+      res.header(
         "X-Shopify-API-Request-Failure-Reauthorize-Url",
         `/auth?shop=${shop}`
       );
     } else {
-      ctx.redirect(`/auth?shop=${shop}`);
+      res.redirect(`/auth?shop=${shop}`);
     }
   };
 }
