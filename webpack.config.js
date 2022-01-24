@@ -19,6 +19,7 @@ module.exports = {
     path: path.resolve(__dirname, "dist/client"),
     publicPath: "/client",
   },
+  stats: "errors-only",
   devtool: "eval-source-map",
   module: {
     rules: [
