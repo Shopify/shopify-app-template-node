@@ -1,18 +1,17 @@
 import "@babel/polyfill";
 import dotenv from "dotenv";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
-import "express";
 import fs from "fs";
 import path from "path";
-import verifyRequest from "./middlewares/verifyRequest";
 import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
+import verifyRequest from "./middlewares/verifyRequest";
 
 dotenv.config();
 
 const port = parseInt(process.env.PORT, 10) || 8081;
 const webpackConfig = require("../webpack.config.js");
-const dev = process.env.NODE_ENV !== "production";
+const __DEV__ = process.env.NODE_ENV !== "production";
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -54,8 +53,7 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 const USE_ONLINE_TOKENS = true;
 
 async function createAppServer() {
-  const express = require("express");
-  const app = express();
+  const app = require("express")();
   const compiler = webpack(webpackConfig);
   const cookieParser = require("cookie-parser");
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
@@ -162,7 +160,7 @@ async function createAppServer() {
     }
   );
 
-  if (!dev) {
+  if (!__DEV__) {
     app.use("/static", express.static(path.join(__dirname, "../dist")));
   }
   app.get("*/", async (req, res) => {
@@ -173,7 +171,7 @@ async function createAppServer() {
       res.redirect(`/auth?shop=${shop}`);
     } else {
       res.set("Content-Type", "text/html");
-      if (dev) {
+      if (__DEV__) {
         res.sendFile(path.resolve(webpackConfig.output.path, "index.html"));
       } else {
         res.sendFile(__dirname, "../dist/client/index.js");

@@ -1,5 +1,5 @@
-import { Layout, Page } from "@shopify/polaris";
 import React from "react";
+import { Layout, Page } from "@shopify/polaris";
 
 function PageLayout({ children }) {
   return (

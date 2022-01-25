@@ -1,5 +1,5 @@
-import { ResourceItem, ResourceList, TextStyle } from "@shopify/polaris";
 import React from "react";
+import { ResourceItem, ResourceList, TextStyle } from "@shopify/polaris";
 
 export function ProductsList({ data }) {
   return (

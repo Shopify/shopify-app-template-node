@@ -1,6 +1,6 @@
+import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { Banner, Layout, Card } from "@shopify/polaris";
-import React from "react";
 import { ProductsList } from "./ProductsList";
 import { Loading } from "@shopify/app-bridge-react";
 

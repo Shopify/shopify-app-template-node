@@ -1,5 +1,0 @@
-language: node_js
-script:
-  - npm run build
-node_js:
-  - '10'
