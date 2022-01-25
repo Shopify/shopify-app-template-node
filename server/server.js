@@ -1,10 +1,10 @@
 import "@babel/polyfill";
-import dotenv from "dotenv";
-import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
 import webpack from "webpack";
 import webpackDevMiddleware from "webpack-dev-middleware";
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import verifyRequest from "./middlewares/verifyRequest";
 
 dotenv.config();
@@ -53,7 +53,8 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 const USE_ONLINE_TOKENS = true;
 
 async function createAppServer() {
-  const app = require("express")();
+  const express = require("express");
+  const app = express();
   const compiler = webpack(webpackConfig);
   const cookieParser = require("cookie-parser");
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
@@ -163,7 +164,8 @@ async function createAppServer() {
   if (!__DEV__) {
     app.use("/static", express.static(path.join(__dirname, "../dist")));
   }
-  app.get("*/", async (req, res) => {
+
+  app.get("*", async (req, res) => {
     const shop = req.query.shop;
 
     // This shop hasn't been seen yet, go through OAuth to create a session
