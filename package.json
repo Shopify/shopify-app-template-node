@@ -4,8 +4,9 @@
   "description": "Shopify's node app for CLI tool",
   "scripts": {
     "test": "jest",
-    "dev": "cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server",
-    "build": "webpack build",
+    "dev": "npm run build && cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server",
+    "build": "cross-env NODE_ENV=production webpack build",
+    "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production node ./server/index.js"
   },
   "repository": {
