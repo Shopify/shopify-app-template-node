@@ -1,19 +1,17 @@
 import "@babel/polyfill";
-import dotenv from "dotenv";
-import Shopify, { ApiVersion } from "@shopify/shopify-api";
-import Koa from "koa";
-import Router from "koa-router";
-import koaWebpack from "koa-webpack";
-import serveStatic from "koa-static";
 import fs from "fs";
 import path from "path";
+import dotenv from "dotenv";
+import webpack from "webpack";
+import webpackDevMiddleware from "webpack-dev-middleware";
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import verifyRequest from "./middlewares/verifyRequest";
 
 dotenv.config();
 
 const port = parseInt(process.env.PORT, 10) || 8081;
 const webpackConfig = require("../webpack.config.js");
-const dev = process.env.NODE_ENV !== "production";
+const __DEV__ = process.env.NODE_ENV !== "production";
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -51,62 +49,65 @@ function renderView(file, vars) {
 }
 
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
+
 const USE_ONLINE_TOKENS = true;
 
 async function createAppServer() {
-  const server = new Koa();
-  const router = new Router();
-  server.keys = [Shopify.Context.API_SECRET_KEY];
+  const express = require("express");
+  const app = express();
+  const compiler = webpack(webpackConfig);
+  const cookieParser = require("cookie-parser");
+  app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
+  app.use(
+    webpackDevMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+    })
+  );
 
-  let middleware;
-  if (dev) {
-    middleware = await koaWebpack({
-      config: { ...webpackConfig, mode: process.env.NODE_ENV },
-    });
-    server.use(middleware);
-  }
-
-  router.get("/auth/toplevel", async (ctx) => {
-    ctx.cookies.set(TOP_LEVEL_OAUTH_COOKIE, "1", {
+  app.get("/auth/toplevel", async (req, res) => {
+    res.cookie(TOP_LEVEL_OAUTH_COOKIE, "1", {
       signed: true,
       httpOnly: true,
       sameSite: "strict",
     });
 
-    ctx.response.type = "text/html";
-    ctx.response.body = renderView("top_level", {
-      apiKey: Shopify.Context.API_KEY,
-      hostName: Shopify.Context.HOST_NAME,
-      shop: ctx.query.shop,
-    });
+    res.set("Content-Type", "text/html");
+
+    res.send(
+      renderView("top_level", {
+        apiKey: Shopify.Context.API_KEY,
+        hostName: Shopify.Context.HOST_NAME,
+        shop: req.query.shop,
+      })
+    );
   });
 
-  router.get("/auth", async (ctx) => {
-    if (!ctx.cookies.get(TOP_LEVEL_OAUTH_COOKIE)) {
-      ctx.redirect(`/auth/toplevel?shop=${ctx.query.shop}`);
+  app.get("/auth", async (req, res) => {
+    if (!req.signedCookies.shopify_top_level_oauth) {
+      res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
       return;
     }
 
     const redirectUrl = await Shopify.Auth.beginAuth(
-      ctx.req,
-      ctx.res,
-      ctx.query.shop,
+      req,
+      res,
+      req.query.shop,
       "/auth/callback",
       USE_ONLINE_TOKENS
     );
 
-    ctx.redirect(redirectUrl);
+    res.redirect(redirectUrl);
   });
 
-  router.get("/auth/callback", async (ctx) => {
+  app.get("/auth/callback", async (req, res) => {
     try {
       const session = await Shopify.Auth.validateAuthCallback(
-        ctx.req,
-        ctx.res,
-        ctx.query
+        req,
+        res,
+        req.query
       );
 
-      const host = ctx.query.host;
+      const host = req.query.host;
       ACTIVE_SHOPIFY_SHOPS[session.shop] = session.scope;
 
       const response = await Shopify.Webhooks.Registry.register({
@@ -123,67 +124,64 @@ async function createAppServer() {
       }
 
       // Redirect to app with shop parameter upon auth
-      ctx.redirect(`/?shop=${session.shop}&host=${host}`);
+      res.redirect(`/?shop=${session.shop}&host=${host}`);
     } catch (e) {
       switch (true) {
         case e instanceof Shopify.Errors.InvalidOAuthError:
-          ctx.throw(400, e.message);
+          res.status(400);
+          res.send(e.message);
           break;
         case e instanceof Shopify.Errors.CookieNotFound:
         case e instanceof Shopify.Errors.SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          ctx.redirect(`/auth?shop=${ctx.query.shop}`);
+          res.redirect(`/auth?shop=${req.query.shop}`);
           break;
         default:
-          ctx.throw(500, e.message);
+          res.status(500);
+          res.send(e.message);
           break;
       }
     }
   });
 
-  router.post("/webhooks", async (ctx) => {
+  app.post("/webhooks", async (req, res) => {
     try {
-      await Shopify.Webhooks.Registry.process(ctx.req, ctx.res);
+      await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
     }
   });
 
-  router.post(
+  app.post(
     "/graphql",
     verifyRequest({ isOnline: USE_ONLINE_TOKENS, returnHeader: true }),
-    async (ctx, next) => {
-      await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
+    async (req, res, next) => {
+      await Shopify.Utils.graphqlProxy(req, res);
     }
   );
 
-  if (!dev) {
-    server.use(serveStatic(path.resolve(__dirname, "../dist")));
+  if (!__DEV__) {
+    app.use("/static", express.static(path.join(__dirname, "../dist")));
   }
-  router.get("(.*)", async (ctx) => {
-    const shop = ctx.query.shop;
+
+  app.get("*", async (req, res) => {
+    const shop = req.query.shop;
 
     // This shop hasn't been seen yet, go through OAuth to create a session
     if (ACTIVE_SHOPIFY_SHOPS[shop] === undefined) {
-      ctx.redirect(`/auth?shop=${shop}`);
+      res.redirect(`/auth?shop=${shop}`);
     } else {
-      ctx.response.type = "html";
-      if (dev) {
-        ctx.response.body = middleware.devMiddleware.fileSystem.createReadStream(
-          path.resolve(webpackConfig.output.path, "index.html")
-        );
+      res.set("Content-Type", "text/html");
+      if (__DEV__) {
+        res.sendFile(path.resolve(webpackConfig.output.path, "index.html"));
       } else {
-        ctx.response.body = fs.readFileSync(
-          path.resolve(__dirname, "../dist/client/index.html")
-        );
+        res.sendFile(__dirname, "../dist/client/index.js");
       }
     }
   });
 
-  server.use(router.allowedMethods());
-  server.use(router.routes());
-  server.listen(port, () => {
+  app.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 }

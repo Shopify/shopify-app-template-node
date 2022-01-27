@@ -27,9 +27,11 @@ This repository is used by [Shopify-App-CLI](https://github.com/Shopify/shopify-
 
 ## Update history
 
-### October 2021: Removing Next.js from the backend stack
+### January 2022: Remove Next.js and Replace Koa with Express.js
 
-Our sample app was previously using both Koa and Next.js, which made the server-side unnecessarily complex, so we decided to remove Next.js from the backend stack. Since Next.js was what included webpack in the project, we had to add webpack as a direct dependency so we could continue to build the client React app.
+We are now using the [Express](https://expressjs.com/) framework to keep Shopify's framework usage consistent.
+
+Our sample app previously used both Koa and Next.js, which made the server-side unnecessarily complex. Initally we removed Next.js so Koa was our only framework, but now we are replacing Koa with Express. Since Next.js was what included webpack in the project, we had to add webpack as a direct dependency so we could continue to build the client React app.
 
 ## License
 

@@ -4,8 +4,9 @@
   "description": "Shopify's node app for CLI tool",
   "scripts": {
     "test": "jest",
-    "dev": "cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server",
-    "build": "webpack build",
+    "dev": "npm run build && cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server",
+    "build": "cross-env NODE_ENV=production webpack build",
+    "prestart": "npm run build",
     "start": "cross-env NODE_ENV=production node ./server/index.js"
   },
   "repository": {
@@ -27,39 +28,31 @@
     "@babel/register": "^7.12.10",
     "@shopify/app-bridge-react": "^2.0.2",
     "@shopify/app-bridge-utils": "^2.0.2",
-    "@shopify/polaris": "^6.2.0",
+    "@shopify/polaris": "^8.0.0",
     "@shopify/shopify-api": "^2.0.0",
     "babel-loader": "^8.2.2",
+    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "css-loader": "^5.0.0",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "html-webpack-plugin": "^4.0.0",
-    "koa": "^2.13.4",
-    "koa-router": "^10.0.0",
-    "koa-static": "^5.0.0",
-    "koa-webpack": "^6.0.0",
-    "react": "^16.10.1",
-    "react-dom": "^16.10.1",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "style-loader": "^2.0.0",
     "webpack": "^4.44.1",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1"
+    "webpack-cli": "^4.9.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.12.10",
-    "babel-jest": "26.6.3",
     "babel-register": "^6.26.0",
-    "enzyme": "3.11.0",
-    "enzyme-adapter-react-16": "1.15.5",
+    "express": "^4.17.2",
     "husky": "^4.3.6",
-    "jest": "26.6.3",
     "lint-staged": "^10.5.3",
     "nodemon": "^2.0.0",
     "prettier": "2.2.1",
-    "react-addons-test-utils": "15.6.2",
-    "react-test-renderer": "16.14.0",
-    "regenerator-runtime": "^0.13.9"
+    "regenerator-runtime": "^0.13.9",
+    "webpack-dev-middleware": "^5.3.0"
   },
   "husky": {
     "hooks": {
