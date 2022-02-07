@@ -1,4 +1,4 @@
-import ApolloClient from "apollo-boost";
+import ApolloClient from "@apollo/client";
 
 export const createClient = (shop, accessToken) => {
   return new ApolloClient({
