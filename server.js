@@ -1,23 +1,46 @@
 // @ts-check
 const fs = require('fs');
-const path = require('path');
+const {resolve} = require('path');
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
 
 const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
+const TOP_LEVEL_OAUTH_COOKIE = 'shopify_top_level_oauth';
+const USE_ONLINE_TOKENS = true;
 
-process.env.MY_CUSTOM_SECRET = 'API_KEY_qwertyuiop';
+require('dotenv/config');
+
+Shopify.Context.initialize({
+  API_KEY: process.env.SHOPIFY_API_KEY,
+  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
+  SCOPES: process.env.SCOPES.split(','),
+  HOST_NAME: process.env.HOST.replace(/https:\/\//, ''),
+  API_VERSION: ApiVersion.Unstable,
+  IS_EMBEDDED_APP: true,
+  // This should be replaced with your preferred storage strategy
+  SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
+});
+
+// Storing the currently active shops in memory will force them to re-login when your server restarts. You should
+// persist this object in your app.
+const ACTIVE_SHOPIFY_SHOPS = {};
+Shopify.Webhooks.Registry.addHandler('APP_UNINSTALLED', {
+  path: '/webhooks',
+  webhookHandler: async (topic, shop, body) =>
+    delete ACTIVE_SHOPIFY_SHOPS[shop],
+});
 
 async function createServer(
   root = process.cwd(),
   isProd = process.env.NODE_ENV === 'production',
 ) {
-  const resolve = (p) => path.resolve(__dirname, p);
-
   const indexProd = isProd
     ? fs.readFileSync(resolve('dist/client/index.html'), 'utf-8')
     : '';
 
   const app = express();
+  app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
   /**
    * @type {import('vite').ViteDevServer}
