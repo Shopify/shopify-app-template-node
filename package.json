@@ -3,13 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "node server",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
+    "debug": "node --inspect-brk server",
+    "dev": "node server",
     "generate": "vite build --outDir dist/static && npm run build:server && node prerender",
-    "serve": "cross-env NODE_ENV=production node server",
-    "debug": "node --inspect-brk server"
+    "prepare": "husky install",
+    "serve": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
     "@shopify/shopify-api": "^2.1.0",
