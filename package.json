@@ -13,9 +13,15 @@
     "serve": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.8",
+    "@shopify/app-bridge": "^2.0.8",
+    "@shopify/app-bridge-react": "^2.0.8",
+    "@shopify/app-bridge-utils": "^2.0.8",
+    "@shopify/polaris": "^8.2.2",
     "@shopify/shopify-api": "^2.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
+    "graphql": "^16.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",

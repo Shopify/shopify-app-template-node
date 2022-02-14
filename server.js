@@ -5,14 +5,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
 
+const applyAuthMiddleware = require('./server/middleware/auth');
+
 const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
-const TOP_LEVEL_OAUTH_COOKIE = 'shopify_top_level_oauth';
 const USE_ONLINE_TOKENS = true;
 
 require('dotenv/config');
 
 Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
+  API_KEY: process.env.VITE_SHOPIFY_API_KEY,
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
   SCOPES: process.env.SCOPES.split(','),
   HOST_NAME: process.env.HOST.replace(/https:\/\//, ''),
@@ -40,6 +41,10 @@ async function createServer(
     : '';
 
   const app = express();
+  app.set('top-level-oauth-cookie', 'shopify_top_level_oauth');
+  app.set('active-shopify-shops', ACTIVE_SHOPIFY_SHOPS);
+  app.set('use-online-tokens', USE_ONLINE_TOKENS);
+
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
   /**
@@ -51,6 +56,10 @@ async function createServer(
       root,
       logLevel: isTest ? 'error' : 'info',
       server: {
+        host: 'localhost',
+        hmr: {
+          clientPort: 8081,
+        },
         middlewareMode: 'ssr',
         watch: {
           // During tests we edit the files too fast and sometimes chokidar
@@ -71,7 +80,19 @@ async function createServer(
     );
   }
 
+  applyAuthMiddleware(app);
+
+  app.post('/graphql', async (req, res) => {
+    await Shopify.Utils.graphqlProxy(req, res);
+  });
+
   app.use('*', async (req, res) => {
+    const shop = req.query.shop;
+    if (app.get('active-shopify-shops')[shop] === undefined) {
+      res.redirect(`/auth?shop=${shop}`);
+      return;
+    }
+
     try {
       const url = req.originalUrl;
 
@@ -108,11 +129,7 @@ async function createServer(
 }
 
 if (!isTest) {
-  createServer().then(({app}) =>
-    app.listen(3000, () => {
-      console.log('http://localhost:3000');
-    }),
-  );
+  createServer().then(({app}) => app.listen(8081));
 }
 
 // for test use
