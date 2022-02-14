@@ -7,8 +7,9 @@ const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
 
 const applyAuthMiddleware = require('./server/middleware/auth');
 
-const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
 const USE_ONLINE_TOKENS = true;
+const PORT = parseInt(process.env.PORT || '8081', 10);
+const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
 
 require('dotenv/config');
 
@@ -47,6 +48,19 @@ async function createServer(
 
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
+  applyAuthMiddleware(app);
+
+  app.post('/graphql', async (req, res) => {
+    await Shopify.Utils.graphqlProxy(req, res);
+  });
+
+  app.use('*', async (req, res) => {
+    const shop = req.query.shop;
+    if (app.get('active-shopify-shops')[shop] === undefined) {
+      res.redirect(`/auth?shop=${shop}`);
+    }
+  });
+
   /**
    * @type {import('vite').ViteDevServer}
    */
@@ -56,17 +70,11 @@ async function createServer(
       root,
       logLevel: isTest ? 'error' : 'info',
       server: {
-        host: 'localhost',
         hmr: {
-          clientPort: 8081,
+          host: Shopify.Context.HOST_NAME,
+          clientPort: PORT,
         },
-        middlewareMode: 'ssr',
-        watch: {
-          // During tests we edit the files too fast and sometimes chokidar
-          // misses change events, so enforce polling for consistency
-          usePolling: true,
-          interval: 100,
-        },
+        middlewareMode: 'html',
       },
     });
     // use vite's connect instance as middleware
@@ -80,56 +88,11 @@ async function createServer(
     );
   }
 
-  applyAuthMiddleware(app);
-
-  app.post('/graphql', async (req, res) => {
-    await Shopify.Utils.graphqlProxy(req, res);
-  });
-
-  app.use('*', async (req, res) => {
-    const shop = req.query.shop;
-    if (app.get('active-shopify-shops')[shop] === undefined) {
-      res.redirect(`/auth?shop=${shop}`);
-      return;
-    }
-
-    try {
-      const url = req.originalUrl;
-
-      let template, render;
-      if (!isProd) {
-        // always read fresh template in dev
-        template = fs.readFileSync(resolve('index.html'), 'utf-8');
-        template = await vite.transformIndexHtml(url, template);
-        render = (await vite.ssrLoadModule('/src/entry-server.jsx')).render;
-      } else {
-        template = indexProd;
-        render = require('./dist/server/entry-server.js').render;
-      }
-
-      const context = {};
-      const appHtml = render(url, context);
-
-      if (context.url) {
-        // Somewhere a `<Redirect>` was rendered
-        return res.redirect(301, context.url);
-      }
-
-      const html = template.replace(`<!--app-html-->`, appHtml);
-
-      res.status(200).set({'Content-Type': 'text/html'}).end(html);
-    } catch (e) {
-      !isProd && vite.ssrFixStacktrace(e);
-      console.log(e.stack);
-      res.status(500).end(e.stack);
-    }
-  });
-
   return {app, vite};
 }
 
 if (!isTest) {
-  createServer().then(({app}) => app.listen(8081));
+  createServer().then(({app}) => app.listen(PORT));
 }
 
 // for test use

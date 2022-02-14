@@ -1,9 +1,9 @@
 const {default: Shopify} = require('@shopify/shopify-api');
 
-const renderView = require('../helpers/render-view');
+const topLevelAuthRedirect = require('../helpers/top-level-auth-redirect');
 const verifyRequest = require('./verify-request');
 
-module.exports = function applyAuthMiddlewares(app) {
+module.exports = function applyAuthMiddleware(app) {
   app.get('/auth', async (req, res) => {
     if (!req.signedCookies[app.get('top-level-oauth-cookie')]) {
       return res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
@@ -32,7 +32,7 @@ module.exports = function applyAuthMiddlewares(app) {
     res.set('Content-Type', 'text/html');
 
     console.log(
-      renderView('top-level', {
+      topLevelAuthRedirect({
         apiKey: Shopify.Context.API_KEY,
         hostName: Shopify.Context.HOST_NAME,
         shop: req.query.shop,
@@ -40,7 +40,7 @@ module.exports = function applyAuthMiddlewares(app) {
     );
 
     res.send(
-      renderView('top-level', {
+      topLevelAuthRedirect({
         apiKey: Shopify.Context.API_KEY,
         hostName: Shopify.Context.HOST_NAME,
         shop: req.query.shop,
