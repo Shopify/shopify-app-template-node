@@ -1,9 +1,10 @@
 module.exports = {
   extends: [
-    'plugin:shopify/react',
-    'plugin:shopify/polaris',
-    'plugin:shopify/jest',
-    'plugin:shopify/webpack',
+    'plugin:@shopify/esnext',
+    'plugin:@shopify/react',
+    'plugin:@shopify/polaris',
+    'plugin:@shopify/jest',
+    'plugin:@shopify/webpack',
   ],
   rules: {
     'import/no-unresolved': 'off',
@@ -16,4 +17,9 @@ module.exports = {
       },
     },
   ],
+  env: {
+    browser: true,
+    amd: true,
+    node: true,
+  },
 };
