@@ -32,7 +32,7 @@ This repository is used by [Shopify CLI](https://github.com/Shopify/shopify-cli)
 We will be moving to [Express](https://expressjs.com/) to keep Shopify's framework usage consistent.
 Our sample app currently uses both Koa and Next.js which makes the server-side unnecessarily complex to use and maintain.
 
-Try it out with this command, understanding that things may not be totally stable yet: `npx degit shopify/shopify-app-node#use_express`.
+Try it out with this command, understanding that things may not be totally stable yet: `npx degit shopify/shopify-app-node#sample_app_updates`.
 
 ## License
 
