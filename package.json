@@ -24,7 +24,7 @@
     "@babel/register": "^7.12.10",
     "@shopify/app-bridge-react": "^2.0.6",
     "@shopify/app-bridge-utils": "^2.0.6",
-    "@shopify/koa-shopify-auth": "^4.1.4",
+    "@shopify/koa-shopify-auth": "^4.1.5",
     "@shopify/polaris": "^6.2.0",
     "apollo-boost": "^0.4.9",
     "cross-env": "^7.0.3",
