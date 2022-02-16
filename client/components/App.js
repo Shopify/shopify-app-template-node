@@ -2,6 +2,7 @@ import React from "react";
 import {
   ApolloClient,
   ApolloProvider,
+  ApolloLink,
   InMemoryCache,
   HttpLink,
 } from "@apollo/client";
@@ -17,6 +18,8 @@ import "@shopify/polaris/build/esm/styles.css";
 
 import ProductsPage from "./ProductsPage";
 import PageLayout from "./PageLayout";
+
+import rateLimit from "../rateLimit";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -39,16 +42,19 @@ function userLoggedInFetch(app) {
     return response;
   };
 }
-
 const MyProvider = ({ children }) => {
   const app = useAppBridge();
 
+  const http = new HttpLink({
+    credentials: "include",
+    fetch: userLoggedInFetch(app),
+  });
+
+  const link = new ApolloLink.from([rateLimit, http]);
+
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: new HttpLink({
-      credentials: "include",
-      fetch: userLoggedInFetch(app),
-    }),
+    link,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
