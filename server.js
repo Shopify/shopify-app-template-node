@@ -50,6 +50,15 @@ async function createServer(
 
   applyAuthMiddleware(app);
 
+  app.post('/webhooks', async (req, res) => {
+    try {
+      await Shopify.Webhooks.Registry.process(req, res);
+      console.log(`Webhook processed, returned status code 200`);
+    } catch (error) {
+      console.log(`Failed to process webhook: ${error}`);
+    }
+  });
+
   app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
   });
