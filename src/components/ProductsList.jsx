@@ -11,7 +11,6 @@ export function ProductsList({products}) {
           <h3>
             <TextStyle variation="strong">{title}</TextStyle>
           </h3>
-          <p>hey</p>
         </ResourceItem>
       )}
     />

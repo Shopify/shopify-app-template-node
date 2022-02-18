@@ -54,13 +54,6 @@ async function createServer(
     await Shopify.Utils.graphqlProxy(req, res);
   });
 
-  app.use('*', async (req, res) => {
-    const shop = req.query.shop;
-    if (app.get('active-shopify-shops')[shop] === undefined) {
-      res.redirect(`/auth?shop=${shop}`);
-    }
-  });
-
   /**
    * @type {import('vite').ViteDevServer}
    */
@@ -70,9 +63,12 @@ async function createServer(
       root,
       logLevel: isTest ? 'error' : 'info',
       server: {
+        port: PORT,
         hmr: {
-          host: Shopify.Context.HOST_NAME,
-          clientPort: PORT,
+          protocol: 'ws',
+          host: 'localhost',
+          port: 64999,
+          clientPort: 64999,
         },
         middlewareMode: 'html',
       },
