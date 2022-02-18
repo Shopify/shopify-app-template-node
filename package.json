@@ -1,7 +1,6 @@
 {
-  "name": "test-ssr-react",
+  "name": "shopify-app-node",
   "private": true,
-  "version": "0.0.0",
   "scripts": {
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build --outDir dist/client",
