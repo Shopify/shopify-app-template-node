@@ -3,6 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
 [![Build Status](https://travis-ci.com/Shopify/shopify-app-node.svg?branch=master)](https://travis-ci.com/Shopify/shopify-app-node)
 
+Recommended NodeJS version: v16
+
 Boilerplate to create an embedded Shopify app made with Node, [Polaris](https://github.com/Shopify/polaris-react), and [App Bridge React](https://shopify.dev/tools/app-bridge/react-components).
 
 ## Installation
