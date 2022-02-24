@@ -30,6 +30,12 @@ Shopify.Context.initialize({
 // persist this object in your app.
 const ACTIVE_SHOPIFY_SHOPS = {};
 
+Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
+  path: "/webhooks",
+  webhookHandler: async (topic, shop, body) =>
+    delete ACTIVE_SHOPIFY_SHOPS[shop],
+});
+
 app.prepare().then(async () => {
   const server = new Koa();
   const router = new Router();
@@ -42,18 +48,16 @@ app.prepare().then(async () => {
         const host = ctx.query.host;
         ACTIVE_SHOPIFY_SHOPS[shop] = scope;
 
-        const response = await Shopify.Webhooks.Registry.register({
+        const responses = await Shopify.Webhooks.Registry.register({
           shop,
           accessToken,
           path: "/webhooks",
           topic: "APP_UNINSTALLED",
-          webhookHandler: async (topic, shop, body) =>
-            delete ACTIVE_SHOPIFY_SHOPS[shop],
         });
 
-        if (!response.success) {
+        if (!responses["APP_UNINSTALLED"].success) {
           console.log(
-            `Failed to register APP_UNINSTALLED webhook: ${response.result}`
+            `Failed to register APP_UNINSTALLED webhook: ${responses.result}`
           );
         }
 
