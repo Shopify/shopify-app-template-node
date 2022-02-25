@@ -51,12 +51,25 @@ async function createServer(
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
-      console.log(`Failed togig process webhook: ${error}`);
+      console.log(`Failed to process webhook: ${error}`);
     }
   });
 
   app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
+  });
+
+  app.use((req, res, next) => {
+    const shop = req.query.shop;
+    if (Shopify.Context.IS_EMBEDDED_APP && shop) {
+      res.setHeader(
+        'Content-Security-Policy',
+        `frame-ancestors https://${shop} https://admin.shopify.com;`,
+      );
+    } else {
+      res.setHeader('Content-Security-Policy', `frame-ancestors 'none';`);
+    }
+    next();
   });
 
   app.use('/*', (req, res, next) => {
