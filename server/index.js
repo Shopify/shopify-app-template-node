@@ -5,7 +5,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
 
-const applyAuthMiddleware = require('./server/middleware/auth');
+const applyAuthMiddleware = require('./middleware/auth');
 
 const USE_ONLINE_TOKENS = true;
 const PORT = parseInt(process.env.PORT || '8081', 10);
@@ -39,8 +39,6 @@ async function createServer(
 ) {
   const indexProd = isProd
     ? fs.readFileSync(resolve('dist/client/index.html'), 'utf-8')
-    : '';
-
   const app = express();
   app.set('top-level-oauth-cookie', 'shopify_top_level_oauth');
   app.set('active-shopify-shops', ACTIVE_SHOPIFY_SHOPS);
@@ -55,12 +53,24 @@ async function createServer(
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
-      console.log(`Failed to process webhook: ${error}`);
+      console.log(`Failed togig process webhook: ${error}`);
     }
   });
 
   app.post('/graphql', async (req, res) => {
     await Shopify.Utils.graphqlProxy(req, res);
+  });
+
+  app.use('/*', (req, res, next) => {
+    const shop = req.query.shop;
+
+    // Detect whether we need to reinstall the app, any request from Shopify will
+    // include a shop in the query parameters.
+    if (app.get('active-shopify-shops')[shop] === undefined && shop) {
+      res.redirect(`/auth?shop=${shop}`);
+    } else {
+      next();
+    }
   });
 
   /**

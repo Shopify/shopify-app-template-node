@@ -17,8 +17,6 @@ module.exports = function applyAuthMiddleware(app) {
       app.get('use-online-tokens'),
     );
 
-    console.log({redirectUrl});
-
     res.redirect(redirectUrl);
   });
 
@@ -30,14 +28,6 @@ module.exports = function applyAuthMiddleware(app) {
     });
 
     res.set('Content-Type', 'text/html');
-
-    console.log(
-      topLevelAuthRedirect({
-        apiKey: Shopify.Context.API_KEY,
-        hostName: Shopify.Context.HOST_NAME,
-        shop: req.query.shop,
-      }),
-    );
 
     res.send(
       topLevelAuthRedirect({
