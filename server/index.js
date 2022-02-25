@@ -94,11 +94,7 @@ async function createServer(
     app.use(vite.middlewares);
   } else {
     app.use(require('compression')());
-    app.use(
-      require('serve-static')(resolve('dist/client'), {
-        index: false,
-      }),
-    );
+    app.use(require('serve-static')(resolve('dist/client')));
   }
 
   return {app, vite};

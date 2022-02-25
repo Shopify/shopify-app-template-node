@@ -1,5 +1,7 @@
 const react = require('@vitejs/plugin-react');
 
+require('dotenv/config');
+
 /**
  * @type {import('vite').UserConfig}
  */
