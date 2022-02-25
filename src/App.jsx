@@ -22,7 +22,7 @@ export default function App() {
     <PolarisProvider i18n={translations}>
       <AppBridgeProvider
         config={{
-          apiKey: import.meta.env.VITE_SHOPIFY_API_KEY,
+          apiKey: process.env.SHOPIFY_API_KEY,
           host: new URL(location).searchParams.get('host'),
           forceRedirect: true,
         }}
