@@ -37,8 +37,6 @@ async function createServer(
   root = process.cwd(),
   isProd = process.env.NODE_ENV === 'production',
 ) {
-  const indexProd = isProd
-    ? fs.readFileSync(resolve('dist/client/index.html'), 'utf-8')
   const app = express();
   app.set('top-level-oauth-cookie', 'shopify_top_level_oauth');
   app.set('active-shopify-shops', ACTIVE_SHOPIFY_SHOPS);
