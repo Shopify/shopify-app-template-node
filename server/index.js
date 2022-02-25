@@ -1,17 +1,16 @@
 // @ts-check
-const fs = require('fs');
-const {resolve} = require('path');
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const {default: Shopify, ApiVersion} = require('@shopify/shopify-api');
+import {resolve} from 'path';
 
-const applyAuthMiddleware = require('./middleware/auth');
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import {Shopify, ApiVersion} from '@shopify/shopify-api';
+import 'dotenv/config';
+
+import applyAuthMiddleware from './middleware/auth.js';
 
 const USE_ONLINE_TOKENS = true;
 const PORT = parseInt(process.env.PORT || '8081', 10);
 const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
-
-require('dotenv/config');
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -33,7 +32,8 @@ Shopify.Webhooks.Registry.addHandler('APP_UNINSTALLED', {
     delete ACTIVE_SHOPIFY_SHOPS[shop],
 });
 
-async function createServer(
+// export for test use only
+export async function createServer(
   root = process.cwd(),
   isProd = process.env.NODE_ENV === 'production',
 ) {
@@ -84,12 +84,10 @@ async function createServer(
     }
   });
 
-  /**
-   * @type {import('vite').ViteDevServer}
-   */
   let vite;
   if (!isProd) {
-    vite = await require('vite').createServer({
+    vite = await import('vite');
+    vite = await vite.createServer({
       root,
       logLevel: isTest ? 'error' : 'info',
       server: {
@@ -103,7 +101,6 @@ async function createServer(
         middlewareMode: 'html',
       },
     });
-    // use vite's connect instance as middleware
     app.use(vite.middlewares);
   } else {
     app.use(require('compression')());
@@ -116,6 +113,3 @@ async function createServer(
 if (!isTest) {
   createServer().then(({app}) => app.listen(PORT));
 }
-
-// for test use
-exports.createServer = createServer;

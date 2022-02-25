@@ -1,4 +1,4 @@
-const {default: Shopify} = require('@shopify/shopify-api');
+import {Shopify} from '@shopify/shopify-api';
 
 const TEST_GRAPHQL_QUERY = `
 {
@@ -7,7 +7,7 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-module.exports = function verifyRequest({isOnline, returnHeader}) {
+export default function verifyRequest({isOnline, returnHeader}) {
   return async (req, res, next) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, isOnline);
 
@@ -62,4 +62,4 @@ module.exports = function verifyRequest({isOnline, returnHeader}) {
       res.redirect(`/auth?shop=${shop}`);
     }
   };
-};
+}

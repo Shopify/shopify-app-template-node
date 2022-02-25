@@ -1,9 +1,9 @@
-const {default: Shopify} = require('@shopify/shopify-api');
+import {Shopify} from '@shopify/shopify-api';
 
-const topLevelAuthRedirect = require('../helpers/top-level-auth-redirect');
-const verifyRequest = require('./verify-request');
+import topLevelAuthRedirect from '../helpers/top-level-auth-redirect.js';
+import verifyRequest from './verify-request.js';
 
-module.exports = function applyAuthMiddleware(app) {
+export default function applyAuthMiddleware(app) {
   app.get('/auth', async (req, res) => {
     if (!req.signedCookies[app.get('top-level-oauth-cookie')]) {
       return res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
@@ -92,4 +92,4 @@ module.exports = function applyAuthMiddleware(app) {
     '/graphql',
     verifyRequest({isOnline: app.get('use-online-tokens'), returnHeader: true}),
   );
-};
+}

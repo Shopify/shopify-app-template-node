@@ -11,6 +11,10 @@
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=production node server/index.js"
   },
+  "type": "module",
+  "engines": {
+    "node": ">= 12.16"
+  },
   "dependencies": {
     "@apollo/client": "^3.5.8",
     "@shopify/app-bridge": "^2.0.8",
