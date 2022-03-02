@@ -9,6 +9,8 @@ import 'dotenv/config';
 import applyAuthMiddleware from './middleware/auth.js';
 
 const USE_ONLINE_TOKENS = true;
+const TOP_LEVEL_OAUTH_COOKIE = 'shopify_top_level_oauth';
+
 const PORT = parseInt(process.env.PORT || '8081', 10);
 const isTest = process.env.NODE_ENV === 'test' || !!process.env.VITE_TEST_BUILD;
 
@@ -38,7 +40,7 @@ export async function createServer(
   isProd = process.env.NODE_ENV === 'production',
 ) {
   const app = express();
-  app.set('top-level-oauth-cookie', 'shopify_top_level_oauth');
+  app.set('top-level-oauth-cookie', TOP_LEVEL_OAUTH_COOKIE);
   app.set('active-shopify-shops', ACTIVE_SHOPIFY_SHOPS);
   app.set('use-online-tokens', USE_ONLINE_TOKENS);
 
@@ -52,11 +54,22 @@ export async function createServer(
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
+      res.status(500).send(error.message);
     }
   });
 
   app.post('/graphql', async (req, res) => {
+    console.log(`GraphQL request received`);
+
+    // try {
     await Shopify.Utils.graphqlProxy(req, res);
+    res.status(200);
+    // res.status(200).send();
+    // console.log("hey we made it")
+    // } catch (error) {
+    //   console.log(`Failed to process webhook: ${error}`);
+    //   res.status(500).send(error.message);
+    // }
   });
 
   app.use((req, res, next) => {

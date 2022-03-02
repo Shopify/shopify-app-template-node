@@ -1,7 +1,3 @@
-// @ts-check
-// this is automtically detected by scripts/jestPerTestSetup.ts and will replace
-// the default e2e test serve behavior
-
 import path from 'path';
 
 export const port = 9528;
@@ -14,10 +10,9 @@ export async function serve(root, isProd) {
   if (isProd) {
     // build first
     const {build} = await import('vite');
-    // client build
     await build({
       root,
-      logLevel: 'silent', // exceptions are logged by Jest
+      logLevel: 'silent',
       build: {
         target: 'esnext',
         minify: false,
@@ -28,5 +23,6 @@ export async function serve(root, isProd) {
   }
 
   const {createServer} = await import(path.resolve(root, 'server', 'index.js'));
+  process.env.PORT = port;
   return await createServer(root, isProd);
 }
