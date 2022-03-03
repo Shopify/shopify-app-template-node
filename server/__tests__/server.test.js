@@ -177,30 +177,43 @@ describe('shopify-app-node', async () => {
     });
   });
 
-  test('graphql proxy is called', async () => {
+  describe('graphql proxy', () => {
     vi.mock(`${process.cwd()}/server/middleware/verify-request.js`, () => ({
       default: vi.fn(() => (req, res, next) => {
         next();
       }),
     }));
-    const body = {
-      data: {
-        test: 'test',
-      },
-    };
-    const proxy = vi
-      .spyOn(Shopify.Utils, 'graphqlProxy')
-      .mockImplementationOnce(() => ({
+    const proxy = vi.spyOn(Shopify.Utils, 'graphqlProxy');
+
+    test('graphql proxy is called & responds with body', async () => {
+      const body = {
+        data: {
+          test: 'test',
+        },
+      };
+      proxy.mockImplementationOnce(() => ({
         body,
       }));
 
-    const response = await request(app).post('/graphql').send({
-      query: '{hello}',
+      const response = await request(app).post('/graphql').send({
+        query: '{hello}',
+      });
+
+      expect(proxy).toHaveBeenCalledTimes(1);
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(body);
     });
 
-    expect(proxy).toHaveBeenCalledTimes(1);
-    expect(response.status).toEqual(200);
-    expect(response.body).toEqual(body);
+    test('returns a 500 error if graphql proxy fails', async () => {
+      proxy.mockImplementationOnce(() => {
+        throw new Error('test 500 response');
+      });
+
+      const response = await request(app).post('/graphql');
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain('test 500 response');
+    });
   });
 
   test.todo('a div with the app renders');
