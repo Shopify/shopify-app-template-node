@@ -5,13 +5,58 @@ import {describe, expect, test, vi} from 'vitest';
 
 import {serve} from './serve.js';
 
-describe('shopify-app-node', async () => {
+describe('shopify-app-node server', async () => {
   const {app} = await serve(process.cwd(), false);
 
   test('loads html on /', async () => {
     const response = await request(app).get('/').set('Accept', 'text/html');
 
     expect(response.status).toEqual(200);
+  });
+
+  test('redirects to auth if the app needs to be [re]installed', async () => {
+    const response = await request(app)
+      .get('/?shop=test-shop')
+      .set('Accept', 'text/html');
+
+    expect(response.status).toEqual(302);
+    expect(response.headers.location).toEqual('/auth?shop=test-shop');
+  });
+
+  describe('content-security-policy', () => {
+    test('sets Content Security Policy for embedded apps', async () => {
+      Shopify.Context.IS_EMBEDDED_APP = true;
+
+      const response = await request(app).get(
+        '/?shop=test-shop.myshopify.test',
+      );
+
+      expect(response.headers['content-security-policy']).toEqual(
+        `frame-ancestors https://test-shop.myshopify.test https://admin.shopify.com;`,
+      );
+    });
+
+    test('sets header correctly when shop is missing', async () => {
+      Shopify.Context.IS_EMBEDDED_APP = true;
+
+      const response = await request(app).get('/');
+
+      expect(response.headers['content-security-policy']).toEqual(
+        `frame-ancestors 'none';`,
+      );
+    });
+
+    test('sets header correctly when app is not embedded', async () => {
+      Shopify.Context.IS_EMBEDDED_APP = false;
+
+      const response = await request(app).get(
+        '/?shop=test-shop.myshopify.test',
+      );
+
+      expect(response.headers['content-security-policy']).toEqual(
+        `frame-ancestors 'none';`,
+      );
+    });
   });
 
   test('goes to top level auth in oauth flow when there is no cookie', async () => {
@@ -215,6 +260,4 @@ describe('shopify-app-node', async () => {
       expect(response.text).toContain('test 500 response');
     });
   });
-
-  test.todo('a div with the app renders');
 });
