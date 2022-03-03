@@ -183,31 +183,24 @@ describe('shopify-app-node', async () => {
         next();
       }),
     }));
+    const body = {
+      data: {
+        test: 'test',
+      },
+    };
     const proxy = vi
       .spyOn(Shopify.Utils, 'graphqlProxy')
-      .mockImplementationOnce((req, res) => {
-        const body = {
-          status: 200,
-          body: {
-            data: {
-              products: [
-                {
-                  id: 'test-product-id',
-                  title: 'test-product-title',
-                },
-              ],
-            },
-          },
-        };
+      .mockImplementationOnce(() => ({
+        body,
+      }));
 
-        res.status(body.status).send(body.body);
-      });
     const response = await request(app).post('/graphql').send({
       query: '{hello}',
     });
 
     expect(proxy).toHaveBeenCalledTimes(1);
     expect(response.status).toEqual(200);
+    expect(response.body).toEqual(body);
   });
 
   test.todo('a div with the app renders');

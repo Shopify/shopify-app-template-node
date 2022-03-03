@@ -59,17 +59,8 @@ export async function createServer(
   });
 
   app.post('/graphql', async (req, res) => {
-    console.log(`GraphQL request received`);
-
-    // try {
-    await Shopify.Utils.graphqlProxy(req, res);
-    res.status(200);
-    // res.status(200).send();
-    // console.log("hey we made it")
-    // } catch (error) {
-    //   console.log(`Failed to process webhook: ${error}`);
-    //   res.status(500).send(error.message);
-    // }
+    const response = await Shopify.Utils.graphqlProxy(req, res);
+    res.status(200).send(response.body);
   });
 
   app.use((req, res, next) => {
