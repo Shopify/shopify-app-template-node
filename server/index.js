@@ -97,27 +97,35 @@ export async function createServer(
     }
   });
 
+  /**
+   * @type {import('vite').ViteDevServer}
+   */
   let vite;
   if (!isProd) {
-    vite = await import('vite');
-    vite = await vite.createServer({
-      root,
-      logLevel: isTest ? 'error' : 'info',
-      server: {
-        port: PORT,
-        hmr: {
-          protocol: 'ws',
-          host: 'localhost',
-          port: 64999,
-          clientPort: 64999,
+    vite = await import('vite').then(({createServer}) =>
+      createServer({
+        root,
+        logLevel: isTest ? 'error' : 'info',
+        server: {
+          port: PORT,
+          hmr: {
+            protocol: 'ws',
+            host: 'localhost',
+            port: 64999,
+            clientPort: 64999,
+          },
+          middlewareMode: 'html',
         },
-        middlewareMode: 'html',
-      },
-    });
+      }),
+    );
     app.use(vite.middlewares);
   } else {
-    app.use(require('compression')());
-    app.use(require('serve-static')(resolve('dist/client')));
+    const compression = await import('compression').then(({default: fn}) => fn);
+    const serveStatic = await import('serve-static').then(
+      ({default: fn}) => fn,
+    );
+    app.use(compression());
+    app.use(serveStatic(resolve('dist/client')));
   }
 
   return {app, vite};
