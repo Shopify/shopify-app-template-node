@@ -122,7 +122,7 @@ describe("verify-request middleware", async () => {
     );
     const mockApp = express();
     mockApp.use(verifyRequest({ isOnline: app.get("use-online-tokens") }));
-    mockApp.get("/", (_req, res) => {
+    mockApp.get("/", (req, res) => {
       res.status(200).end();
     });
 

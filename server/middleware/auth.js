@@ -20,7 +20,7 @@ export default function applyAuthMiddleware(app) {
     res.redirect(redirectUrl);
   });
 
-  app.get("/auth/toplevel", async (req, res) => {
+  app.get("/auth/toplevel", (req, res) => {
     res.cookie(app.get("top-level-oauth-cookie"), "1", {
       signed: true,
       httpOnly: true,

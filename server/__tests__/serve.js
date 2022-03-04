@@ -1,6 +1,6 @@
 import path from "path";
 
-export const port = 9528;
+const port = 9528;
 
 /**
  * @param {string} root
