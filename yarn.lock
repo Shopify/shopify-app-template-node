@@ -330,21 +330,12 @@
   resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.17.0.tgz#6658154b0dfcc6ce9427095cb0a3423cf266d1de"
   integrity sha512-Vd6APDtyrCV+RkexqlzJ62iY3pInilGiClknpeK8wBq1suAZBa9A9g7WA0JM0RrjPHCGpG+W7Rb8iJitYYfOuQ==
 
-"@shopify/polaris-tokens@^3.0.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-3.1.0.tgz#1e02974e8640b49678ca88ac0dae1de89ed706d9"
-  integrity sha512-SQPNtoevLxD3y1/nhXkthzhEyWAdi1+muxBn/DCHir1/+R/+1v/hkXDLG5o2X3jxqpnxd1R/rJVh9fMKmfWTyw==
-  dependencies:
-    hsluv "^0.1.0"
-    tslib "^1.14.1"
-
-"@shopify/polaris@^8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-8.2.2.tgz#ec8d615287a4c6c9987c7cb40797c556e95f4034"
-  integrity sha512-GmGbVm7qeSv9KAyGBkQ4+WllNaQrH6UQ2k711maGiL3fXhqIxQjaSck2tGT4MoKOJ8T9M0OyrWfjj4Zz0/D44A==
+"@shopify/polaris@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.0.0.tgz#181b002d142e11cbacb36d4bba3b416b2c149de1"
+  integrity sha512-3hwlezHx2jJDvdsrQh5q2dK//p199LzftxyDomWb6+HyYU+Tp/GxZnC42kB/kfS4lQyGa0/zP8HQDnBc732NCw==
   dependencies:
     "@shopify/polaris-icons" "^4.17.0"
-    "@shopify/polaris-tokens" "^3.0.0"
     "@types/react" "^17.0.19"
     "@types/react-dom" "^17.0.9"
     "@types/react-transition-group" "^4.4.2"
@@ -1476,11 +1467,6 @@ hoist-non-react-statics@^3.3.2:
   dependencies:
     react-is "^16.7.0"
 
-hsluv@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/hsluv/-/hsluv-0.1.0.tgz#29f40d49642bd56dd0c192122abcc723bb5c2d6c"
-  integrity sha512-ERcanKLAszD2XN3Vh5r5Szkrv9q0oSTudmP0rkiKAGM/3NMc9FLmMZBB7TSqTaXJfSDBOreYTfjezCOYbRKqlw==
-
 http-cache-semantics@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
@@ -2540,11 +2526,6 @@ ts-invariant@^0.9.4:
   integrity sha512-63jtX/ZSwnUNi/WhXjnK8kz4cHHpYS60AnmA6ixz17l7E12a5puCWFlNpkne5Rl0J8TBPVHpGjsj4fxs8ObVLQ==
   dependencies:
     tslib "^2.1.0"
-
-tslib@^1.14.1:
-  version "1.14.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
-  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0:
   version "2.3.1"
