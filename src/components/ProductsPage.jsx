@@ -1,8 +1,8 @@
-import {gql, useQuery} from '@apollo/client';
-import {Loading} from '@shopify/app-bridge-react';
-import {Banner, Card, Layout} from '@shopify/polaris';
+import { gql, useQuery } from "@apollo/client";
+import { Loading } from "@shopify/app-bridge-react";
+import { Banner, Card, Layout } from "@shopify/polaris";
 
-import {ProductsList} from './ProductsList';
+import { ProductsList } from "./ProductsList";
 
 const PRODUCTS_QUERY = gql`
   {
@@ -20,7 +20,7 @@ const PRODUCTS_QUERY = gql`
 `;
 
 export function ProductsPage() {
-  const {loading, error, data} = useQuery(PRODUCTS_QUERY);
+  const { loading, error, data } = useQuery(PRODUCTS_QUERY);
 
   if (loading) {
     return <Loading />;
@@ -35,7 +35,7 @@ export function ProductsPage() {
   return (
     <Layout.Section>
       <Card>
-        <ProductsList products={data.products.edges.map(({node}) => node)} />
+        <ProductsList products={data.products.edges.map(({ node }) => node)} />
       </Card>
     </Layout.Section>
   );

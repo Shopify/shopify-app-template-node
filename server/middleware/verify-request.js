@@ -1,4 +1,4 @@
-import {Shopify} from '@shopify/shopify-api';
+import { Shopify } from "@shopify/shopify-api";
 
 const TEST_GRAPHQL_QUERY = `
 {
@@ -7,7 +7,7 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest({isOnline, returnHeader}) {
+export default function verifyRequest({ isOnline, returnHeader }) {
   return async (req, res, next) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, isOnline);
 
@@ -23,9 +23,9 @@ export default function verifyRequest({isOnline, returnHeader}) {
         // make a request to make sure oauth has succeeded, retry otherwise
         const client = new Shopify.Clients.Graphql(
           session.shop,
-          session.accessToken,
+          session.accessToken
         );
-        await client.query({data: TEST_GRAPHQL_QUERY});
+        await client.query({ data: TEST_GRAPHQL_QUERY });
         return next();
       } catch (e) {
         if (e instanceof Shopify.Errors.HttpResponseError && e.code === 401) {
@@ -45,24 +45,24 @@ export default function verifyRequest({isOnline, returnHeader}) {
           const matches = authHeader?.match(/Bearer (.*)/);
           if (matches) {
             const payload = Shopify.Utils.decodeSessionToken(matches[1]);
-            shop = payload.dest.replace('https://', '');
+            shop = payload.dest.replace("https://", "");
           }
         }
       }
 
-      if (!shop || shop === '') {
+      if (!shop || shop === "") {
         return res
           .status(400)
           .send(
-            `Could not find a shop to authenticate with. Make sure you are making your XHR request with App Bridge's authenticatedFetch method.`,
+            `Could not find a shop to authenticate with. Make sure you are making your XHR request with App Bridge's authenticatedFetch method.`
           );
       }
 
       res.status(403);
-      res.header('X-Shopify-API-Request-Failure-Reauthorize', '1');
+      res.header("X-Shopify-API-Request-Failure-Reauthorize", "1");
       res.header(
-        'X-Shopify-API-Request-Failure-Reauthorize-Url',
-        `/auth?shop=${shop}`,
+        "X-Shopify-API-Request-Failure-Reauthorize-Url",
+        `/auth?shop=${shop}`
       );
       res.end();
     } else {

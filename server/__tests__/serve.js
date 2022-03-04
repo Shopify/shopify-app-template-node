@@ -1,4 +1,4 @@
-import path from 'path';
+import path from "path";
 
 export const port = 9528;
 
@@ -9,20 +9,22 @@ export const port = 9528;
 export async function serve(root, isProd) {
   if (isProd) {
     // build first
-    const {build} = await import('vite');
+    const { build } = await import("vite");
     await build({
       root,
-      logLevel: 'silent',
+      logLevel: "silent",
       build: {
-        target: 'esnext',
+        target: "esnext",
         minify: false,
         ssrManifest: true,
-        outDir: 'dist/client',
+        outDir: "dist/client",
       },
     });
   }
 
-  const {createServer} = await import(path.resolve(root, 'server', 'index.js'));
+  const { createServer } = await import(
+    path.resolve(root, "server", "index.js")
+  );
   process.env.PORT = port;
   return await createServer(root, isProd);
 }

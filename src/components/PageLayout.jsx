@@ -1,6 +1,6 @@
-import {Layout, Page} from '@shopify/polaris';
+import { Layout, Page } from "@shopify/polaris";
 
-export function PageLayout({children}) {
+export function PageLayout({ children }) {
   return (
     <Page>
       <Layout>{children}</Layout>

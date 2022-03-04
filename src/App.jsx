@@ -3,19 +3,19 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
-} from '@apollo/client';
+} from "@apollo/client";
 import {
   Provider as AppBridgeProvider,
   useAppBridge,
-} from '@shopify/app-bridge-react';
-import {authenticatedFetch} from '@shopify/app-bridge-utils';
-import {Redirect} from '@shopify/app-bridge/actions';
-import {AppProvider as PolarisProvider} from '@shopify/polaris';
-import translations from '@shopify/polaris/locales/en.json';
-import '@shopify/polaris/build/esm/styles.css';
+} from "@shopify/app-bridge-react";
+import { authenticatedFetch } from "@shopify/app-bridge-utils";
+import { Redirect } from "@shopify/app-bridge/actions";
+import { AppProvider as PolarisProvider } from "@shopify/polaris";
+import translations from "@shopify/polaris/locales/en.json";
+import "@shopify/polaris/build/esm/styles.css";
 
-import {PageLayout} from './components/PageLayout';
-import {ProductsPage} from './components/ProductsPage';
+import { PageLayout } from "./components/PageLayout";
+import { ProductsPage } from "./components/ProductsPage";
 
 export default function App() {
   return (
@@ -23,7 +23,7 @@ export default function App() {
       <AppBridgeProvider
         config={{
           apiKey: process.env.SHOPIFY_API_KEY,
-          host: new URL(location).searchParams.get('host'),
+          host: new URL(location).searchParams.get("host"),
           forceRedirect: true,
         }}
       >
@@ -37,13 +37,13 @@ export default function App() {
   );
 }
 
-function MyProvider({children}) {
+function MyProvider({ children }) {
   const app = useAppBridge();
 
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
-      credentials: 'include',
+      credentials: "include",
       fetch: userLoggedInFetch(app),
     }),
   });
@@ -58,10 +58,10 @@ function userLoggedInFetch(app) {
     const response = await fetchFunction(uri, options);
 
     if (
-      response.headers.get('X-Shopify-API-Request-Failure-Reauthorize') === '1'
+      response.headers.get("X-Shopify-API-Request-Failure-Reauthorize") === "1"
     ) {
       const authUrlHeader = response.headers.get(
-        'X-Shopify-API-Request-Failure-Reauthorize-Url',
+        "X-Shopify-API-Request-Failure-Reauthorize-Url"
       );
 
       const redirect = Redirect.create(app);
