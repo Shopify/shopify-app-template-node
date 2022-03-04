@@ -7,6 +7,7 @@ import { serve } from "../../__tests__/serve";
 import verifyRequest from "../verify-request.js";
 
 describe("verify-request middleware", async () => {
+  // this is only used to grab app wide constants
   const { app } = await serve(process.cwd(), false);
 
   test("should return a function", () => {
@@ -25,7 +26,7 @@ describe("verify-request middleware", async () => {
         returnHeader: true,
       })
     );
-    mockApp.get("/", (_req, res) => {
+    mockApp.get("/", (req, res) => {
       res.status(200).end();
     });
 
