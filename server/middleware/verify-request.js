@@ -1,4 +1,4 @@
-import Shopify from "@shopify/shopify-api";
+import { Shopify } from "@shopify/shopify-api";
 
 const TEST_GRAPHQL_QUERY = `
 {
@@ -14,7 +14,7 @@ export default function verifyRequest({ isOnline, returnHeader }) {
     let shop = req.query.shop;
 
     if (session && shop && session.shop !== shop) {
-      // The current request is for a different shop. Redirect immediately
+      // The current request is for a different shop. Redirect gracefully.
       res.redirect(`/auth?shop=${shop}`);
     }
 
@@ -26,11 +26,9 @@ export default function verifyRequest({ isOnline, returnHeader }) {
           session.accessToken
         );
         await client.query({ data: TEST_GRAPHQL_QUERY });
-
-        await next();
-        return;
+        return next();
       } catch (e) {
-        if (e instanceof HttpResponseError && e.code == 401) {
+        if (e instanceof Shopify.Errors.HttpResponseError && e.code === 401) {
           // We only want to catch 401s here, anything else should bubble up
         } else {
           throw e;
@@ -52,12 +50,21 @@ export default function verifyRequest({ isOnline, returnHeader }) {
         }
       }
 
+      if (!shop || shop === "") {
+        return res
+          .status(400)
+          .send(
+            `Could not find a shop to authenticate with. Make sure you are making your XHR request with App Bridge's authenticatedFetch method.`
+          );
+      }
+
       res.status(403);
       res.header("X-Shopify-API-Request-Failure-Reauthorize", "1");
       res.header(
         "X-Shopify-API-Request-Failure-Reauthorize-Url",
         `/auth?shop=${shop}`
       );
+      res.end();
     } else {
       res.redirect(`/auth?shop=${shop}`);
     }
