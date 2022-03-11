@@ -1,0 +1,1 @@
+export { useAppBridgeRouting } from "./useAppBridgeRouting";

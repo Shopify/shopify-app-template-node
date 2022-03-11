@@ -12,10 +12,10 @@ import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import { AppProvider as PolarisProvider } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
+import { BrowserRouter } from "react-router-dom";
 import "@shopify/polaris/build/esm/styles.css";
 
-import { PageLayout } from "./components/PageLayout";
-import { ProductsPage } from "./components/ProductsPage";
+import Routes from "./components/Routes";
 
 export default function App() {
   return (
@@ -28,9 +28,9 @@ export default function App() {
         }}
       >
         <MyProvider>
-          <PageLayout>
-            <ProductsPage />
-          </PageLayout>
+          <BrowserRouter>
+            <Routes />
+          </BrowserRouter>
         </MyProvider>
       </AppBridgeProvider>
     </PolarisProvider>
