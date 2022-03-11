@@ -1,12 +1,11 @@
 import { Route, Routes as ReactRouterRoutes } from "react-router-dom";
 
-import { AppBridgeRouting } from "./navigation/AppBridgeRouting";
-
+import { useAppBridgeRouting } from "../hooks";
 import { HomePage } from "./pages/HomePage";
 import { ResourcesPage } from "./pages/ResourcesPage";
 import { AboutPage } from "./pages/AboutPage";
 
-const NAVIGATION_LINKS = [
+const ROUTES = [
   {
     label: "Home",
     destination: "/",
@@ -21,15 +20,14 @@ const NAVIGATION_LINKS = [
   },
 ];
 
-export default function Routes() {
+export function Routes() {
+  useAppBridgeRouting(ROUTES);
+
   return (
-    <>
-      <AppBridgeRouting navigation={NAVIGATION_LINKS} />
-      <ReactRouterRoutes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/resources" element={<ResourcesPage />} />
-        <Route path="/about" element={<AboutPage />} />
-      </ReactRouterRoutes>
-    </>
+    <ReactRouterRoutes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/resources" element={<ResourcesPage />} />
+      <Route path="/about" element={<AboutPage />} />
+    </ReactRouterRoutes>
   );
 }

@@ -1,8 +1,18 @@
 import { Card, DescriptionList, Layout, Link, Page } from "@shopify/polaris";
+import { useEffect, useState } from "react";
 
 import { ShopData } from "../ShopData";
 
 export function AboutPage() {
+  const [version, setVersion] = useState("");
+  useEffect(async () => {
+    const shopifyLibData = await import(
+      "../../../node_modules/@shopify/shopify-api/package.json"
+    );
+
+    setVersion(shopifyLibData.version);
+  }, []);
+
   return (
     <Page>
       <Layout>
@@ -13,7 +23,7 @@ export function AboutPage() {
                 items={[
                   {
                     term: "API package version",
-                    description: SHOPIFY_LIBRARY_VERSION,
+                    description: version,
                   },
                   {
                     term: "App repository",

@@ -15,7 +15,7 @@ import translations from "@shopify/polaris/locales/en.json";
 import { BrowserRouter } from "react-router-dom";
 import "@shopify/polaris/build/esm/styles.css";
 
-import Routes from "./components/Routes";
+import { Routes } from "./components/Routes";
 
 export default function App() {
   return (

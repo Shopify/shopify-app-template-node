@@ -38,10 +38,6 @@ export function HomePage() {
                     Shopify's Admin API, and App Bridge - Shopify's library that
                     allows you to expose your app in the Merchant Admin.
                   </p>
-                  <p>
-                    Want to keep learning more? Click on the big red button on
-                    the right
-                  </p>
                 </TextContainer>
               </div>
             </Card>
