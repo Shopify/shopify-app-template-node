@@ -13,8 +13,8 @@ export default function applyAuthMiddleware(app) {
       req,
       res,
       req.query.shop,
-      "/auth/callback",
-      app.get("use-online-tokens")
+      "/install/auth/callback",
+      false
     );
 
     res.redirect(redirectUrl);
@@ -36,6 +36,34 @@ export default function applyAuthMiddleware(app) {
         shop: req.query.shop,
       })
     );
+  });
+
+  app.get("/install/auth/callback", async (req, res) => {
+    if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
+      return res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
+    }
+
+    const session = await Shopify.Auth.validateAuthCallback(
+      req,
+      res,
+      req.query
+    );
+
+    // console.log('-----------------------------------------------')
+    // console.log(session.accessToken)
+    // console.log('-----------------------------------------------')
+
+    // STORE OFFLINE SESSION ACCESS TOKEN HERE
+
+    const redirectUrl = await Shopify.Auth.beginAuth(
+      req,
+      res,
+      req.query.shop,
+      "/auth/callback",
+      app.get("use-online-tokens")
+    );
+
+    res.redirect(redirectUrl);
   });
 
   app.get("/auth/callback", async (req, res) => {
