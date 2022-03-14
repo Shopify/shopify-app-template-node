@@ -54,7 +54,7 @@ export default function applyAuthMiddleware(app) {
     // console.log('-----------------------------------------------')
 
     // STORE OFFLINE SESSION ACCESS TOKEN HERE
-
+    // CRITICAL NOTE: WHITELIST `/install/auth/callback` AS A CALLBACK URI IN THE APP SETTINGS
     const redirectUrl = await Shopify.Auth.beginAuth(
       req,
       res,
