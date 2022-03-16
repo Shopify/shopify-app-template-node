@@ -131,8 +131,16 @@ export async function createServer(
     const serveStatic = await import("serve-static").then(
       ({ default: fn }) => fn
     );
+    const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(resolve("dist/client")));
+    app.use("/*", (req, res, next) => {
+      // Client-side routing will pick up on the correct route to render, so we always render the index here
+      res
+        .status(200)
+        .set("Content-Type", "text/html")
+        .send(fs.readFileSync(`${process.cwd()}/dist/client/index.html`));
+    });
   }
 
   return { app, vite };
