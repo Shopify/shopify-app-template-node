@@ -7,15 +7,19 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest({ isOnline, returnHeader }) {
+export default function verifyRequest(app, { returnHeader = true } = {}) {
   return async (req, res, next) => {
-    const session = await Shopify.Utils.loadCurrentSession(req, res, isOnline);
+    const session = await Shopify.Utils.loadCurrentSession(
+      req,
+      res,
+      app.get("use-online-tokens")
+    );
 
     let shop = req.query.shop;
 
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      res.redirect(`/auth?shop=${shop}`);
+      return res.redirect(`/auth?shop=${shop}`);
     }
 
     if (session?.isActive()) {

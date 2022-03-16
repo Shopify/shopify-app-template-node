@@ -1,7 +1,6 @@
 import { Shopify } from "@shopify/shopify-api";
 
 import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
-import verifyRequest from "./verify-request.js";
 
 export default function applyAuthMiddleware(app) {
   app.get("/auth", async (req, res) => {
@@ -87,12 +86,4 @@ export default function applyAuthMiddleware(app) {
       }
     }
   });
-
-  app.post(
-    "/graphql",
-    verifyRequest({
-      isOnline: app.get("use-online-tokens"),
-      returnHeader: true,
-    })
-  );
 }
