@@ -5,6 +5,7 @@ import {
   TextContainer,
   Image,
   Stack,
+  Link,
 } from "@shopify/polaris";
 
 import trophyImgUrl from "../assets/home-trophy.png";
@@ -22,13 +23,38 @@ export function HomePage() {
                 <TextContainer spacing="loose">
                   <p style={{ marginTop: 20 }}>
                     Your app is ready to explore! It contains everything you
-                    need to get started including the Polaris design system,
-                    Shopify Admin API, and App Bridge UI library and components.
+                    need to get started including the{" "}
+                    <Link url="https://polaris.shopify.com/" external>
+                      Polaris design system
+                    </Link>
+                    ,{" "}
+                    <Link url="https://shopify.dev/api/admin-graphql" external>
+                      Shopify Admin API
+                    </Link>
+                    , and{" "}
+                    <Link
+                      url="https://shopify.dev/apps/tools/app-bridge"
+                      external
+                    >
+                      App Bridge
+                    </Link>{" "}
+                    UI library and components.
                   </p>
 
                   <p>
                     Ready to go? Start populating your app with some sample
-                    products to view and test in your store.
+                    products to view and test in your store.{" "}
+                  </p>
+
+                  <p>
+                    Learn more about building out your app in{" "}
+                    <Link
+                      url="https://shopify.dev/apps/getting-started/add-functionality"
+                      external
+                    >
+                      this Shopify tutorial
+                    </Link>{" "}
+                    📚{" "}
                   </p>
                 </TextContainer>
               </Stack.Item>

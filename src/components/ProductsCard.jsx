@@ -14,6 +14,7 @@ import { userLoggedInFetch } from "../App";
 export function ProductsCard() {
   const [populateProduct] = usePopulateProduct();
   const [productCount, setProductCount] = useState(0);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [hasResults, setHasResults] = useState(false);
 
   const app = useAppBridge();
@@ -53,7 +54,9 @@ export function ProductsCard() {
 
           <Button
             primary
+            loading={buttonLoading}
             onClick={() => {
+              setButtonLoading(true);
               Promise.all(
                 Array.from({ length: 5 }).map(() =>
                   populateProduct({
@@ -65,6 +68,7 @@ export function ProductsCard() {
                   })
                 )
               ).then(() => {
+                setButtonLoading(false);
                 updateProductCount();
                 setHasResults(true);
               });
