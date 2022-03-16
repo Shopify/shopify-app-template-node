@@ -1,6 +1,4 @@
-import { Loading } from "@shopify/app-bridge-react";
 import {
-  Banner,
   Card,
   Page,
   Layout,
