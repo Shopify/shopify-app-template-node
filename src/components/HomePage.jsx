@@ -7,6 +7,8 @@ import {
   Stack,
 } from "@shopify/polaris";
 
+import trophyImgUrl from "../assets/home-trophy.png";
+
 import { ProductsCard } from "./ProductsCard";
 
 export function HomePage() {
@@ -33,7 +35,7 @@ export function HomePage() {
               <Stack.Item>
                 <div style={{ padding: "0 48px 20px 20px" }}>
                   <Image
-                    source="/assets/home-trophy.png"
+                    source={trophyImgUrl}
                     alt="Nice work on building a Shopify app"
                     width={120}
                   />
