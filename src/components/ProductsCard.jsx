@@ -43,14 +43,12 @@ export function ProductsCard() {
             Sample products are created with a default title and price. You can
             remove them at any time.
           </p>
-
           <Heading element="h4">
             TOTAL PRODUCTS
             <DisplayText size="medium">
               <TextStyle variation="strong">{productCount}</TextStyle>
             </DisplayText>
           </Heading>
-
           <Button
             primary
             loading={loading}

@@ -6,6 +6,7 @@ import {
   Image,
   Stack,
   Link,
+  Heading,
 } from "@shopify/polaris";
 
 import trophyImgUrl from "../assets/home-trophy.png";
@@ -17,11 +18,17 @@ export function HomePage() {
     <Page fullWidth>
       <Layout>
         <Layout.Section>
-          <Card sectioned title="Nice work on building a Shopify app 🎉">
-            <Stack wrap={false} spacing="extraTight">
+          <Card sectioned>
+            <Stack
+              wrap={false}
+              spacing="extraTight"
+              distribution="trailing"
+              alignment="center"
+            >
               <Stack.Item fill>
                 <TextContainer spacing="loose">
-                  <p style={{ marginTop: 20 }}>
+                  <Heading>Nice work on building a Shopify app 🎉</Heading>
+                  <p>
                     Your app is ready to explore! It contains everything you
                     need to get started including the{" "}
                     <Link url="https://polaris.shopify.com/" external>
@@ -40,12 +47,10 @@ export function HomePage() {
                     </Link>{" "}
                     UI library and components.
                   </p>
-
                   <p>
                     Ready to go? Start populating your app with some sample
                     products to view and test in your store.{" "}
                   </p>
-
                   <p>
                     Learn more about building out your app in{" "}
                     <Link
@@ -59,7 +64,7 @@ export function HomePage() {
                 </TextContainer>
               </Stack.Item>
               <Stack.Item>
-                <div style={{ padding: "0 48px 20px 20px" }}>
+                <div style={{ padding: "0 20px" }}>
                   <Image
                     source={trophyImgUrl}
                     alt="Nice work on building a Shopify app"
