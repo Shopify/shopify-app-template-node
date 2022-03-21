@@ -39,12 +39,14 @@ export default function applyAuthMiddleware(app) {
 
   app.get("/auth/callback", async (req, res) => {
     try {
+      console.log("Oauth completed!");
       const session = await Shopify.Auth.validateAuthCallback(
         req,
         res,
         req.query
       );
 
+      console.log("Oauth completed 2!");
       const host = req.query.host;
       app.set(
         "active-shopify-shops",
@@ -52,6 +54,7 @@ export default function applyAuthMiddleware(app) {
           [session.shop]: session.scope,
         })
       );
+      console.log(app.get("active-shopify-shops"));
 
       const response = await Shopify.Webhooks.Registry.register({
         shop: session.shop,
@@ -69,6 +72,7 @@ export default function applyAuthMiddleware(app) {
       // Redirect to app with shop parameter upon auth
       res.redirect(`/?shop=${session.shop}&host=${host}`);
     } catch (e) {
+      console.warn(e);
       switch (true) {
         case e instanceof Shopify.Errors.InvalidOAuthError:
           res.status(400);

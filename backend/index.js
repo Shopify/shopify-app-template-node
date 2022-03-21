@@ -95,36 +95,16 @@ export async function createServer(
 
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
+    console.log(app.get("active-shopify-shops"));
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
       res.redirect(`/auth?shop=${shop}`);
     } else {
+      // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       next();
     }
   });
 
-  /**
-   * @type {import('vite').ViteDevServer}
-   */
-  let vite;
-  if (!isProd) {
-    vite = await import("vite").then(({ createServer }) =>
-      createServer({
-        root,
-        logLevel: isTest ? "error" : "info",
-        server: {
-          port: PORT,
-          hmr: {
-            protocol: "ws",
-            host: "localhost",
-            port: 64999,
-            clientPort: 64999,
-          },
-          middlewareMode: "html",
-        },
-      })
-    );
-    app.use(vite.middlewares);
-  } else {
+  if (isProd) {
     const compression = await import("compression").then(
       ({ default: fn }) => fn
     );
@@ -143,7 +123,7 @@ export async function createServer(
     });
   }
 
-  return { app, vite };
+  return { app };
 }
 
 if (!isTest) {
