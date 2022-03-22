@@ -7,6 +7,9 @@ const config = defineConfig({
     "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
   },
   plugins: [react()],
+
+  // TODO: Would this be nicer as a plugin imported from a package?
+  // That way we can update the implementation, without having to update 3P code
   server: {
     proxy: {
       "^/api/.*": {
@@ -22,5 +25,6 @@ const config = defineConfig({
     },
   },
 });
+
 
 export default config;
