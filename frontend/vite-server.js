@@ -9,6 +9,7 @@ async function createServer() {
 
   const vite = await import("vite").then(({ createServer }) =>
     createServer({
+      plugins: [react()],
       root: process.cwd() + "/frontend",
       plugins: [react()],
       define: {
