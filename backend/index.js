@@ -4,6 +4,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import "dotenv/config";
+import proxy from "express-http-proxy";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
@@ -99,12 +100,19 @@ export async function createServer(
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
       res.redirect(`/auth?shop=${shop}`);
     } else {
-      // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       next();
     }
   });
 
-  if (isProd) {
+  if (!isProd) {
+    // proxy the everything
+    app.use(
+      "*",
+      proxy("http://127.0.0.1:3000", {
+        proxyReqPathResolver: (req) => req.originalUrl,
+      })
+    );
+  } else {
     const compression = await import("compression").then(
       ({ default: fn }) => fn
     );
