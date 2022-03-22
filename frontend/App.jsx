@@ -63,7 +63,7 @@ export function userLoggedInFetch(app) {
       );
 
       const redirect = Redirect.create(app);
-      redirect.dispatch(Redirect.Action.APP, authUrlHeader || `/auth`);
+      redirect.dispatch(Redirect.Action.APP, authUrlHeader || `/api/auth`);
       return null;
     }
 
