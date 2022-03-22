@@ -40,6 +40,7 @@ function MyProvider({ children }) {
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
+      uri: "/api/graphql",
       credentials: "include",
       fetch: userLoggedInFetch(app),
     }),

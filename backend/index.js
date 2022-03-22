@@ -29,7 +29,7 @@ Shopify.Context.initialize({
 // persist this object in your app.
 const ACTIVE_SHOPIFY_SHOPS = {};
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
-  path: "/webhooks",
+  path: "/api/webhooks",
   webhookHandler: async (topic, shop, body) =>
     delete ACTIVE_SHOPIFY_SHOPS[shop],
 });
@@ -48,7 +48,7 @@ export async function createServer(
 
   applyAuthMiddleware(app);
 
-  app.post("/webhooks", async (req, res) => {
+  app.post("/api/webhooks", async (req, res) => {
     try {
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
@@ -58,7 +58,7 @@ export async function createServer(
     }
   });
 
-  app.get("/products-count", verifyRequest(app), async (req, res) => {
+  app.get("/api/products-count", verifyRequest(app), async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, true);
     const { Product } = await import(
       `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
@@ -68,7 +68,7 @@ export async function createServer(
     res.status(200).send(countData);
   });
 
-  app.post("/graphql", verifyRequest(app), async (req, res) => {
+  app.post("/api/graphql", verifyRequest(app), async (req, res) => {
     try {
       const response = await Shopify.Utils.graphqlProxy(req, res);
       res.status(200).send(response.body);
@@ -95,9 +95,8 @@ export async function createServer(
 
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
-    console.log(app.get("active-shopify-shops"));
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
-      res.redirect(`/auth?shop=${shop}`);
+      res.redirect(`/api/auth?shop=${shop}`);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       next();
@@ -113,13 +112,13 @@ export async function createServer(
     );
     const fs = await import("fs");
     app.use(compression());
-    app.use(serveStatic(resolve("dist/client")));
+    app.use(serveStatic(resolve("dist/frontend")));
     app.use("/*", (req, res, next) => {
       // Client-side routing will pick up on the correct route to render, so we always render the index here
       res
         .status(200)
         .set("Content-Type", "text/html")
-        .send(fs.readFileSync(`${process.cwd()}/dist/client/index.html`));
+        .send(fs.readFileSync(`${process.cwd()}/dist/frontend/index.html`));
     });
   }
 

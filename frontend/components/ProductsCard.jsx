@@ -19,7 +19,9 @@ export function ProductsCard() {
   const app = useAppBridge();
   const fetch = userLoggedInFetch(app);
   async function updateProductCount() {
-    const { count } = await fetch("/products-count").then((res) => res.json());
+    const { count } = await fetch("/api/products-count").then((res) =>
+      res.json()
+    );
     setProductCount(count);
   }
 

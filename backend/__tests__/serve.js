@@ -17,7 +17,7 @@ export async function serve(root, isProd) {
         target: "esnext",
         minify: false,
         ssrManifest: true,
-        outDir: "dist/client",
+        outDir: "dist/frontend",
       },
     });
   }

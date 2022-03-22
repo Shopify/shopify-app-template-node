@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "npm run build:client",
-    "build:client": "vite build --outDir dist/client",
+    "build:client": "vite build frontend --outDir ../dist/frontend",
     "debug": "node --inspect-brk backend/index.js",
     "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
     "prepare": "husky install",
@@ -36,8 +36,6 @@
     "vite": "^2.8.6"
   },
   "devDependencies": {
-    "cross-fetch": "^3.1.5",
-    "http-proxy": "^1.18.1",
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.0",
