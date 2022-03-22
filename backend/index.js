@@ -107,7 +107,7 @@ export async function createServer(
       res
         .status(200)
         .set("Content-Type", "text/html")
-        .send(fs.readFileSync(DEV_INDEX_PATH));
+        .send(fs.readFileSync(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH));
     }
   });
 
@@ -121,13 +121,13 @@ export async function createServer(
     const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(resolve("dist/frontend")));
-    app.use("/*", (req, res, next) => {
-      // Client-side routing will pick up on the correct route to render, so we always render the index here
-      res
-        .status(200)
-        .set("Content-Type", "text/html")
-        .send(fs.readFileSync(PROD_INDEX_PATH));
-    });
+    // app.use("/*", (req, res, next) => {
+    //   // Client-side routing will pick up on the correct route to render, so we always render the index here
+    //   res
+    //     .status(200)
+    //     .set("Content-Type", "text/html")
+    //     .send(fs.readFileSync(PROD_INDEX_PATH));
+    // });
   }
 
   return { app };
