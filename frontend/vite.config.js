@@ -8,14 +8,19 @@ const config = defineConfig({
   },
   plugins: [react()],
   server: {
-    hmr: {
-      protocol: "ws",
-      host: "localhost",
-      port: 64999,
-      clientPort: 64999,
-    },
+    // hmr: {
+    //   protocol: "ws",
+    //   host: "localhost",
+    //   port: 64999,
+    //   clientPort: 64999,
+    // },
     proxy: {
       "^/api/.*": {
+        target: "http://localhost:8081",
+        changeOrigin: false,
+        secure: true,
+      },
+      "/$": {
         target: "http://localhost:8081",
         changeOrigin: false,
         secure: true,

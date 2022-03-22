@@ -14,6 +14,10 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 const PORT = parseInt(process.env.PORT || "8081", 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
+// TODO: There should be provided by env vars
+const DEV_INDEX_PATH = `${process.cwd()}/frontend/index.html`;
+const PROD_INDEX_PATH = `${process.cwd()}/dist/frontend/index.html`;
+
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
@@ -90,7 +94,7 @@ export async function createServer(
     next();
   });
 
-  app.use("/*", (req, res, next) => {
+  app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
 
     // Detect whether we need to reinstall the app, any request from Shopify will
@@ -99,7 +103,11 @@ export async function createServer(
       res.redirect(`/api/auth?shop=${shop}`);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
-      next();
+      const fs = await import("fs");
+      res
+        .status(200)
+        .set("Content-Type", "text/html")
+        .send(fs.readFileSync(DEV_INDEX_PATH));
     }
   });
 
@@ -118,7 +126,7 @@ export async function createServer(
       res
         .status(200)
         .set("Content-Type", "text/html")
-        .send(fs.readFileSync(`${process.cwd()}/dist/frontend/index.html`));
+        .send(fs.readFileSync(PROD_INDEX_PATH));
     });
   }
 
