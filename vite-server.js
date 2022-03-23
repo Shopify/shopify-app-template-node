@@ -1,6 +1,9 @@
 import express from "express";
-import "dotenv/config";
 import react from "@vitejs/plugin-react";
+import dotenv from "dotenv";
+
+// The .env file will actually be present in the parent repo
+dotenv.config({ path: "../.env" });
 
 const PORT = 3000;
 
