@@ -6,7 +6,6 @@
     "build:client": "vite build frontend --outDir ../dist/frontend",
     "debug": "node --inspect-brk backend/index.js",
     "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
-    "prepare": "husky install",
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=production node backend/index.js",
     "start": "npm run serve",
@@ -22,24 +21,18 @@
     "@shopify/app-bridge-react": "^2.0.19",
     "@shopify/app-bridge-utils": "^2.0.19",
     "@shopify/polaris": "^9.2.2",
-    "@shopify/shopify-api": "^3.0.0-rc.1",
     "@vitejs/plugin-react": "1.2.0",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "graphql": "^16.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "serve-static": "^1.14.1",
     "vite": "^2.8.6"
   },
   "devDependencies": {
-    "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.0",
-    "pretty-quick": "^3.1.3",
     "supertest": "^6.2.2",
     "vitest": "^0.7.0"
   }
