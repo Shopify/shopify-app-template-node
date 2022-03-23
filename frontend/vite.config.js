@@ -17,7 +17,8 @@ const config = defineConfig({
       clientPort: 64999,
     },
     host: "127.0.0.1",
-    origin: "http://127.0.0.1:3000",
+    port: 3001,
+    origin: "http://127.0.0.1:3001",
     cors: false,
   },
   // server: {

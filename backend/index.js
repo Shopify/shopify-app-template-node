@@ -96,7 +96,6 @@ export async function createServer(
 
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
-    console.log(app.get("active-shopify-shops"));
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
       res.redirect(`/auth?shop=${shop}`);
     } else {
@@ -108,7 +107,7 @@ export async function createServer(
     // proxy the everything
     app.use(
       "*",
-      proxy("http://127.0.0.1:3000", {
+      proxy("http://127.0.0.1:3001", {
         proxyReqPathResolver: (req) => req.originalUrl,
       })
     );
