@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import react from "@vitejs/plugin-react";
 
 const PORT = 3000;
 
@@ -9,6 +10,7 @@ async function createServer() {
   const vite = await import("vite").then(({ createServer }) =>
     createServer({
       root: process.cwd() + "/frontend",
+      plugins: [react()],
       define: {
         "process.env.SHOPIFY_API_KEY": JSON.stringify(
           process.env.SHOPIFY_API_KEY
