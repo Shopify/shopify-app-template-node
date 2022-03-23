@@ -9,7 +9,7 @@ async function createServer() {
 
   const vite = await import("vite").then(({ createServer }) =>
     createServer({
-      root: process.cwd() + "/frontend",
+      root: process.cwd(),
       plugins: [react()],
       define: {
         "process.env.SHOPIFY_API_KEY": JSON.stringify(

@@ -2,14 +2,8 @@
   "name": "shopify-app-node",
   "private": true,
   "scripts": {
-    "build": "npm run build:client",
-    "build:client": "vite build frontend --outDir ../dist/frontend",
-    "debug": "node --inspect-brk backend/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
-    "preserve": "npm run build",
-    "serve": "cross-env NODE_ENV=production node backend/index.js",
-    "start": "npm run serve",
-    "test": "vitest --reporter=verbose"
+    "build": "vite build --outDir ../dist",
+    "dev": "cross-env NODE_ENV=development node vite-server.js"
   },
   "type": "module",
   "engines": {
@@ -31,9 +25,6 @@
     "vite": "^2.8.6"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15",
-    "prettier": "^2.6.0",
-    "supertest": "^6.2.2",
-    "vitest": "^0.7.0"
+    "prettier": "^2.6.0"
   }
 }
