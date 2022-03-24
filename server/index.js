@@ -77,6 +77,8 @@ export async function createServer(
     }
   });
 
+  app.use(express.json())
+
   app.use((req, res, next) => {
     const shop = req.query.shop;
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {
