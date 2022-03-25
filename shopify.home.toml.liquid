@@ -1,0 +1,14 @@
+[commands]
+build = "{{dependency_manager}} build"
+dev = "{{dependency_manager}} dev"
+
+[[prompts]]
+id = "hotdog"
+message = "Is a hot dog a sandwich?"
+type = "select"
+choices = ["Yes", "No", "Actually, it's a taco"]
+
+[[prompts]]
+id = "fruits"
+message = "What's your favorite fruit"
+type = "input"
