@@ -77,7 +77,7 @@ export async function createServer(
     }
   });
 
-  app.use(express.json())
+  app.use(express.json());
 
   app.use((req, res, next) => {
     const shop = req.query.shop;

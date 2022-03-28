@@ -343,10 +343,10 @@
     lodash "^4.17.4"
     react-transition-group "^4.4.2"
 
-"@shopify/shopify-api@^3.0.0-rc.1":
-  version "3.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@shopify/shopify-api/-/shopify-api-3.0.0-rc.1.tgz#bfcf755c5cf5a9b1b17fc308ae608f355596f77e"
-  integrity sha512-LkmlyGSBbg8xGuHqFiAZ3uIoEaCxFZ38TuX7tFUaT2L6xga7ZFHi3q3b4T3vc33MN8yACllRIL5M5CPq8ywN5g==
+"@shopify/shopify-api@^3.0.0-rc.2":
+  version "3.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@shopify/shopify-api/-/shopify-api-3.0.0-rc.2.tgz#906d617de68a5b3541e002a4cb8e1922a8bd1abe"
+  integrity sha512-7iCTRj6T/IRNxU+mcCyqTMgMcb9lZSU/YgZptjdag5k4KuLs8Ud30019bNrYXGFTSWhVTKuR15ZPq89Z/Dj68Q==
   dependencies:
     "@shopify/network" "^1.5.1"
     "@types/jsonwebtoken" "^8.5.0"
