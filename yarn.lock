@@ -313,10 +313,10 @@
   dependencies:
     "@shopify/app-bridge" "^2.0.19"
 
-"@shopify/app-bridge@^2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.19.tgz#e44829f60818fa8a6d875b686ea0b636e8c44c91"
-  integrity sha512-7l7BvfugmQ6nOP7LX/6UWbDKsZSUpoIgwqifTPJqIGnT+eK5XOcENwGF4HktFYzondDsBZs7rWh+FohepO+K4w==
+"@shopify/app-bridge@^2.0.19", "@shopify/app-bridge@^2.0.21":
+  version "2.0.21"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.21.tgz#4fcd5bc85ab10ffc189889ba338acfaa329e34e7"
+  integrity sha512-X7GpBcMKic+9/j9nAadALqSStVSs9aoKBG0/jyYEQlcY4HwUQLJC5SrXubWQMskRQ19F8Oz2o2VcQT/zjTKJqg==
   dependencies:
     base64url "^3.0.1"
 
