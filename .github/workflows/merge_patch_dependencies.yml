@@ -22,11 +22,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               event: 'APPROVE',
-            })
-
-            await github.rest.pulls.merge({
-              merge_method: "merge",
-              owner: repository.owner,
-              pull_number: pullRequest.number,
-              repo: repository.repo,
+              body: '@dependabot merge',
             })
