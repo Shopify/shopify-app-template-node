@@ -21,7 +21,7 @@ describe("shopify-app-node server", async () => {
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(200);
-  });
+  }, 10000);
 
   test("redirects to auth if the app needs to be [re]installed", async () => {
     const response = await request(app)
