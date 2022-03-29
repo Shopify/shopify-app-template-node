@@ -7,15 +7,19 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest({ isOnline, returnHeader }) {
+export default function verifyRequest(app, { returnHeader = true } = {}) {
   return async (req, res, next) => {
-    const session = await Shopify.Utils.loadCurrentSession(req, res, isOnline);
+    const session = await Shopify.Utils.loadCurrentSession(
+      req,
+      res,
+      app.get("use-online-tokens")
+    );
 
     let shop = req.query.shop;
 
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      res.redirect(`/auth?shop=${shop}`);
+      return res.redirect(`/auth?shop=${shop}`);
     }
 
     if (session?.isActive()) {
@@ -28,7 +32,10 @@ export default function verifyRequest({ isOnline, returnHeader }) {
         await client.query({ data: TEST_GRAPHQL_QUERY });
         return next();
       } catch (e) {
-        if (e instanceof Shopify.Errors.HttpResponseError && e.code === 401) {
+        if (
+          e instanceof Shopify.Errors.HttpResponseError &&
+          e.response.code === 401
+        ) {
           // We only want to catch 401s here, anything else should bubble up
         } else {
           throw e;

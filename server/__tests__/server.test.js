@@ -14,6 +14,15 @@ describe("shopify-app-node server", async () => {
     expect(response.status).toEqual(200);
   });
 
+  test("properly handles nested routes in production mode", async () => {
+    const { app: productionApp } = await serve(process.cwd(), true);
+    const response = await request(productionApp)
+      .get("/something")
+      .set("Accept", "text/html");
+
+    expect(response.status).toEqual(200);
+  }, 10000);
+
   test("redirects to auth if the app needs to be [re]installed", async () => {
     const response = await request(app)
       .get("/?shop=test-shop")

@@ -6,6 +6,7 @@ import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import "dotenv/config";
 
 import applyAuthMiddleware from "./middleware/auth.js";
+import verifyRequest from "./middleware/verify-request.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -18,7 +19,7 @@ Shopify.Context.initialize({
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
   SCOPES: process.env.SCOPES.split(","),
   HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
-  API_VERSION: ApiVersion.Unstable,
+  API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
@@ -58,7 +59,17 @@ export async function createServer(
     }
   });
 
-  app.post("/graphql", async (req, res) => {
+  app.get("/products-count", verifyRequest(app), async (req, res) => {
+    const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+    const { Product } = await import(
+      `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
+    );
+
+    const countData = await Product.count({ session });
+    res.status(200).send(countData);
+  });
+
+  app.post("/graphql", verifyRequest(app), async (req, res) => {
     try {
       const response = await Shopify.Utils.graphqlProxy(req, res);
       res.status(200).send(response.body);
@@ -66,6 +77,8 @@ export async function createServer(
       res.status(500).send(error.message);
     }
   });
+
+  app.use(express.json());
 
   app.use((req, res, next) => {
     const shop = req.query.shop;
@@ -121,8 +134,16 @@ export async function createServer(
     const serveStatic = await import("serve-static").then(
       ({ default: fn }) => fn
     );
+    const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(resolve("dist/client")));
+    app.use("/*", (req, res, next) => {
+      // Client-side routing will pick up on the correct route to render, so we always render the index here
+      res
+        .status(200)
+        .set("Content-Type", "text/html")
+        .send(fs.readFileSync(`${process.cwd()}/dist/client/index.html`));
+    });
   }
 
   return { app, vite };

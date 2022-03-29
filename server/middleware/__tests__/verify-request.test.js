@@ -11,21 +11,12 @@ describe("verify-request middleware", async () => {
   const { app } = await serve(process.cwd(), false);
 
   test("should return a function", () => {
-    expect(verifyRequest({})).toBeInstanceOf(Function);
-  });
-
-  test("requires named parameters object to be passed in", () => {
-    expect(() => verifyRequest()).toThrow();
+    expect(verifyRequest(app, {})).toBeInstanceOf(Function);
   });
 
   describe("with a Session & returnHeader enabled", async () => {
     const mockApp = express();
-    mockApp.use(
-      verifyRequest({
-        isOnline: app.get("use-online-tokens"),
-        returnHeader: true,
-      })
-    );
+    mockApp.use(verifyRequest(app));
     mockApp.get("/", (req, res) => {
       res.status(200).end();
     });
@@ -95,8 +86,7 @@ describe("verify-request middleware", async () => {
   test("inactive session without returnHeader redirects to /auth", async () => {
     const mockApp = express();
     mockApp.use(
-      verifyRequest({
-        isOnline: app.get("use-online-tokens"),
+      verifyRequest(app, {
         returnHeader: false,
       })
     );
@@ -127,8 +117,12 @@ describe("verify-request middleware", async () => {
       "state",
       app.get("use-online-tokens")
     );
+    vi.spyOn(Shopify.Utils, "loadCurrentSession").mockImplementationOnce(
+      () => session
+    );
+
     const mockApp = express();
-    mockApp.use(verifyRequest({ isOnline: app.get("use-online-tokens") }));
+    mockApp.use(verifyRequest(app));
     mockApp.get("/", (req, res) => {
       res.status(200).end();
     });
