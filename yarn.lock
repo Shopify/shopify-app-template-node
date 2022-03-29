@@ -2626,7 +2626,7 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-vite@^2.7.10, vite@^2.8.6:
+vite@^2.8.6:
   version "2.8.6"
   resolved "https://registry.yarnpkg.com/vite/-/vite-2.8.6.tgz#32d50e23c99ca31b26b8ccdc78b1d72d4d7323d3"
   integrity sha512-e4H0QpludOVKkmOsRyqQ7LTcMUDF3mcgyNU4lmi0B5JUbe0ZxeBBl8VoZ8Y6Rfn9eFKYtdXNPcYK97ZwH+K2ug==
@@ -2638,10 +2638,10 @@ vite@^2.7.10, vite@^2.8.6:
   optionalDependencies:
     fsevents "~2.3.2"
 
-vitest@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/vitest/-/vitest-0.7.0.tgz#bc8f0f1cb00d6fea819efe3fe11e0a4a27d0d3e9"
-  integrity sha512-qLq4VEWJRyhscfzjhlNA+mrCrBQ2Vh7M9ew90yudOfoNUT0ilmFdRriRMN8m8BkKw/7txoTvT1X3oQB7B4Pk3A==
+vitest@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/vitest/-/vitest-0.8.0.tgz#fffd4d1334268a7311c0bfd891a68263a5cb206f"
+  integrity sha512-8m8OufAQWXlNpjm5dTe5Lc60zruguKJljunveueYrd4aoeXaQvggLX0SPmIW3G6PDtnBdNEynSi+6pibjnutQA==
   dependencies:
     "@types/chai" "^4.3.0"
     "@types/chai-subset" "^1.3.3"
@@ -2649,7 +2649,7 @@ vitest@^0.7.0:
     local-pkg "^0.4.1"
     tinypool "^0.1.2"
     tinyspy "^0.3.0"
-    vite "^2.7.10"
+    vite "^2.8.6"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
