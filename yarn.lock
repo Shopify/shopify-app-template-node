@@ -306,17 +306,17 @@
   dependencies:
     "@shopify/app-bridge" "^2.0.19"
 
-"@shopify/app-bridge-utils@^2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@shopify/app-bridge-utils/-/app-bridge-utils-2.0.19.tgz#4b2af17f597fa528a4e20729fd78d491a980355f"
-  integrity sha512-cRHKipjon08fP0b7gLKGEApnFTCDATUlyNM7UCNcMmDpjKLvJlug60WjieSU3Iekot57+jiTwIqryILuN2ShrA==
+"@shopify/app-bridge-utils@^2.0.21":
+  version "2.0.21"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge-utils/-/app-bridge-utils-2.0.21.tgz#b4d4d6b663e4ecba6b7a546c351b8d58e24247be"
+  integrity sha512-sInEoMmYXywSrXf8b3TowfGa4hh9ewkQtMA1TesVWxyDUnjBoOUli6synxzW+56V0H0xtCgc9tQCgwAHPoYMQg==
   dependencies:
-    "@shopify/app-bridge" "^2.0.19"
+    "@shopify/app-bridge" "^2.0.21"
 
-"@shopify/app-bridge@^2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.19.tgz#e44829f60818fa8a6d875b686ea0b636e8c44c91"
-  integrity sha512-7l7BvfugmQ6nOP7LX/6UWbDKsZSUpoIgwqifTPJqIGnT+eK5XOcENwGF4HktFYzondDsBZs7rWh+FohepO+K4w==
+"@shopify/app-bridge@^2.0.19", "@shopify/app-bridge@^2.0.21":
+  version "2.0.21"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.21.tgz#4fcd5bc85ab10ffc189889ba338acfaa329e34e7"
+  integrity sha512-X7GpBcMKic+9/j9nAadALqSStVSs9aoKBG0/jyYEQlcY4HwUQLJC5SrXubWQMskRQ19F8Oz2o2VcQT/zjTKJqg==
   dependencies:
     base64url "^3.0.1"
 
@@ -2081,10 +2081,10 @@ prepend-http@^2.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
-prettier@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.0.tgz#12f8f504c4d8ddb76475f441337542fa799207d4"
-  integrity sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==
+prettier@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.1.tgz#d472797e0d7461605c1609808e27b80c0f9cfe17"
+  integrity sha512-8UVbTBYGwN37Bs9LERmxCPjdvPxlEowx2urIL6urHzdb3SDq4B/Z6xLFCblrSnE4iKWcS6ziJ3aOYrc1kz/E2A==
 
 pretty-quick@^3.1.3:
   version "3.1.3"
