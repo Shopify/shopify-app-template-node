@@ -1,0 +1,4 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Shopify/shopify-app-node
+	branch = paulo/spike_frontend_only
