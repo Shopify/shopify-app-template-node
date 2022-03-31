@@ -16,6 +16,7 @@ jobs:
         if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
         uses: actions/github-script@v5
         with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
           script: |
             await github.rest.pulls.createReview({
               pull_number: context.issue.number,
