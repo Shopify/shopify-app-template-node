@@ -1,11 +1,6 @@
 
 [[prompts]]
-id = "hotdog"
-message = "Is a hot dog a sandwich?"
+id = "query"
+message = "What do you want to use to query Admin data?"
 type = "select"
-choices = ["Yes", "No", "Actually, it's a taco"]
-
-[[prompts]]
-id = "fruits"
-message = "What's your favorite fruit"
-type = "input"
+choices = ["React Query", "Apollo",]
