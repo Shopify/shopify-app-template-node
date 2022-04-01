@@ -6,7 +6,6 @@
     "build:client": "vite build frontend --outDir ../dist/frontend",
     "debug": "node --inspect-brk backend/index.js",
     "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
-    "prepare": "husky install",
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=production node backend/index.js",
     "start": "npm run serve",
@@ -36,7 +35,6 @@
     "vite": "^2.8.6"
   },
   "devDependencies": {
-    "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.0",
     "pretty-quick": "^3.1.3",
