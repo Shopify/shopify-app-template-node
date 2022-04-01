@@ -6,6 +6,10 @@ dotenv.config({ path: "../.env" });
 
 export const PORT = 3000;
 
+// prettier-ignore
+const INDEX_ROUTE = "^/(\\?.*)?$";
+const API_ROUTE = "^/api/";
+
 export default defineConfig({
   root: process.cwd(),
   define: {
@@ -24,13 +28,13 @@ export default defineConfig({
       clientPort: 64999,
     },
     proxy: {
-      "^/api/.*": {
+      [INDEX_ROUTE]: {
         target: "http://127.0.0.1:8081",
         changeOrigin: false,
         secure: true,
         ws: false,
       },
-      "^/$": {
+      [API_ROUTE]: {
         target: "http://127.0.0.1:8081",
         changeOrigin: false,
         secure: true,
