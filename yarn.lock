@@ -330,10 +330,10 @@
   resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.17.0.tgz#6658154b0dfcc6ce9427095cb0a3423cf266d1de"
   integrity sha512-Vd6APDtyrCV+RkexqlzJ62iY3pInilGiClknpeK8wBq1suAZBa9A9g7WA0JM0RrjPHCGpG+W7Rb8iJitYYfOuQ==
 
-"@shopify/polaris@^9.2.2":
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.2.2.tgz#91bdb2f4d7971e3c762cf1022d97345c50de6cd8"
-  integrity sha512-AerqBMV3NcRa9efH6BubM2oKubkjA9Or8B4w4otTmW8SCYR0cPbFE+u6ZH16ty3cqS3xeZ7UlJv/4Z8jEXYlEw==
+"@shopify/polaris@^9.2.3":
+  version "9.2.3"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.2.3.tgz#a65a6b2501291f42f8e3312478e3ba9b03d6c3f9"
+  integrity sha512-C7kh2oHuGEGV1kKnNHNp9LGRICLOn/+QyoCAsYCFSGEGgMIpoERMmGxjcY/rpYekZ28JT6KrDWKiuZGqxWxHzw==
   dependencies:
     "@shopify/polaris-icons" "^4.17.0"
     "@types/react" "^17.0.19"
@@ -1811,11 +1811,6 @@ methods@^1.1.2, methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
-
-mime-db@1.51.0:
-  version "1.51.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.51.0.tgz#d9ff62451859b18342d960850dc3cfb77e63fb0c"
-  integrity sha512-5y8A56jg7XVQx2mbv1lu49NR4dokRnhZYTtL+KGfaa27uq4pSTXkwQkFJl4pkRMyNFz/EtYDSkiiEHx3F7UN6g==
 
 mime-db@1.52.0, "mime-db@>= 1.43.0 < 2":
   version "1.52.0"
