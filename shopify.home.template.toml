@@ -1,6 +1,0 @@
-
-[[prompts]]
-id = "query"
-message = "What do you want to use to query Admin data?"
-type = "select"
-choices = ["React Query", "Apollo",]
