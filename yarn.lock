@@ -299,12 +299,12 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@shopify/app-bridge-react@^2.0.22":
-  version "2.0.22"
-  resolved "https://registry.yarnpkg.com/@shopify/app-bridge-react/-/app-bridge-react-2.0.22.tgz#c44f689d77b6e923648915b5e5c031a6b27df26a"
-  integrity sha512-LJBiCcoPHb6ycdjfTFkWBj8QQJMOvue8S2Hykk/FjuC6n9YicogTJORUGN1HEL+fUo6HgYY3SbzMFfboLNPyeA==
+"@shopify/app-bridge-react@^2.0.24":
+  version "2.0.24"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge-react/-/app-bridge-react-2.0.24.tgz#c7493a4befa7981270319e1989938fa3b927738e"
+  integrity sha512-bdTe9TDZcBvuGA4gyXAfyqb1EUpUQkYqu1wkOZ5F324cUeWzKBKyee9LX7aAXMmNzBTBuzu0JU05THf6s298aQ==
   dependencies:
-    "@shopify/app-bridge" "^2.0.22"
+    "@shopify/app-bridge" "^2.0.24"
 
 "@shopify/app-bridge-utils@^2.0.23":
   version "2.0.23"
@@ -313,10 +313,10 @@
   dependencies:
     "@shopify/app-bridge" "^2.0.23"
 
-"@shopify/app-bridge@^2.0.22", "@shopify/app-bridge@^2.0.23":
-  version "2.0.23"
-  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.23.tgz#67c78fff63408827289fbbdac126eee661030d5d"
-  integrity sha512-298g9OUpJp17ind+nnSheXeIyGE6EydwiVvXJQLsTq86BexYO0vIDN0u9CG67FS2fyRs3vddER/qoEaXyLX7vg==
+"@shopify/app-bridge@^2.0.22", "@shopify/app-bridge@^2.0.23", "@shopify/app-bridge@^2.0.24":
+  version "2.0.24"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.24.tgz#cdf5a1289cb11f785dfb3c3bb70396a0e13e5067"
+  integrity sha512-XFkMAd2FWTR1Ls+oCDt7MTy5IvHxgAVzp3FiggtnApsmZ8oQIaMPv51ZFIeDWuzxZxHDuMbJhMJCLsV9Ojm4cw==
   dependencies:
     base64url "^3.0.1"
 
