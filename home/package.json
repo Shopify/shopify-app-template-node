@@ -1,5 +1,5 @@
 {
-  "name": "shopify-app-node",
+  "name": "starter-node-app",
   "private": true,
   "scripts": {
     "build": "npm run build:client",
