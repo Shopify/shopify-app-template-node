@@ -14,6 +14,20 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Approve and merge Dependabot PRs for patch versions
         if: ${{github.event.workflow_run.conclusion == 'success' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
-        uses: ridedott/merge-me-action@v2
+        uses: actions/github-script@v5
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            await github.rest.pulls.createReview({
+              pull_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event: 'APPROVE',
+            })
+
+            await github.rest.pulls.merge({
+              merge_method: "merge",
+              owner: repository.owner,
+              pull_number: pullRequest.number,
+              repo: repository.repo,
+            })
