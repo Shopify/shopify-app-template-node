@@ -1,0 +1,19 @@
+{
+  "name": "my-shopify-node-app",
+  "version": "0.1.0",
+  "main": "home/index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "shopify": "shopify",
+    "build": "shopify app build",
+    "dev": "shopify app dev",
+    "push": "shopify app push",
+    "scaffold": "shopify app scaffold",
+    "deploy": "shopify app deploy"
+  },
+  "dependencies": {
+    "@shopify/cli": "1.0.9",
+    "@shopify/app": "1.0.9",
+    "react": "17.0.2"
+  }
+}
