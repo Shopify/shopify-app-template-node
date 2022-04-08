@@ -22,7 +22,7 @@ Using the [Shopify CLI](https://github.com/Shopify/shopify-cli) run:
 shopify app create node -n APP_NAME
 ```
 
-Or, you can run `npx degit shopify/shopify-app-node` and create a `.env` file containing the following values:
+Or, you can run `npx degit shopify/starter-node-app` and create a `.env` file containing the following values:
 
 ```yaml
 SHOPIFY_API_KEY={api key}           # Your API key

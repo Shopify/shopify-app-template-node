@@ -5,7 +5,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { serve } from "./serve.js";
 
-describe("shopify-app-node server", async () => {
+describe("starter-node-app server", async () => {
   const { app } = await serve(process.cwd(), false);
 
   test("loads html on /", async () => {
@@ -34,7 +34,7 @@ describe("shopify-app-node server", async () => {
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(302);
-    expect(response.headers.location).toEqual("/auth?shop=test-shop");
+    expect(response.headers.location).toEqual("/api/auth?shop=test-shop");
   });
 
   describe("content-security-policy", () => {
@@ -74,7 +74,9 @@ describe("shopify-app-node server", async () => {
   });
 
   test("goes to top level auth in oauth flow when there is no cookie", async () => {
-    const response = await request(app).get("/auth").set("Accept", "text/html");
+    const response = await request(app)
+      .get("/api/auth")
+      .set("Accept", "text/html");
 
     expect(response.status).toEqual(302);
     expect(response.headers.location).toContain(`/auth/toplevel`);
@@ -82,7 +84,7 @@ describe("shopify-app-node server", async () => {
 
   test("renders toplevel auth page", async () => {
     const response = await request(app)
-      .get("/auth/toplevel?shop=test-shop")
+      .get("/api/auth/toplevel?shop=test-shop")
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(200);
@@ -91,10 +93,10 @@ describe("shopify-app-node server", async () => {
 
   test("goes through oauth flow if there is a top level cookie", async () => {
     // get a signed top level cookie from the headers
-    const { headers } = await request(app).get("/auth/toplevel");
+    const { headers } = await request(app).get("/api/auth/toplevel");
 
     const response = await request(app)
-      .get("/auth")
+      .get("/api/auth")
       .set("Cookie", ...headers["set-cookie"]);
 
     expect(response.status).toEqual(302);
@@ -118,7 +120,7 @@ describe("shopify-app-node server", async () => {
       );
 
       const response = await request(app).get(
-        "/auth/callback?host=test-shop-host&shop=test-shop"
+        "/api/auth/callback?host=test-shop-host&shop=test-shop"
       );
 
       expect(validateAuthCallback).toHaveBeenLastCalledWith(
@@ -146,7 +148,7 @@ describe("shopify-app-node server", async () => {
       );
 
       const response = await request(app).get(
-        "/auth/callback?host=test-shop-host"
+        "/api/auth/callback?host=test-shop-host"
       );
 
       expect(response.status).toEqual(400);
@@ -161,11 +163,11 @@ describe("shopify-app-node server", async () => {
       );
 
       const response = await request(app).get(
-        "/auth/callback?host=test-shop-host&shop=test-shop"
+        "/api/auth/callback?host=test-shop-host&shop=test-shop"
       );
 
       expect(response.status).toEqual(302);
-      expect(response.headers.location).toEqual("/auth?shop=test-shop");
+      expect(response.headers.location).toEqual("/api/auth?shop=test-shop");
     });
 
     test("redirects to auth if session is not found", async () => {
@@ -176,11 +178,11 @@ describe("shopify-app-node server", async () => {
       );
 
       const response = await request(app).get(
-        "/auth/callback?host=test-shop-host&shop=test-shop"
+        "/api/auth/callback?host=test-shop-host&shop=test-shop"
       );
 
       expect(response.status).toEqual(302);
-      expect(response.headers.location).toEqual("/auth?shop=test-shop");
+      expect(response.headers.location).toEqual("/api/auth?shop=test-shop");
     });
 
     test("returns a 500 error otherwise", async () => {
@@ -191,7 +193,7 @@ describe("shopify-app-node server", async () => {
       );
 
       const response = await request(app).get(
-        "/auth/callback?host=test-shop-host&shop=test-shop"
+        "/api/auth/callback?host=test-shop-host&shop=test-shop"
       );
 
       expect(response.status).toEqual(500);
@@ -204,12 +206,12 @@ describe("shopify-app-node server", async () => {
 
     test("processes webhooks", async () => {
       Shopify.Webhooks.Registry.addHandler("TEST_HELLO", {
-        path: "/webhooks",
+        path: "/api/webhooks",
         webhookHandler: () => {},
       });
 
       const response = await request(app)
-        .post("/webhooks")
+        .post("/api/webhooks")
         .set(
           "X-Shopify-Hmac-Sha256",
           createHmac("sha256", Shopify.Context.API_SECRET_KEY)
@@ -229,7 +231,7 @@ describe("shopify-app-node server", async () => {
         throw new Error("test 500 response");
       });
 
-      const response = await request(app).post("/webhooks");
+      const response = await request(app).post("/api/webhooks");
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain("test 500 response");
@@ -237,7 +239,7 @@ describe("shopify-app-node server", async () => {
   });
 
   describe("graphql proxy", () => {
-    vi.mock(`${process.cwd()}/server/middleware/verify-request.js`, () => ({
+    vi.mock(`${process.cwd()}/backend/middleware/verify-request.js`, () => ({
       default: vi.fn(() => (req, res, next) => {
         next();
       }),
@@ -254,7 +256,7 @@ describe("shopify-app-node server", async () => {
         body,
       }));
 
-      const response = await request(app).post("/graphql").send({
+      const response = await request(app).post("/api/graphql").send({
         query: "{hello}",
       });
 
@@ -268,7 +270,7 @@ describe("shopify-app-node server", async () => {
         throw new Error("test 500 response");
       });
 
-      const response = await request(app).post("/graphql");
+      const response = await request(app).post("/api/graphql");
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain("test 500 response");

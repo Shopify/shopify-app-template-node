@@ -70,7 +70,7 @@ describe("verify-request middleware", async () => {
       ).toBe("1");
       expect(
         response.headers["x-shopify-api-request-failure-reauthorize-url"]
-      ).toBe(`/auth?shop=test-shop`);
+      ).toBe(`/api/auth?shop=test-shop`);
     });
 
     test("throws a useful error when: returnHeader && IS_EMBEDDED_APP && !shop && !session && !authHeader.match(/Bearer /)", async () => {
@@ -132,6 +132,6 @@ describe("verify-request middleware", async () => {
     });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toEqual(`/auth?shop=test-shop`);
+    expect(response.headers.location).toEqual(`/api/auth?shop=test-shop`);
   });
 });
