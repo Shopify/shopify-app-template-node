@@ -325,17 +325,17 @@
   resolved "https://registry.yarnpkg.com/@shopify/network/-/network-1.6.4.tgz#fdfa8379cb6e06f05ee63d24aafcd6f8e275cb34"
   integrity sha512-V+//Et386LnYdtNhQ3e33AKYfU25XEt8H5XYeMqPvJZpVvC9Z1lHKQMpmM/zq13VXjPUjt9/sNxHxMP3I6cbJg==
 
-"@shopify/polaris-icons@^4.17.0":
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.17.0.tgz#6658154b0dfcc6ce9427095cb0a3423cf266d1de"
-  integrity sha512-Vd6APDtyrCV+RkexqlzJ62iY3pInilGiClknpeK8wBq1suAZBa9A9g7WA0JM0RrjPHCGpG+W7Rb8iJitYYfOuQ==
+"@shopify/polaris-icons@^4.18.2":
+  version "4.18.4"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.18.4.tgz#ac6be7d997e5604cfe19b65e3e33e5ce75be6b0b"
+  integrity sha512-nLObr1ICZHmrMh1dEfNVUbcSdQgkPyQarzKZStSJ8nkKFF9MdPXCH7DGiAwxSBqGFC19qRQTpPpRNRr5ovJiWw==
 
-"@shopify/polaris@^9.2.2":
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.2.2.tgz#91bdb2f4d7971e3c762cf1022d97345c50de6cd8"
-  integrity sha512-AerqBMV3NcRa9efH6BubM2oKubkjA9Or8B4w4otTmW8SCYR0cPbFE+u6ZH16ty3cqS3xeZ7UlJv/4Z8jEXYlEw==
+"@shopify/polaris@^9.3.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.3.0.tgz#239ed825692b966dc58dd8b247a1c4bfecd71cb2"
+  integrity sha512-OvmR5wK+JvdpHZNEqD080KJu+w581Hhvux9IOCCg9Gr/aHkr8NQEVfpqKOq53gMAsuXhg1W+VtyrrM8ZCtdw+Q==
   dependencies:
-    "@shopify/polaris-icons" "^4.17.0"
+    "@shopify/polaris-icons" "^4.18.2"
     "@types/react" "^17.0.19"
     "@types/react-dom" "^17.0.9"
     "@types/react-transition-group" "^4.4.2"
