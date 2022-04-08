@@ -23,7 +23,7 @@ Shopify.Context.initialize({
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
   SCOPES: process.env.SCOPES.split(","),
   HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
-  API_VERSION: ApiVersion.January22,
+  API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
@@ -81,6 +81,8 @@ export async function createServer(
     }
   });
 
+  app.use(express.json());
+
   app.use((req, res, next) => {
     const shop = req.query.shop;
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {
@@ -121,13 +123,6 @@ export async function createServer(
     const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(resolve("dist/frontend")));
-    // app.use("/*", (req, res, next) => {
-    //   // Client-side routing will pick up on the correct route to render, so we always render the index here
-    //   res
-    //     .status(200)
-    //     .set("Content-Type", "text/html")
-    //     .send(fs.readFileSync(PROD_INDEX_PATH));
-    // });
   }
 
   return { app };

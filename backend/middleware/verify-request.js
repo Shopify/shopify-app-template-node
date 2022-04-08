@@ -32,7 +32,10 @@ export default function verifyRequest(app, { returnHeader = true } = {}) {
         await client.query({ data: TEST_GRAPHQL_QUERY });
         return next();
       } catch (e) {
-        if (e instanceof Shopify.Errors.HttpResponseError && e.code === 401) {
+        if (
+          e instanceof Shopify.Errors.HttpResponseError &&
+          e.response.code === 401
+        ) {
           // We only want to catch 401s here, anything else should bubble up
         } else {
           throw e;

@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, "lts/*"]
+        node-version: [16, "lts/*"]
 
     steps:
       - uses: actions/checkout@v2
@@ -22,4 +22,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
-      - run: yarn test
+      - run: cp .env.test .env
+      - run: NODE_ENV=test yarn test
