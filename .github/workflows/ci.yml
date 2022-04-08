@@ -14,13 +14,21 @@ jobs:
       matrix:
         node-version: [16, "lts/*"]
 
+    defaults:
+      run:
+        working-directory: ./home
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - uses: c-hive/gha-yarn-cache@v2
+        with:
+          directory: home
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
-      - run: cp .env.test .env
+      - run: cp .env.test ../.env
       - run: NODE_ENV=test yarn test
