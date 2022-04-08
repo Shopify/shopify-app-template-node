@@ -1,9 +1,9 @@
 {
-  "name": "shopify-app-node",
+  "name": "starter-node-app",
   "private": true,
   "scripts": {
     "build": "npm run build:client",
-    "build:client": "vite build frontend --outDir ../dist/frontend",
+    "build:client": "vite build frontend --outDir ../dist/frontend --emptyOutDir",
     "debug": "node --inspect-brk backend/index.js",
     "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
     "preserve": "npm run build",

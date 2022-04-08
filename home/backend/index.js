@@ -3,10 +3,14 @@ import { resolve } from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
-import "dotenv/config";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
+
+import dotenv from "dotenv";
+
+// The .env file will actually be present in the parent repo
+dotenv.config({ path: "../.env" });
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -16,7 +20,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/index.html`;
-const PROD_INDEX_PATH = `${process.cwd()}/dist/frontend/index.html`;
+const PROD_INDEX_PATH = `${process.cwd()}/dist/index.html`;
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -96,6 +100,18 @@ export async function createServer(
     next();
   });
 
+  if (isProd) {
+    const compression = await import("compression").then(
+      ({ default: fn }) => fn
+    );
+    const serveStatic = await import("serve-static").then(
+      ({ default: fn }) => fn
+    );
+    const fs = await import("fs");
+    app.use(compression());
+    app.use(serveStatic(resolve("dist")));
+  }
+
   app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
 
@@ -112,18 +128,6 @@ export async function createServer(
         .send(fs.readFileSync(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH));
     }
   });
-
-  if (isProd) {
-    const compression = await import("compression").then(
-      ({ default: fn }) => fn
-    );
-    const serveStatic = await import("serve-static").then(
-      ({ default: fn }) => fn
-    );
-    const fs = await import("fs");
-    app.use(compression());
-    app.use(serveStatic(resolve("dist/frontend")));
-  }
 
   return { app };
 }
