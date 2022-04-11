@@ -336,9 +336,9 @@
     react-transition-group "^4.4.2"
 
 "@shopify/shopify-api@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@shopify/shopify-api/-/shopify-api-3.0.0.tgz#bc29b008ec3688e9032eabb2e98fdc17b2548c52"
-  integrity sha512-ru0EFOhSAPSKrpMKro+rojABl7040I/GlEjwqUjM2HBDKdCGz3z2BtoArT5tm35K4TMoXbmX/dO3ulNDdjyjcA==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@shopify/shopify-api/-/shopify-api-3.0.1.tgz#b059b291387677473939738301667bf643804dc2"
+  integrity sha512-ZeMQE2AyKfrA+3zH4dTCtd4EZ1fO3ejxeSZDzWix3yvzxn/w277VMLS0iIPavz6Mfkw3iniHEHNNyQX1ns1AsQ==
   dependencies:
     "@shopify/network" "^1.5.1"
     "@types/jsonwebtoken" "^8.5.0"
