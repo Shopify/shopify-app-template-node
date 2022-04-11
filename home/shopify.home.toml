@@ -1,1 +1,5 @@
 # Shopify home configuration file
+
+[commands]
+build = "npm build"
+dev = "npm dev"
