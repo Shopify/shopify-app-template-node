@@ -13,7 +13,7 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Approve and merge Dependabot PRs for patch versions
-        if: ${{github.event.workflow_run.conclusion == 'success' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
+        if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
         uses: actions/github-script@v5
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
