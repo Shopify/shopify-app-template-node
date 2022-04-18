@@ -1,3 +1,5 @@
+name="backend"
+
 [environment]
 SCOPES="write_products"
 variables=["SHOPIFY_API_KEY", "SHOPIFY_API_SECRET", "HOST", "BACKEND_PORT"]
