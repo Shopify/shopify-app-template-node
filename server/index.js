@@ -31,7 +31,7 @@ const ACTIVE_SHOPIFY_SHOPS = {};
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/webhooks",
   webhookHandler: async (topic, shop, body) => {
-    delete ACTIVE_SHOPIFY_SHOPS[shop]
+    delete ACTIVE_SHOPIFY_SHOPS[shop];
   },
 });
 
@@ -94,12 +94,12 @@ export async function createServer(
   });
 
   app.use("/*", (req, res, next) => {
-    const shop = req.query.shop;
+    const { shop, host } = req.query;
 
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
-      res.redirect(`/auth?shop=${shop}`);
+      res.redirect(`/auth?shop=${shop}&host=${host}`);
     } else {
       next();
     }

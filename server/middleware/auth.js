@@ -5,7 +5,9 @@ import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
 export default function applyAuthMiddleware(app) {
   app.get("/auth", async (req, res) => {
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
-      return res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
+      return res.redirect(
+        `/auth/toplevel?shop=${req.query.shop}&host=${req.query.host}`
+      );
     }
 
     const redirectUrl = await Shopify.Auth.beginAuth(
@@ -32,6 +34,7 @@ export default function applyAuthMiddleware(app) {
       topLevelAuthRedirect({
         apiKey: Shopify.Context.API_KEY,
         hostName: Shopify.Context.HOST_NAME,
+        host: req.query.host,
         shop: req.query.shop,
       })
     );

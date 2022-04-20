@@ -81,12 +81,13 @@ describe("shopify-app-node server", async () => {
   });
 
   test("renders toplevel auth page", async () => {
+    const host = btoa("test-shop.myshopify.com/admin");
     const response = await request(app)
-      .get("/auth/toplevel?shop=test-shop")
+      .get(`/auth/toplevel?shop=test-shop&host=${host}`)
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(200);
-    expect(response.text).toContain(`shopOrigin: 'test-shop'`);
+    expect(response.text).toContain(`host: '${host}'`);
   });
 
   test("goes through oauth flow if there is a top level cookie", async () => {
