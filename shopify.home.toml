@@ -1,2 +1,4 @@
+type = "frontend"
+
 [commands]
 dev = "npm run dev"
