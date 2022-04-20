@@ -1,3 +1,3 @@
 # This file stores configurations for your Shopify app.
-
 name = "My Shopify Node App"
+scopes = "read_products"
