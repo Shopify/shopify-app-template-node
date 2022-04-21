@@ -14,8 +14,8 @@ const PORT = parseInt(process.env.BACKEND_PORT, 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
-const DEV_INDEX_PATH = `${process.cwd()}/frontend/index.html`;
-const PROD_INDEX_PATH = `${process.cwd()}/dist/frontend/index.html`;
+const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
+const PROD_INDEX_PATH = `${process.cwd()}/dist/`;
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
