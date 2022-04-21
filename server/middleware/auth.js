@@ -6,7 +6,7 @@ export default function applyAuthMiddleware(app) {
   app.get("/auth", async (req, res) => {
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
       return res.redirect(
-        `/auth/toplevel?shop=${req.query.shop}&host=${req.query.host}`
+        `/auth/toplevel?${new URLSearchParams(req.query).toString()}`
       );
     }
 
@@ -35,7 +35,7 @@ export default function applyAuthMiddleware(app) {
         apiKey: Shopify.Context.API_KEY,
         hostName: Shopify.Context.HOST_NAME,
         host: req.query.host,
-        shop: req.query.shop,
+        query: req.query,
       })
     );
   });

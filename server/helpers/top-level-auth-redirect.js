@@ -1,4 +1,9 @@
-export default function topLevelAuthRedirect({ apiKey, hostName, host, shop }) {
+export default function topLevelAuthRedirect({
+  apiKey,
+  hostName,
+  host,
+  query,
+}) {
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -6,7 +11,9 @@ export default function topLevelAuthRedirect({ apiKey, hostName, host, shop }) {
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (window.top === window.self) {
-          window.location.href = '/auth?shop=${shop}';
+          window.location.href = '/auth?${new URLSearchParams(
+            query
+          ).toString()}';
         } else {
           var AppBridge = window['app-bridge'];
           var createApp = AppBridge.default;
@@ -21,7 +28,9 @@ export default function topLevelAuthRedirect({ apiKey, hostName, host, shop }) {
 
           redirect.dispatch(
             Redirect.Action.REMOTE,
-            'https://${hostName}/auth/toplevel?shop=${shop}',
+            'https://${hostName}/auth/toplevel?${new URLSearchParams(
+    query
+  ).toString()}',
           );
         }
       });
