@@ -7,15 +7,10 @@ import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 
-import dotenv from "dotenv";
-
-// The .env file will actually be present in the parent repo
-dotenv.config({ path: "../.env" });
-
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
-const PORT = parseInt(process.env.PORT || "8081", 10);
+const PORT = parseInt(process.env.BACKEND_PORT, 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
