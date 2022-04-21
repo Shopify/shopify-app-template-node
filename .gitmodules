@@ -1,4 +1,3 @@
 [submodule "frontend"]
 	path = home/frontend
 	url = https://github.com/Shopify/starter-react-frontend-app.git
-	branch = set_up_cli_command_support
