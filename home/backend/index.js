@@ -15,7 +15,7 @@ const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/index.html`;
-const PROD_INDEX_PATH = `${process.cwd()}/dist/index.html`;
+const PROD_INDEX_PATH = `${process.cwd()}/dist/frontend/index.html`;
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -104,7 +104,7 @@ export async function createServer(
     );
     const fs = await import("fs");
     app.use(compression());
-    app.use(serveStatic(resolve("dist")));
+    app.use(serveStatic(PROD_INDEX_PATH));
   }
 
   app.use("/*", async (req, res, next) => {
