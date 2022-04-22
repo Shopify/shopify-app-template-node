@@ -1,5 +1,5 @@
 // @ts-check
-import { resolve } from "path";
+import { join } from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
@@ -102,7 +102,6 @@ export async function createServer(
     const serveStatic = await import("serve-static").then(
       ({ default: fn }) => fn
     );
-    const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(PROD_INDEX_PATH));
   }
@@ -117,10 +116,11 @@ export async function createServer(
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");
+      const fallbackFile = join(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH, "index.html");
       res
         .status(200)
         .set("Content-Type", "text/html")
-        .send(fs.readFileSync(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH));
+        .send(fs.readFileSync(fallbackFile));
     }
   });
 
