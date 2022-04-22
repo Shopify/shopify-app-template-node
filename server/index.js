@@ -94,7 +94,7 @@ export async function createServer(
   });
 
   app.use("/*", (req, res, next) => {
-    const { shop, host } = req.query;
+    const { shop } = req.query;
 
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
