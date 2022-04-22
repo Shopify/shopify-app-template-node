@@ -1,4 +1,10 @@
-export default function topLevelAuthRedirect({ apiKey, hostName, shop }) {
+export default function topLevelAuthRedirect({
+  apiKey,
+  hostName,
+  host,
+  query,
+}) {
+  const serializedQuery = new URLSearchParams(query).toString();
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -6,7 +12,7 @@ export default function topLevelAuthRedirect({ apiKey, hostName, shop }) {
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         if (window.top === window.self) {
-          window.location.href = '/auth?shop=${shop}';
+          window.location.href = '/auth?${serializedQuery}';
         } else {
           var AppBridge = window['app-bridge'];
           var createApp = AppBridge.default;
@@ -14,14 +20,14 @@ export default function topLevelAuthRedirect({ apiKey, hostName, shop }) {
 
           const app = createApp({
             apiKey: '${apiKey}',
-            shopOrigin: '${shop}',
+            host: '${host}',
           });
 
           const redirect = Redirect.create(app);
 
           redirect.dispatch(
             Redirect.Action.REMOTE,
-            'https://${hostName}/auth/toplevel?shop=${shop}',
+            'https://${hostName}/auth/toplevel?${serializedQuery}',
           );
         }
       });
