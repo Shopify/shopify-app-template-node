@@ -82,6 +82,7 @@ describe("shopify-app-node server", async () => {
 
   test("renders toplevel auth page", async () => {
     const host = btoa("test-shop.myshopify.com/admin");
+
     const response = await request(app)
       .get(`/auth/toplevel?shop=test-shop&host=${host}`)
       .set("Accept", "text/html");
