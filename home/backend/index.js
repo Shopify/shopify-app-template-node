@@ -1,5 +1,5 @@
 // @ts-check
-import { resolve } from "path";
+import { join } from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
@@ -14,8 +14,8 @@ const PORT = parseInt(process.env.BACKEND_PORT, 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
-const DEV_INDEX_PATH = `${process.cwd()}/frontend/index.html`;
-const PROD_INDEX_PATH = `${process.cwd()}/dist/frontend/index.html`;
+const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
+const PROD_INDEX_PATH = `${process.cwd()}/dist/`;
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -102,7 +102,6 @@ export async function createServer(
     const serveStatic = await import("serve-static").then(
       ({ default: fn }) => fn
     );
-    const fs = await import("fs");
     app.use(compression());
     app.use(serveStatic(PROD_INDEX_PATH));
   }
@@ -117,10 +116,11 @@ export async function createServer(
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");
+      const fallbackFile = join(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH, "index.html");
       res
         .status(200)
         .set("Content-Type", "text/html")
-        .send(fs.readFileSync(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH));
+        .send(fs.readFileSync(fallbackFile));
     }
   });
 
