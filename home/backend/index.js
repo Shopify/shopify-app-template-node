@@ -43,7 +43,7 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
 // the code when you store customer data.
 //
 // More details can be found on shopify.dev:
-// https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request-payload
+// https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
 setupGDPRWebHooks("/api/webhooks");
 
 // export for test use only
