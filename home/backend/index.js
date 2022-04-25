@@ -38,11 +38,13 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
     delete ACTIVE_SHOPIFY_SHOPS[shop],
 });
 
-// This sets up the mandatory GDPR webhooks. You’ll need to customize them when
-// you store customer data.
+// This sets up the mandatory GDPR webhooks. You’ll need to fill in the endpoint
+// in the “GDPR mandatory webhooks” section in the “App setup” tab, and customize
+// the code when you store customer data.
+//
 // More details can be found on shopify.dev:
 // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request-payload
-setupGDPRWebHooks();
+setupGDPRWebHooks("/api/webhooks");
 
 // export for test use only
 export async function createServer(

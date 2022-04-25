@@ -1,6 +1,6 @@
 import { Shopify } from "@shopify/shopify-api";
 
-export function setupGDPRWebHooks() {
+export function setupGDPRWebHooks(path: string) {
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
@@ -8,7 +8,7 @@ export function setupGDPRWebHooks() {
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request
    */
   Shopify.Webhooks.Registry.addHandler("customers/data_request", {
-    path: "/webhooks",
+    path,
     webhookHandler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
@@ -39,7 +39,7 @@ export function setupGDPRWebHooks() {
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-redact
    */
   Shopify.Webhooks.Registry.addHandler("customers/redact", {
-    path: "/webhooks",
+    path,
     webhookHandler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
@@ -67,7 +67,7 @@ export function setupGDPRWebHooks() {
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#shop-redact
    */
   Shopify.Webhooks.Registry.addHandler("shop/redact", {
-    path: "/webhooks",
+    path,
     webhookHandler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
