@@ -6,6 +6,7 @@ import { Shopify, ApiVersion } from "@shopify/shopify-api";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
+import { setupGDPRWebHooks } from "./gdpr.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -36,6 +37,14 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   webhookHandler: async (topic, shop, body) =>
     delete ACTIVE_SHOPIFY_SHOPS[shop],
 });
+
+// This sets up the mandatory GDPR webhooks. You’ll need to fill in the endpoint
+// in the “GDPR mandatory webhooks” section in the “App setup” tab, and customize
+// the code when you store customer data.
+//
+// More details can be found on shopify.dev:
+// https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
+setupGDPRWebHooks("/api/webhooks");
 
 // export for test use only
 export async function createServer(
