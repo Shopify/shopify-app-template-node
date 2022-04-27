@@ -2,6 +2,7 @@ import { Shopify } from "@shopify/shopify-api";
 import express from "express";
 import request from "supertest";
 import { describe, expect, test, vi } from "vitest";
+import jwt from "jsonwebtoken";
 import { serve } from "../../__tests__/serve";
 
 import verifyRequest from "../verify-request.js";
@@ -10,11 +11,23 @@ describe("verify-request middleware", async () => {
   // this is only used to grab app wide constants
   const { app } = await serve(process.cwd(), false);
 
+  const validJWT = jwt.sign(
+    {
+      dummy: "data",
+      aud: Shopify.Context.API_KEY,
+      dest: "https://test-shop",
+    },
+    Shopify.Context.API_SECRET_KEY,
+    {
+      algorithm: "HS256",
+    }
+  );
+
   test("should return a function", () => {
     expect(verifyRequest(app, {})).toBeInstanceOf(Function);
   });
 
-  describe("with a Session & returnHeader enabled", async () => {
+  describe("with a Session & authorization header", async () => {
     const mockApp = express();
     mockApp.use(verifyRequest(app));
     mockApp.get("/", (req, res) => {
@@ -49,7 +62,7 @@ describe("verify-request middleware", async () => {
       expect(response.status).toBe(200);
     });
 
-    test("inactive session with returnHeader returns 403 with the right headers", async () => {
+    test("inactive session with authorization header returns 403 with the right headers", async () => {
       const session = new Shopify.Session.Session(
         "1",
         "test-shop",
@@ -60,9 +73,12 @@ describe("verify-request middleware", async () => {
         () => session
       );
 
-      const response = await request(mockApp).get("/?shop=test-shop").send({
-        query: "{shop{name}}",
-      });
+      const response = await request(mockApp)
+        .get("/?shop=test-shop")
+        .set({ Authorization: `Bearer ${validJWT}` })
+        .send({
+          query: "{shop{name}}",
+        });
 
       expect(response.status).toBe(403);
       expect(
@@ -72,24 +88,11 @@ describe("verify-request middleware", async () => {
         response.headers["x-shopify-api-request-failure-reauthorize-url"]
       ).toBe(`/api/auth?shop=test-shop`);
     });
-
-    test("throws a useful error when: returnHeader && IS_EMBEDDED_APP && !shop && !session && !authHeader.match(/Bearer /)", async () => {
-      Shopify.Context.IS_EMBEDDED_APP = true;
-
-      const response = await request(mockApp).get("/");
-
-      expect(response.status).toBe(400);
-      expect(response.text).toContain("authenticatedFetch");
-    });
   });
 
-  test("inactive session without returnHeader redirects to /auth", async () => {
+  test("inactive session without authorization header redirects to /auth", async () => {
     const mockApp = express();
-    mockApp.use(
-      verifyRequest(app, {
-        returnHeader: false,
-      })
-    );
+    mockApp.use(verifyRequest(app));
     mockApp.get("/", (_req, res) => {
       res.status(200).end();
     });

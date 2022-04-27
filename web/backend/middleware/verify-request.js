@@ -1,4 +1,9 @@
 import { Shopify } from "@shopify/shopify-api";
+import ensureBilling, {
+  ShopifyBillingError,
+} from "../helpers/ensure-billing.js";
+
+import returnTopLevelRedirection from "../helpers/return-top-level-redirection.js";
 
 const TEST_GRAPHQL_QUERY = `
 {
@@ -7,7 +12,10 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest(app, { returnHeader = true } = {}) {
+export default function verifyRequest(
+  app,
+  { billing = { required: false } } = { billing: { required: false } }
+) {
   return async (req, res, next) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
@@ -24,56 +32,56 @@ export default function verifyRequest(app, { returnHeader = true } = {}) {
 
     if (session?.isActive()) {
       try {
-        // make a request to make sure oauth has succeeded, retry otherwise
-        const client = new Shopify.Clients.Graphql(
-          session.shop,
-          session.accessToken
-        );
-        await client.query({ data: TEST_GRAPHQL_QUERY });
+        if (billing.required) {
+          // the request to check billing status also serves to validate that the access token is still valid
+          const [hasPayment, confirmationUrl] = await ensureBilling(
+            session,
+            billing
+          );
+
+          if (!hasPayment) {
+            returnTopLevelRedirection(req, res, confirmationUrl);
+            return;
+          }
+        } else {
+          // make a request to make sure the access token is in fact still valid, retry otherwise
+          const client = new Shopify.Clients.Graphql(
+            session.shop,
+            session.accessToken
+          );
+          await client.query({ data: TEST_GRAPHQL_QUERY });
+        }
         return next();
       } catch (e) {
         if (
           e instanceof Shopify.Errors.HttpResponseError &&
           e.response.code === 401
         ) {
-          // We only want to catch 401s here, anything else should bubble up
+          // Re-authenticate if we get a 401 response
+        } else if (e instanceof ShopifyBillingError) {
+          console.error(e.message, e.errorData[0]);
+          res.status(500).end();
+          return;
         } else {
           throw e;
         }
       }
     }
 
-    if (returnHeader) {
+    const bearerPresent = req.headers.authorization?.match(/Bearer (.*)/);
+    if (bearerPresent) {
       if (!shop) {
         if (session) {
           shop = session.shop;
         } else if (Shopify.Context.IS_EMBEDDED_APP) {
-          const authHeader = req.headers.authorization;
-          const matches = authHeader?.match(/Bearer (.*)/);
-          if (matches) {
-            const payload = Shopify.Utils.decodeSessionToken(matches[1]);
+          if (bearerPresent) {
+            const payload = Shopify.Utils.decodeSessionToken(bearerPresent[1]);
             shop = payload.dest.replace("https://", "");
           }
         }
       }
-
-      if (!shop || shop === "") {
-        return res
-          .status(400)
-          .send(
-            `Could not find a shop to authenticate with. Make sure you are making your XHR request with App Bridge's authenticatedFetch method.`
-          );
-      }
-
-      res.status(403);
-      res.header("X-Shopify-API-Request-Failure-Reauthorize", "1");
-      res.header(
-        "X-Shopify-API-Request-Failure-Reauthorize-Url",
-        `/api/auth?shop=${shop}`
-      );
-      res.end();
-    } else {
-      res.redirect(`/api/auth?shop=${shop}`);
     }
+
+    returnTopLevelRedirection(req, res, `/api/auth?shop=${shop}`);
   };
 }

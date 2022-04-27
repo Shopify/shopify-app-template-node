@@ -7,6 +7,7 @@ import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
+import { BillingInterval } from "./helpers/ensure-billing.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -39,6 +40,16 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
     delete ACTIVE_SHOPIFY_SHOPS[shop],
 });
 
+// The actual transactions with Shopify will always be marked as test ones, unless NODE_ENV is production.
+// If you want to learn more about billing in this template, please see the ensureBilling helper.
+const BILLING_SETTINGS = {
+  required: false,
+  // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
+  // amount: 5.0,
+  // currencyCode: "USD",
+  // interval: BillingInterval.OneTime,
+};
+
 // This sets up the mandatory GDPR webhooks. You’ll need to fill in the endpoint
 // in the “GDPR mandatory webhooks” section in the “App setup” tab, and customize
 // the code when you store customer data.
@@ -50,7 +61,8 @@ setupGDPRWebHooks("/api/webhooks");
 // export for test use only
 export async function createServer(
   root = process.cwd(),
-  isProd = process.env.NODE_ENV === "production"
+  isProd = process.env.NODE_ENV === "production",
+  billingSettings = BILLING_SETTINGS
 ) {
   const app = express();
   app.set("top-level-oauth-cookie", TOP_LEVEL_OAUTH_COOKIE);
@@ -59,7 +71,9 @@ export async function createServer(
 
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
-  applyAuthMiddleware(app);
+  applyAuthMiddleware(app, {
+    billing: billingSettings,
+  });
 
   app.post("/api/webhooks", async (req, res) => {
     try {
@@ -73,7 +87,15 @@ export async function createServer(
     }
   });
 
-  app.get("/api/products-count", verifyRequest(app), async (req, res) => {
+  // All endpoints after this point will require an active session
+  app.use(
+    "/api/*",
+    verifyRequest(app, {
+      billing: billingSettings,
+    })
+  );
+
+  app.get("/api/products-count", async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(req, res, true);
     const { Product } = await import(
       `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
@@ -83,7 +105,7 @@ export async function createServer(
     res.status(200).send(countData);
   });
 
-  app.post("/api/graphql", verifyRequest(app), async (req, res) => {
+  app.post("/api/graphql", async (req, res) => {
     try {
       const response = await Shopify.Utils.graphqlProxy(req, res);
       res.status(200).send(response.body);
