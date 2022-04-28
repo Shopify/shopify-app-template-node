@@ -55,7 +55,9 @@ export async function createServer(
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
-      res.status(500).send(error.message);
+      if (!res.headersSent) {
+        res.status(500).send(error.message);
+      }
     }
   });
 
