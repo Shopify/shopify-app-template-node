@@ -25,7 +25,7 @@ describe("shopify-app-node server", async () => {
 
       expect(response.status).toEqual(200);
     },
-    10000
+    20000
   );
 
   test("redirects to auth if the app needs to be [re]installed", async () => {
