@@ -66,7 +66,9 @@ export async function createServer(
       console.log(`Webhook processed, returned status code 200`);
     } catch (error) {
       console.log(`Failed to process webhook: ${error}`);
-      res.status(500).send(error.message);
+      if (!res.headersSent) {
+        res.status(500).send(error.message);
+      }
     }
   });
 
@@ -125,7 +127,10 @@ export async function createServer(
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");
-      const fallbackFile = join(isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH, "index.html");
+      const fallbackFile = join(
+        isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
+        "index.html"
+      );
       res
         .status(200)
         .set("Content-Type", "text/html")
