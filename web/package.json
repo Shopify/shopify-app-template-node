@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=production node backend/index.js",
-    "test": "vitest --reporter=verbose"
+    "test": "vitest --reporter=verbose --dir backend"
   },
   "type": "module",
   "engines": {
