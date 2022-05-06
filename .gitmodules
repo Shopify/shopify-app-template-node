@@ -1,4 +1,4 @@
-[submodule "frontend"]
-	path = home/frontend
+[submodule "web/frontend"]
+	path = web/frontend
 	url = https://github.com/Shopify/shopify-app-node
 	branch = richard/frontend-only-updated-toml
