@@ -29,7 +29,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "graphql": "^16.3.0",
+    "graphql": "^16.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "serve-static": "^1.14.1",
