@@ -21,7 +21,7 @@
     "@shopify/app-bridge": "^2.0.22",
     "@shopify/app-bridge-react": "^2.0.26",
     "@shopify/app-bridge-utils": "^2.0.26",
-    "@shopify/polaris": "^9.2.2",
+    "@shopify/polaris": "^9.6.0",
     "@shopify/shopify-api": "^3.0.0",
     "@vitejs/plugin-react": "1.2.0",
     "compression": "^1.7.4",
