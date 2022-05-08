@@ -2,14 +2,14 @@
   "name": "shopify-app-node",
   "private": true,
   "scripts": {
-    "build": "npm run build:client",
+    "build": "yarn build:client",
     "build:client": "vite build --outDir dist/client",
     "debug": "node --inspect-brk server/index.js",
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch ./server",
     "prepare": "husky install",
-    "preserve": "npm run build",
+    "preserve": "yarn build",
     "serve": "cross-env NODE_ENV=production node server/index.js",
-    "start": "npm run serve",
+    "start": "yarn serve",
     "test": "vitest --reporter=verbose"
   },
   "type": "module",
