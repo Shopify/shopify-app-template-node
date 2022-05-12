@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@shopify/cli": "2.0.2",
-    "@shopify/app": "1.0.9",
+    "@shopify/app": "2.0.2",
     "react": "17.0.2"
   }
 }
