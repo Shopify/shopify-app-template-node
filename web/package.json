@@ -14,7 +14,7 @@
     "node": ">=16.13.0"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^3.0.0",
+    "@shopify/shopify-api": "^3.1.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
