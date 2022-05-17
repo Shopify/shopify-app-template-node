@@ -53,18 +53,18 @@ export default function applyAuthMiddleware(app) {
         })
       );
 
-      const response = await Shopify.Webhooks.Registry.register({
+      const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
         accessToken: session.accessToken,
-        topic: "APP_UNINSTALLED",
-        path: "/api/webhooks",
       });
 
-      if (!response["APP_UNINSTALLED"].success) {
-        console.log(
-          `Failed to register APP_UNINSTALLED webhook: ${response.result}`
-        );
-      }
+      Object.entries(responses).map(([topic, response]) => {
+        if (!response.success) {
+          console.log(
+            `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
+          );
+        }
+      });
 
       // Redirect to app with shop parameter upon auth
       res.redirect(`/?shop=${session.shop}&host=${host}`);
