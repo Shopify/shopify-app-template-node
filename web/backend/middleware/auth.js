@@ -60,6 +60,14 @@ export default function applyAuthMiddleware(app) {
 
       Object.entries(responses).map(([topic, response]) => {
         if (!response.success) {
+          // The response from registerAll will include errors for the GDPR topics.  These can be safely ignored.
+          // To register the GDPR topics, please set the appropriate webhook endpoint in the
+          // 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard.
+          //
+          // To avoid logging the GDPR webhook registration error here, you can add
+          //   import {gdprTopics} from '@shopify/shopify-api/dist/webhooks/registry.js';
+          // to the top of this file and then change the if statement above to filter out the GDPR topics:
+          //   if (!response.success && !gdprTopics.includes(topic))
           console.log(
             `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
           );
