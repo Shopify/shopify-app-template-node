@@ -1,5 +1,5 @@
 {
-  "name": "my-shopify-node-app",
+  "name": "my-node-app",
   "version": "0.1.0",
   "main": "web/backend/index.js",
   "license": "UNLICENSED",
