@@ -17,8 +17,11 @@ logs
 # ngrok tunnel file
 config/tunnel.pid
 
-# webpack build output
+# vite build output
 dist/
+
+# Node library SQLite database
+web/database.sqlite
 
 # Partners can use npm, yarn or pnpm with the CLI.
 # We ignore lock files so they don't get a package manager mis-match
