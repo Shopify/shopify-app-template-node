@@ -13,7 +13,7 @@ process.env.FRONTEND_PORT = 9529;
  * @param {string} root
  * @param {boolean} isProd
  */
-export async function serve(root, isProd) {
+export async function serve(root, isProd, billingSettings) {
   if (isProd) {
     // build first
     const { build } = await import("vite");
@@ -24,7 +24,7 @@ export async function serve(root, isProd) {
         target: "esnext",
         minify: false,
         ssrManifest: true,
-        outDir: "../dist",
+        outDir: "dist",
       },
     });
   }
@@ -33,5 +33,5 @@ export async function serve(root, isProd) {
     path.resolve(root, "backend", "index.js")
   );
 
-  return await createServer(root, isProd);
+  return await createServer(root, isProd, billingSettings);
 }

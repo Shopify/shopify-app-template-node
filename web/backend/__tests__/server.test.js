@@ -1,9 +1,29 @@
 import request from "supertest";
 import { createHmac } from "crypto";
 import { Shopify } from "@shopify/shopify-api";
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { serve } from "./serve.js";
+
+// Set up some module mocks, since the modules themselves are tested separately
+const billingMock = vi.fn();
+vi.mock(`${process.cwd()}/backend/helpers/ensure-billing.js`, async () => {
+  const actualModule = await vi.importActual(
+    `${process.cwd()}/backend/helpers/ensure-billing.js`
+  );
+
+  return {
+    default: billingMock,
+    BillingInterval: actualModule.BillingInterval,
+  };
+});
+import { BillingInterval } from "../helpers/ensure-billing.js";
+
+vi.mock(`${process.cwd()}/backend/middleware/verify-request.js`, () => ({
+  default: vi.fn(() => (req, res, next) => {
+    next();
+  }),
+}));
 
 describe("starter-node-app server", async () => {
   const { app } = await serve(process.cwd(), false);
@@ -118,6 +138,8 @@ describe("starter-node-app server", async () => {
           },
         })
       );
+
+      billingMock.mockImplementation(() => Promise.resolve([true, null]));
 
       const response = await request(app).get(
         "/api/auth/callback?host=test-shop-host&shop=test-shop"
@@ -254,11 +276,6 @@ describe("starter-node-app server", async () => {
   });
 
   describe("graphql proxy", () => {
-    vi.mock(`${process.cwd()}/backend/middleware/verify-request.js`, () => ({
-      default: vi.fn(() => (req, res, next) => {
-        next();
-      }),
-    }));
     const proxy = vi.spyOn(Shopify.Utils, "graphqlProxy");
 
     test("graphql proxy is called & responds with body", async () => {
@@ -289,6 +306,41 @@ describe("starter-node-app server", async () => {
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain("test 500 response");
+    });
+  });
+
+  describe("with billing enabled", async () => {
+    const { app: appWithBilling } = await serve(process.cwd(), false, {
+      required: true,
+      amount: 5.0,
+      currencyCode: "USD",
+      interval: BillingInterval.OneTime,
+    });
+
+    test("redirects to a payment confirmation URL", async () => {
+      const validateAuthCallback = vi
+        .spyOn(Shopify.Auth, "validateAuthCallback")
+        .mockImplementationOnce(() => ({
+          shop: "test-shop",
+          scope: "write_products",
+        }));
+      vi.spyOn(Shopify.Webhooks.Registry, "registerAll").mockImplementationOnce(
+        () => ({
+          APP_UNINSTALLED: {
+            success: true,
+          },
+        })
+      );
+      billingMock.mockImplementation(() =>
+        Promise.resolve([false, "payment-confirmation-url"])
+      );
+
+      const response = await request(appWithBilling).get(
+        "/api/auth/callback?host=test-shop-host&shop=test-shop"
+      );
+
+      expect(response.status).toEqual(302);
+      expect(response.headers.location).toEqual("payment-confirmation-url");
     });
   });
 });
