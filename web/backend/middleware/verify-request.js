@@ -33,7 +33,7 @@ export default function verifyRequest(
     if (session?.isActive()) {
       try {
         if (billing.required) {
-          // the request to check billing status also serves to validate that the access token is still valid
+          // The request to check billing status serves to validate that the access token is still valid.
           const [hasPayment, confirmationUrl] = await ensureBilling(
             session,
             billing
@@ -44,7 +44,7 @@ export default function verifyRequest(
             return;
           }
         } else {
-          // make a request to make sure the access token is in fact still valid, retry otherwise
+          // Make a request to ensure the access token is still valid. Otherwise, re-authenticate the user.
           const client = new Shopify.Clients.Graphql(
             session.shop,
             session.accessToken

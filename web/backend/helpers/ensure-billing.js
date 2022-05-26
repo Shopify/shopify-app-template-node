@@ -1,7 +1,5 @@
 import { Shopify } from "@shopify/shopify-api";
 
-import returnTopLevelRedirection from "./return-top-level-redirection.js";
-
 // The charge name is checked for recurring subscriptions, in case there are multiple
 export const SHOPIFY_CHARGE_NAME = "Shopify app billing";
 
@@ -18,6 +16,13 @@ const RECURRING_INTERVALS = [
 
 let isProd;
 
+/**
+ * You may want to charge merchants for using your app. This helper provides that function by checking if the current
+ * merchant has an active one-time payment or subscription named SHOPIFY_CHARGE_NAME (above). If no payment is found,
+ * this helper requests it and returns a confirmation URL so that the merchant can approve the purchase.
+ *
+ * Learn more about billing in our documentation: https://shopify.dev/apps/billing
+ */
 export default async function ensureBilling(
   session,
   { amount, currencyCode, interval },
@@ -49,18 +54,9 @@ export default async function ensureBilling(
 async function hasActivePayment(session, { interval }) {
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
 
-  let hasPayment = false;
   if (isRecurring(interval)) {
     const currentInstallations = await client.query({
-      data: `
-        query appSubscription {
-          currentAppInstallation {
-            activeSubscriptions {
-              name, test
-            }
-          }
-        }
-      `,
+      data: RECURRING_PURCHASES_QUERY,
     });
     const subscriptions =
       currentInstallations.body.data.currentAppInstallation.activeSubscriptions;
@@ -70,8 +66,7 @@ async function hasActivePayment(session, { interval }) {
         subscriptions[i].name === SHOPIFY_CHARGE_NAME &&
         (!isProd || !subscriptions[i].test)
       ) {
-        hasPayment = true;
-        break;
+        return true;
       }
     }
   } else {
@@ -80,25 +75,8 @@ async function hasActivePayment(session, { interval }) {
     do {
       const currentInstallations = await client.query({
         data: {
-          query: `
-            query appPurchases($endCursor: String) {
-              currentAppInstallation {
-                oneTimePurchases(first: 250, sortKey: CREATED_AT, after: $endCursor) {
-                  edges {
-                    node {
-                      name, test, status
-                    }
-                  }
-                  pageInfo {
-                    hasNextPage, endCursor
-                  }
-                }
-              }
-            }
-          `,
-          variables: {
-            endCursor,
-          },
+          query: ONE_TIME_PURCHASES_QUERY,
+          variables: { endCursor },
         },
       });
       purchases =
@@ -111,16 +89,15 @@ async function hasActivePayment(session, { interval }) {
           (!isProd || !node.test) &&
           node.status === "ACTIVE"
         ) {
-          hasPayment = true;
-          break;
+          return true;
         }
       }
 
       endCursor = purchases.pageInfo.endCursor;
-    } while (purchases.pageInfo.hasNextPage && !hasPayment);
+    } while (purchases.pageInfo.hasNextPage);
   }
 
-  return hasPayment;
+  return false;
 }
 
 async function requestPayment(session, { amount, currencyCode, interval }) {
@@ -162,27 +139,7 @@ async function requestRecurringPayment(
 ) {
   const mutationResponse = await client.query({
     data: {
-      query: `
-        mutation test(
-          $name: String!
-          $lineItems: [AppSubscriptionLineItemInput!]!
-          $returnUrl: URL!
-          $test: Boolean
-        ) {
-          appSubscriptionCreate(
-            name: $name
-            lineItems: $lineItems
-            returnUrl: $returnUrl
-            test: $test
-          ) {
-            confirmationUrl
-            userErrors {
-              field
-              message
-            }
-          }
-        }
-      `,
+      query: RECURRING_PURCHASE_MUTATION,
       variables: {
         name: SHOPIFY_CHARGE_NAME,
         lineItems: [
@@ -190,10 +147,7 @@ async function requestRecurringPayment(
             plan: {
               appRecurringPricingDetails: {
                 interval,
-                price: {
-                  amount,
-                  currencyCode,
-                },
+                price: { amount, currencyCode },
               },
             },
           },
@@ -221,33 +175,10 @@ async function requestSinglePayment(
 ) {
   const mutationResponse = await client.query({
     data: {
-      query: `
-        mutation test(
-          $name: String!
-          $price: MoneyInput!
-          $returnUrl: URL!
-          $test: Boolean
-        ) {
-          appPurchaseOneTimeCreate(
-            name: $name
-            price: $price
-            returnUrl: $returnUrl
-            test: $test
-          ) {
-            confirmationUrl
-            userErrors {
-              field
-              message
-            }
-          }
-        }
-      `,
+      query: ONE_TIME_PURCHASE_MUTATION,
       variables: {
         name: SHOPIFY_CHARGE_NAME,
-        price: {
-          amount,
-          currencyCode,
-        },
+        price: { amount, currencyCode },
         returnUrl,
         test: process.env.NODE_ENV !== "production",
       },
@@ -276,3 +207,74 @@ export function ShopifyBillingError(message, errorData) {
   this.errorData = errorData;
 }
 ShopifyBillingError.prototype = new Error();
+
+const RECURRING_PURCHASES_QUERY = `
+  query appSubscription {
+    currentAppInstallation {
+      activeSubscriptions {
+        name, test
+      }
+    }
+  }
+`;
+
+const ONE_TIME_PURCHASES_QUERY = `
+  query appPurchases($endCursor: String) {
+    currentAppInstallation {
+      oneTimePurchases(first: 250, sortKey: CREATED_AT, after: $endCursor) {
+        edges {
+          node {
+            name, test, status
+          }
+        }
+        pageInfo {
+          hasNextPage, endCursor
+        }
+      }
+    }
+  }
+`;
+
+const RECURRING_PURCHASE_MUTATION = `
+  mutation test(
+    $name: String!
+    $lineItems: [AppSubscriptionLineItemInput!]!
+    $returnUrl: URL!
+    $test: Boolean
+  ) {
+    appSubscriptionCreate(
+      name: $name
+      lineItems: $lineItems
+      returnUrl: $returnUrl
+      test: $test
+    ) {
+      confirmationUrl
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;
+
+const ONE_TIME_PURCHASE_MUTATION = `
+  mutation test(
+    $name: String!
+    $price: MoneyInput!
+    $returnUrl: URL!
+    $test: Boolean
+  ) {
+    appPurchaseOneTimeCreate(
+      name: $name
+      price: $price
+      returnUrl: $returnUrl
+      test: $test
+    ) {
+      confirmationUrl
+      userErrors {
+        field
+        message
+      }
+    }
+  }
+`;

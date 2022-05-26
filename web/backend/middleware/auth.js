@@ -78,7 +78,7 @@ export default function applyAuthMiddleware(
         }
       });
 
-      // If billing is required, check if the store needs to be charged right away to minimize the number of redirects
+      // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
       let redirectUrl = `/?shop=${session.shop}&host=${host}`;
       if (billing.required) {
         const [hasPayment, confirmationUrl] = await ensureBilling(
