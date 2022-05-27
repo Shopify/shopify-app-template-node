@@ -12,6 +12,7 @@ import {
 import trophyImgUrl from "../assets/home-trophy.png";
 
 import { ProductsCard } from "./ProductsCard";
+import { RateLimitCard } from "./RateLimitCard";
 
 export function HomePage() {
   return (
@@ -77,6 +78,9 @@ export function HomePage() {
         </Layout.Section>
         <Layout.Section secondary>
           <ProductsCard />
+        </Layout.Section>
+        <Layout.Section>
+          <RateLimitCard />
         </Layout.Section>
       </Layout>
     </Page>

@@ -1,6 +1,7 @@
 import {
   ApolloClient,
   ApolloProvider,
+  ApolloLink,
   HttpLink,
   InMemoryCache,
 } from "@apollo/client";
@@ -15,6 +16,8 @@ import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
 
 import { HomePage } from "./components/HomePage";
+
+import rateLimit from "./helpers/rate-limit";
 
 export default function App() {
   return (
@@ -37,12 +40,16 @@ export default function App() {
 function MyProvider({ children }) {
   const app = useAppBridge();
 
+  const http = new HttpLink({
+    credentials: "include",
+    fetch: userLoggedInFetch(app),
+  });
+
+  const link = new ApolloLink.from([rateLimit, http]);
+
   const client = new ApolloClient({
     cache: new InMemoryCache(),
-    link: new HttpLink({
-      credentials: "include",
-      fetch: userLoggedInFetch(app),
-    }),
+    link
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
