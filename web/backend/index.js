@@ -12,7 +12,7 @@ import { BillingInterval } from "./helpers/ensure-billing.js";
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
-const PORT = parseInt(process.env.BACKEND_PORT, 10);
+const PORT = parseInt(process.env.BACKEND_PORT || process.env.BACKEND_PORT, 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 // TODO: There should be provided by env vars
