@@ -12,8 +12,8 @@
     "deploy": "shopify app deploy"
   },
   "dependencies": {
-    "@shopify/app": "^2.0.8",
-    "@shopify/cli": "^2.0.8",
+    "@shopify/app": "^3.0.0",
+    "@shopify/cli": "^3.0.0",
     "react": "17.0.2"
   }
 }
