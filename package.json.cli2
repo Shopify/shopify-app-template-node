@@ -1,0 +1,13 @@
+{
+  "name": "starter-node-app",
+  "description": "These scripts are for building and running the app in production. Please use the Shopify CLI (shopify app serve) to run it in development mode",
+  "private": true,
+  "scripts": {
+    "install:backend": "cd web && npm install",
+    "install:frontend": "cd web/frontend && npm install",
+    "prebuild": "npm run install:backend && npm run install:frontend",
+    "build": "cd web/frontend && npm run build",
+    "start": "cd web && npm run serve"
+  },
+  "type": "module"
+}
