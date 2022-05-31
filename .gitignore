@@ -20,6 +20,9 @@ config/tunnel.pid
 # vite build output
 dist/
 
+# extensions build output
+extensions/*/build
+
 # Node library SQLite database
 web/database.sqlite
 
