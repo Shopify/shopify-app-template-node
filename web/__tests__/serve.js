@@ -30,7 +30,7 @@ export async function serve(root, isProd, billingSettings) {
   }
 
   const { createServer } = await import(
-    path.resolve(root, "backend", "index.js")
+    path.resolve(root, "index.js")
   );
 
   return await createServer(root, isProd, billingSettings);

@@ -2,10 +2,10 @@
   "name": "starter-node-app",
   "private": true,
   "scripts": {
-    "debug": "node --inspect-brk backend/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon backend/index.js --watch ./backend",
-    "serve": "cross-env NODE_ENV=production node backend/index.js",
-    "test": "vitest --reporter=verbose --dir backend"
+    "debug": "node --inspect-brk index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",
+    "serve": "cross-env NODE_ENV=production node index.js",
+    "test": "vitest --reporter=verbose"
   },
   "type": "module",
   "engines": {

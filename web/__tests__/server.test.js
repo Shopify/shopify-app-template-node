@@ -7,9 +7,9 @@ import { serve } from "./serve.js";
 
 // Set up some module mocks, since the modules themselves are tested separately
 const billingMock = vi.fn();
-vi.mock(`${process.cwd()}/backend/helpers/ensure-billing.js`, async () => {
+vi.mock(`${process.cwd()}/helpers/ensure-billing.js`, async () => {
   const actualModule = await vi.importActual(
-    `${process.cwd()}/backend/helpers/ensure-billing.js`
+    `${process.cwd()}/helpers/ensure-billing.js`
   );
 
   return {
@@ -19,7 +19,7 @@ vi.mock(`${process.cwd()}/backend/helpers/ensure-billing.js`, async () => {
 });
 import { BillingInterval } from "../helpers/ensure-billing.js";
 
-vi.mock(`${process.cwd()}/backend/middleware/verify-request.js`, () => ({
+vi.mock(`${process.cwd()}/middleware/verify-request.js`, () => ({
   default: vi.fn(() => (req, res, next) => {
     next();
   }),
