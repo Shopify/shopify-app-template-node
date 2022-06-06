@@ -13,6 +13,7 @@
     "test": "vitest --reporter=verbose"
   },
   "type": "module",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=16.13.0"
   },
