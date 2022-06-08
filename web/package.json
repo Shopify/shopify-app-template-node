@@ -1,6 +1,7 @@
 {
   "name": "starter-node-app",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "debug": "node --inspect-brk index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",
