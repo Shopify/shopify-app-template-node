@@ -1,3 +1,4 @@
 [submodule "web/frontend"]
 	path = web/frontend
 	url = https://github.com/Shopify/starter-react-frontend-app.git
+	branch = fix/page-titles
