@@ -1,10 +1,6 @@
 name: Node.js CI
 
-on:
-  push:
-    branches: [cli_three]
-  pull_request:
-    branches: [cli_three]
+on: [push, pull_request]
 
 jobs:
   build:
