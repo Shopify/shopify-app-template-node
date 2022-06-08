@@ -5,7 +5,6 @@ ENV SHOPIFY_API_KEY=$SHOPIFY_API_KEY
 EXPOSE 8081/tcp
 WORKDIR /app
 COPY . .
-RUN rm -rf node_modules && npm install
-RUN cd frontend && rm -rf node_modules && npm install
-RUN cd frontend && rm -rf dist && npm run build
+RUN npm install
+RUN cd frontend && npm install && npm run build
 CMD npm run serve
