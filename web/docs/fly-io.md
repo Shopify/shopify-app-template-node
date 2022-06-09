@@ -15,10 +15,12 @@
 
     - In the `[env]` section, add the following environment variables (in a `"` delimited string):
 
-      - `BACKEND_PORT` set to the same value as the `EXPOSE` line in the `Dockerfile`.  The default value in the `Dockerfile` is `8081`.
-      - `HOST` set to the URL of the new app - this can be constructed by taking the `app` variable at the very top of the `fly.toml` file, prepending it with `https://` and adding `.fly.dev` to the end, e.g, if `app` is `"fancy-cloud-1234"`, then `HOST` should be set to `https://fancy-cloud-1234.fly.dev`
-      - `SCOPES` with the appropriate scopes for your app, the default for the unmodified template is `write_products`
-      - `SHOPIFY_API_KEY` set to the API key for your app, obtained from the partner dashboard.
+        |Variable|Description/value|
+        |-|-|
+        |`BACKEND_PORT`|The port on which to run the app; set to the same value as the `EXPOSE` line in the `Dockerfile` (`Dockerfile` default value is `8081`.|
+        |`HOST`|set to the URL of the new app; this can be constructed by taking the `app` variable at the very top of the `fly.toml` file, prepending it with `https://` and adding `.fly.dev` to the end, e.g, if `app` is `"fancy-cloud-1234"`, then `HOST` should be set to `https://fancy-cloud-1234.fly.dev`|
+        |`SCOPES`|comma-separated scopes for your app; the default for the unmodified template is `write_products`|
+        |`SHOPIFY_API_KEY`|API key for your app, from the Partners Dashboard|
 
     - In the `[[services]]` section, change the value of `internal_port` to match the `BACKEND_PORT` value.
 
