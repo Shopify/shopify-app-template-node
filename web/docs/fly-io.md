@@ -4,7 +4,7 @@
 
 1. Go to [fly.io](https://fly.io) and click on _Get Started_.
 2. [Download and install](https://fly.io/docs/flyctl/installing/) the Fly CLI
-3. From the command line, sign up for Fly: `flyctl auth signup`.  You can sign-up with an email address or with a GitHub account.
+3. From the command line, sign up for Fly: `flyctl auth signup`.  You can sign up with an email address or with a GitHub account.
 4. Fill in credit card information and click _Subscribe_.
 
 ## Build and deploy a container
