@@ -18,20 +18,20 @@ git commit -m "Initial version"
 ## Build and deploy from Git to a Docker container
 
 1. Login to Heroku Container Registry: `heroku container:login`
-1. Create an app in Heroku using `heroku create -a my-app-name -s container`. This will create a git remote named `heroku` for deploying the app to Heroku.  It will also return the URL to where the app will run when deployed, in the form of `https://my-app-name.herokuapp.com`
-1. Configure the environment variables `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `HOST` and `SCOPES` for your app.  For example:
+1. Create an app in Heroku using `heroku create -a my-app-name -s container`. This will configure Heroku with a container-based app and create a git remote named `heroku` for deploying the app.  It will also return the URL to where the app will run when deployed, in the form of `https://my-app-name.herokuapp.com`
+1. Configure the environment variables `HOST`, `SCOPES`, `SHOPIFY_API_KEY`, and `SHOPIFY_API_SECRET` for your app.  For example:
 
     ```shell
-    heroku config:set SHOPIFY_API_KEY=ReplaceWithKEYFromPartnerDashboard
-    heroku config:set SHOPIFY_API_SECRET=ReplaceWithSECRETFromPartnerDashboard
     heroku config:set HOST=https://my-app-name.herokuapp.com
     heroku config:set SCOPES=write_products
+    heroku config:set SHOPIFY_API_KEY=ReplaceWithKEYFromPartnerDashboard
+    heroku config:set SHOPIFY_API_SECRET=ReplaceWithSECRETFromPartnerDashboard
     ```
 
     Note that these commands can be combined into a single command:
 
     ```shell
-    heroku config:set SHOPIFY_API_KEY=... SHOPIFY_API_SECRET=... HOST=... SCOPES=...
+    heroku config:set HOST=... SCOPES=... SHOPIFY_API_KEY=... SHOPIFY_API_SECRET=...
     ```
 
 1. At the top-level directory of your app's source code, create a `heroku.yml` file with the following content:
@@ -48,15 +48,34 @@ git commit -m "Initial version"
 
     ```shell
     git add heroku.yml
-    git commit -m "Adds Heroku manifest"
+    git commit -m "Add Heroku manifest"
     ```
 
-1. Push the app to Heroku: `git push heroku main`.  This will automatically build the `docker` image and deploy the app.
+1. Push the app to Heroku. This will automatically build the `docker` image and deploy the app.
+
+    ```shell
+    git push heroku main
+    ```
 
 ## Update URLs in Partner Dashboard and test your app
 
-1. Update main and callback URLs in Partner Dashboard to point to new app.  The main app URL should point to `https://my-app-name.herokuapp.com` and the callback URL should be `https://my-app-name.herokuapp.com/api/auth/callback`
-1. Open the deployed app by browsing to `https://my-app-name.herokuapp.com/api/auth?shop=my-dev-shop-name.myshopify.com`
+1. Update main and callback URLs in Partner Dashboard to point to new app.  The main app URL should point to
+
+    ```text
+    https://my-app-name.herokuapp.com
+    ```
+
+    and the callback URL should be
+
+    ```text
+    https://my-app-name.herokuapp.com/api/auth/callback
+    ```
+
+1. Test the deployed app by browsing to
+
+   ```text
+   https://my-app-name.herokuapp.com/api/auth?shop=my-dev-shop-name.myshopify.com
+   ```
 
 ## Deploy a new version of the app
 

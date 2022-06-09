@@ -18,7 +18,7 @@ The Node app template comes with the following out-of-the-box functionality:
 
 ## Tech Stack
 
-This template combines a number of third party open source tools:
+This template combines a number of third party open-source tools:
 
 - [Express](https://expressjs.com/) builds the backend.
 - [Vitest](https://vitest.dev/) tests the express backend.
@@ -26,9 +26,9 @@ This template combines a number of third party open source tools:
 - [React Router](https://reactrouter.com/) is used for routing. We wrap this with file-based routing.
 - [React Query](https://react-query.tanstack.com/) queries the GraphQL Admin API.
 
-These third party tools are complemented by Shopify specific tools to ease app development:
+The following Shopify tools complement these third-party tools to ease app development:
 
-- [Shopify API library](https://github.com/Shopify/shopify-api-node) adds OAuth to the express backend. This lets users install the app and grant scope permissions.
+- [Shopify API library](https://github.com/Shopify/shopify-api-node) adds OAuth to the Express backend. This lets users install the app and grant scope permissions.
 - [App Bridge React](https://shopify.dev/tools/app-bridge/react-components) adds authentication to API requests in the frontend and renders components outside of the embedded App’s iFrame.
 - [Polaris React](https://polaris.shopify.com/) is a powerful design system and component library that helps developers build high quality, consistent experiences for Shopify merchants.
 - [Custom hooks](https://github.com/Shopify/shopify-frontend-template-react/tree/main/hooks) make authenticated requests to the GraphQL Admin API.
