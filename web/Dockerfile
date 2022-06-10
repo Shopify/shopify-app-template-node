@@ -7,4 +7,5 @@ WORKDIR /app
 COPY . .
 RUN npm install
 RUN cd frontend && npm install && npm run build
-CMD npm run serve
+ENV NODE_ENV production
+CMD ["node", "index.js"]
