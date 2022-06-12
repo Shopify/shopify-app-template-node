@@ -319,10 +319,17 @@
   dependencies:
     "@shopify/app-bridge" "^2.0.26"
 
-"@shopify/app-bridge@^2.0.22", "@shopify/app-bridge@^2.0.26":
+"@shopify/app-bridge@^2.0.26":
   version "2.0.26"
   resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-2.0.26.tgz#e44326c48b2af28c9bd6fe701ca39d01f92a682e"
   integrity sha512-jbPG8mTRI1EU+NgXo8McaHy+rvg+IsuKmKzGOqAkWLtlZFlpWvRBDPXzw+q8Y4Xv4OfAUzFrwlzMFxyZ+pDcuA==
+  dependencies:
+    base64url "^3.0.1"
+
+"@shopify/app-bridge@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@shopify/app-bridge/-/app-bridge-3.0.1.tgz#07adb2546e5cc6a833de878e30ae2f507adce156"
+  integrity sha512-KHEwLLYA9GCWW7q8xxpulPSfvCdGpFq3hn+1QIh3gtxX/1yN5A1wMOoOByUSKvwNQJV/Wfes5g9zuyxx6Wmoew==
   dependencies:
     base64url "^3.0.1"
 
@@ -331,22 +338,27 @@
   resolved "https://registry.yarnpkg.com/@shopify/network/-/network-1.6.4.tgz#fdfa8379cb6e06f05ee63d24aafcd6f8e275cb34"
   integrity sha512-V+//Et386LnYdtNhQ3e33AKYfU25XEt8H5XYeMqPvJZpVvC9Z1lHKQMpmM/zq13VXjPUjt9/sNxHxMP3I6cbJg==
 
-"@shopify/polaris-icons@^4.17.0":
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.17.0.tgz#6658154b0dfcc6ce9427095cb0a3423cf266d1de"
-  integrity sha512-Vd6APDtyrCV+RkexqlzJ62iY3pInilGiClknpeK8wBq1suAZBa9A9g7WA0JM0RrjPHCGpG+W7Rb8iJitYYfOuQ==
+"@shopify/polaris-icons@*":
+  version "4.22.0"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-icons/-/polaris-icons-4.22.0.tgz#7842afa1fb4ce93056a065ab9c67ae5812b22b32"
+  integrity sha512-PTozhV8U56rrAtSEu4lbebka3tFX/ty7UcmlRmZKxo9eluuiJPNdcsQZzNXyqIBdYIxjdd30PTwed+OCboFNfg==
 
-"@shopify/polaris@^9.2.2":
-  version "9.2.2"
-  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.2.2.tgz#91bdb2f4d7971e3c762cf1022d97345c50de6cd8"
-  integrity sha512-AerqBMV3NcRa9efH6BubM2oKubkjA9Or8B4w4otTmW8SCYR0cPbFE+u6ZH16ty3cqS3xeZ7UlJv/4Z8jEXYlEw==
+"@shopify/polaris-tokens@*":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris-tokens/-/polaris-tokens-5.2.1.tgz#d288c1551983a96d66e7165058a822004706e8f0"
+  integrity sha512-xa+UussENiJ8TP6eCebf9pqoRmUg8tP9sWDGql8+2RujjiRcPNjgwDFvDM7e23FFqu4+aJdZqEFqUpQz0g8qcA==
+
+"@shopify/polaris@^9.14.1":
+  version "9.14.1"
+  resolved "https://registry.yarnpkg.com/@shopify/polaris/-/polaris-9.14.1.tgz#01e906152dca1e15c8ffad7c3e1257742e63bf90"
+  integrity sha512-9QxCMRrrFcH/VAk6bMJGdFJZz+dzFN+pkkplVuIk6bj8yiW28Kw0w6lkYwwHS512e6+XqCEWTTKYUfdZeZyLlg==
   dependencies:
-    "@shopify/polaris-icons" "^4.17.0"
+    "@shopify/polaris-icons" "*"
+    "@shopify/polaris-tokens" "*"
     "@types/react" "^17.0.19"
     "@types/react-dom" "^17.0.9"
     "@types/react-transition-group" "^4.4.2"
-    focus-visible "^5.2.0"
-    lodash "^4.17.4"
+    react-fast-compare "^3.2.0"
     react-transition-group "^4.4.2"
 
 "@shopify/shopify-api@^3.0.0":
@@ -1299,11 +1311,6 @@ find-up@^4.1.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-focus-visible@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.2.0.tgz#3a9e41fccf587bd25dcc2ef045508284f0a4d6b3"
-  integrity sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==
-
 form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.1.tgz#ebd53791b78356a99af9a300d4282c4d5eb9755f"
@@ -1757,11 +1764,6 @@ lodash.once@^4.0.0:
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
 
-lodash@^4.17.4:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
@@ -2188,6 +2190,11 @@ react-dom@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
+
+react-fast-compare@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
+  integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
