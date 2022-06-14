@@ -7,13 +7,18 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest(app, { returnHeader = true } = {}) {
+export default function verifyRequest(app, { returnHeader = true } = {}, useOnlineTokens = true) {
   return async (req, res, next) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
       res,
-      app.get("use-online-tokens")
+      app?.get("use-online-tokens") || useOnlineTokens
     );
+
+    res.locals.shopify = {
+      ...res.locals.shopify,
+      session
+    }
 
     let shop = req.query.shop;
 
