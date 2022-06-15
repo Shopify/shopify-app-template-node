@@ -25,7 +25,7 @@ vi.mock(`${process.cwd()}/middleware/verify-request.js`, () => ({
   }),
 }));
 
-describe("starter-node-app server", async () => {
+describe("shopify-app-template-node server", async () => {
   const { app } = await serve(process.cwd(), false);
 
   test("loads html on /", async () => {
