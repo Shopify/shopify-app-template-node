@@ -9,6 +9,11 @@ export default function applyAuthMiddleware(
   { billing = { required: false } } = { billing: { required: false } }
 ) {
   app.get("/api/auth", async (req, res) => {
+    if (!req.query.shop) {
+      res.status(500);
+      return res.send('No shop provided');
+    }
+
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
       return res.redirect(`/api/auth/toplevel?shop=${req.query.shop}`);
     }

@@ -95,7 +95,7 @@ describe("shopify-app-template-node server", async () => {
 
   test("goes to top level auth in oauth flow when there is no cookie", async () => {
     const response = await request(app)
-      .get("/api/auth")
+      .get("/api/auth?shop=test-shop.myshopify.test")
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(302);
@@ -116,7 +116,7 @@ describe("shopify-app-template-node server", async () => {
     const { headers } = await request(app).get("/api/auth/toplevel");
 
     const response = await request(app)
-      .get("/api/auth")
+      .get("/api/auth?shop=test-shop")
       .set("Cookie", ...headers["set-cookie"]);
 
     expect(response.status).toEqual(302);
