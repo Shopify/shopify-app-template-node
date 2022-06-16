@@ -25,7 +25,7 @@ vi.mock(`${process.cwd()}/middleware/verify-request.js`, () => ({
   }),
 }));
 
-describe("starter-node-app server", async () => {
+describe("shopify-app-template-node server", async () => {
   const { app } = await serve(process.cwd(), false);
 
   test("loads html on /", async () => {
@@ -95,7 +95,7 @@ describe("starter-node-app server", async () => {
 
   test("goes to top level auth in oauth flow when there is no cookie", async () => {
     const response = await request(app)
-      .get("/api/auth")
+      .get("/api/auth?shop=test-shop.myshopify.test")
       .set("Accept", "text/html");
 
     expect(response.status).toEqual(302);
@@ -116,7 +116,7 @@ describe("starter-node-app server", async () => {
     const { headers } = await request(app).get("/api/auth/toplevel");
 
     const response = await request(app)
-      .get("/api/auth")
+      .get("/api/auth?shop=test-shop")
       .set("Cookie", ...headers["set-cookie"]);
 
     expect(response.status).toEqual(302);
