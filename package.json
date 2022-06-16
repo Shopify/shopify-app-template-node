@@ -1,6 +1,6 @@
 {
   "name": "my-node-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "web/index.js",
   "license": "UNLICENSED",
   "scripts": {
