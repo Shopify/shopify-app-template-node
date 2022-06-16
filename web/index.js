@@ -8,6 +8,7 @@ import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
+import { version as templateVersion } from '../package.json';
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -31,6 +32,7 @@ Shopify.Context.initialize({
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
+  USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
 });
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
