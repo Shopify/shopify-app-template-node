@@ -1,10 +1,9 @@
 import { Shopify } from "@shopify/shopify-api";
 import { describe, expect, test, vi } from "vitest";
 
-import ensureBilling, {
-  BillingInterval,
-  SHOPIFY_CHARGE_NAME,
-} from "../ensure-billing";
+import ensureBilling, { BillingInterval } from "../ensure-billing";
+
+const SHOPIFY_CHARGE_NAME = "Shopify app test billing";
 
 describe("ensureBilling", async () => {
   const session = new Shopify.Session.Session("1", "test-shop", "state", true);
@@ -20,6 +19,7 @@ describe("ensureBilling", async () => {
       ]);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.OneTime,
       });
@@ -53,6 +53,7 @@ describe("ensureBilling", async () => {
       ]);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.Every30Days,
       });
@@ -83,6 +84,7 @@ describe("ensureBilling", async () => {
       const spy = mockGraphQLQueries([EXISTING_ONE_TIME_PAYMENT]);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.OneTime,
       });
@@ -108,6 +110,7 @@ describe("ensureBilling", async () => {
       ]);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.OneTime,
       });
@@ -138,6 +141,7 @@ describe("ensureBilling", async () => {
       const spy = mockGraphQLQueries(EXISTING_ONE_TIME_PAYMENT_WITH_PAGINATION);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.OneTime,
       });
@@ -170,6 +174,7 @@ describe("ensureBilling", async () => {
       const spy = mockGraphQLQueries([EXISTING_SUBSCRIPTION]);
 
       const [hasPayment, confirmationUrl] = await ensureBilling(session, {
+        chargeName: SHOPIFY_CHARGE_NAME,
         amount: 5.0,
         interval: BillingInterval.Annual,
       });

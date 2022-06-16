@@ -47,6 +47,7 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
 const BILLING_SETTINGS = {
   required: false,
   // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
+  // chargeName: "My Shopify One-Time Charge",
   // amount: 5.0,
   // currencyCode: "USD",
   // interval: BillingInterval.OneTime,

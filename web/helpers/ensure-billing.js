@@ -1,8 +1,5 @@
 import { Shopify } from "@shopify/shopify-api";
 
-// The charge name is checked for recurring subscriptions, in case there are multiple
-export const SHOPIFY_CHARGE_NAME = "Shopify app billing";
-
 export const BillingInterval = {
   OneTime: "ONE_TIME",
   Every30Days: "EVERY_30_DAYS",
@@ -18,14 +15,14 @@ let isProd;
 
 /**
  * You may want to charge merchants for using your app. This helper provides that function by checking if the current
- * merchant has an active one-time payment or subscription named SHOPIFY_CHARGE_NAME (above). If no payment is found,
+ * merchant has an active one-time payment or subscription named `chargeName`. If no payment is found,
  * this helper requests it and returns a confirmation URL so that the merchant can approve the purchase.
  *
  * Learn more about billing in our documentation: https://shopify.dev/apps/billing
  */
 export default async function ensureBilling(
   session,
-  { amount, currencyCode, interval },
+  { chargeName, amount, currencyCode, interval },
   isProdOverride = process.env.NODE_ENV === "production"
 ) {
   if (!Object.values(BillingInterval).includes(interval)) {
@@ -37,11 +34,12 @@ export default async function ensureBilling(
   let hasPayment;
   let confirmationUrl = null;
 
-  if (await hasActivePayment(session, { interval })) {
+  if (await hasActivePayment(session, { chargeName, interval })) {
     hasPayment = true;
   } else {
     hasPayment = false;
     confirmationUrl = await requestPayment(session, {
+      chargeName,
       amount,
       currencyCode,
       interval,
@@ -51,7 +49,7 @@ export default async function ensureBilling(
   return [hasPayment, confirmationUrl];
 }
 
-async function hasActivePayment(session, { interval }) {
+async function hasActivePayment(session, { chargeName, interval }) {
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
 
   if (isRecurring(interval)) {
@@ -63,7 +61,7 @@ async function hasActivePayment(session, { interval }) {
 
     for (let i = 0, len = subscriptions.length; i < len; i++) {
       if (
-        subscriptions[i].name === SHOPIFY_CHARGE_NAME &&
+        subscriptions[i].name === chargeName &&
         (!isProd || !subscriptions[i].test)
       ) {
         return true;
@@ -85,7 +83,7 @@ async function hasActivePayment(session, { interval }) {
       for (let i = 0, len = purchases.edges.length; i < len; i++) {
         const node = purchases.edges[i].node;
         if (
-          node.name === SHOPIFY_CHARGE_NAME &&
+          node.name === chargeName &&
           (!isProd || !node.test) &&
           node.status === "ACTIVE"
         ) {
@@ -100,7 +98,7 @@ async function hasActivePayment(session, { interval }) {
   return false;
 }
 
-async function requestPayment(session, { amount, currencyCode, interval }) {
+async function requestPayment(session, { chargeName, amount, currencyCode, interval }) {
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
   const returnUrl = `https://${Shopify.Context.HOST_NAME}?shop=${
     session.shop
@@ -109,6 +107,7 @@ async function requestPayment(session, { amount, currencyCode, interval }) {
   let data;
   if (isRecurring(interval)) {
     const mutationResponse = await requestRecurringPayment(client, returnUrl, {
+      chargeName,
       amount,
       currencyCode,
       interval,
@@ -116,6 +115,7 @@ async function requestPayment(session, { amount, currencyCode, interval }) {
     data = mutationResponse.body.data.appSubscriptionCreate;
   } else {
     const mutationResponse = await requestSinglePayment(client, returnUrl, {
+      chargeName,
       amount,
       currencyCode,
     });
@@ -135,13 +135,13 @@ async function requestPayment(session, { amount, currencyCode, interval }) {
 async function requestRecurringPayment(
   client,
   returnUrl,
-  { amount, currencyCode, interval }
+  { chargeName, amount, currencyCode, interval }
 ) {
   const mutationResponse = await client.query({
     data: {
       query: RECURRING_PURCHASE_MUTATION,
       variables: {
-        name: SHOPIFY_CHARGE_NAME,
+        name: chargeName,
         lineItems: [
           {
             plan: {
@@ -171,13 +171,13 @@ async function requestRecurringPayment(
 async function requestSinglePayment(
   client,
   returnUrl,
-  { amount, currencyCode }
+  { chargeName, amount, currencyCode }
 ) {
   const mutationResponse = await client.query({
     data: {
       query: ONE_TIME_PURCHASE_MUTATION,
       variables: {
-        name: SHOPIFY_CHARGE_NAME,
+        name: chargeName,
         price: { amount, currencyCode },
         returnUrl,
         test: process.env.NODE_ENV !== "production",
