@@ -18,14 +18,41 @@ git commit -m "Initial version"
 ## Build and deploy from Git to a Docker container
 
 1. Login to Heroku Container Registry: `heroku container:login`
-1. Create an app in Heroku using `heroku create -a my-app-name -s container`. This will configure Heroku with a container-based app and create a git remote named `heroku` for deploying the app.  It will also return the URL to where the app will run when deployed, in the form of `https://my-app-name.herokuapp.com`
+1. Create an app in Heroku using `heroku create -a my-app-name -s container`. This will configure Heroku with a container-based app and create a git remote named `heroku` for deploying the app.  It will also return the URL to where the app will run when deployed, in the form of:
+
+    ```text
+    https://my-app-name.herokuapp.com
+    ```
+
+1. To create a new app in the Partner Dashboard or to link the app to an existing app, run the following command using your preferred package manager:
+
+    Using yarn:
+
+    ```shell
+    yarn run info --web-env
+    ```
+
+    Using npm:
+
+    ```shell
+    npm run info --web-env
+    ```
+
+    Using pnpm:
+
+    ```shell
+    pnpm run info --web-env
+    ```
+
+    Take note of the `SCOPES`, `SHOPIFY_API_KEY` and the `SHOPIFY_API_SECRET` values, as you'll need them in the next steps.
+
 1. Configure the environment variables `HOST`, `SCOPES`, `SHOPIFY_API_KEY`, and `SHOPIFY_API_SECRET` for your app.  For example:
 
     ```shell
     heroku config:set HOST=https://my-app-name.herokuapp.com
     heroku config:set SCOPES=write_products
-    heroku config:set SHOPIFY_API_KEY=ReplaceWithKEYFromPartnerDashboard
-    heroku config:set SHOPIFY_API_SECRET=ReplaceWithSECRETFromPartnerDashboard
+    heroku config:set SHOPIFY_API_KEY=ReplaceWithKEYFromEnvCommand
+    heroku config:set SHOPIFY_API_SECRET=ReplaceWithSECRETFromEnvCommand
     ```
 
     Note that these commands can be combined into a single command:
@@ -39,9 +66,9 @@ git commit -m "Initial version"
     ```yaml
     build:
       docker:
-        web: web/Dockerfile
+        web: Dockerfile
       config:
-        SHOPIFY_API_KEY: ReplaceWithKEYFromPartnerDashboard
+        SHOPIFY_API_KEY: ReplaceWithKEYFromEnvCommand
     ```
 
     Commit the `heroku.yml` file to your git repository:
