@@ -54,7 +54,7 @@
         BACKEND_PORT = "8081"
         HOST = "https://fancy-cloud-1234.fly.dev"
         SCOPES = "write_products"
-        SHOPIFY_API_KEY = "ReplaceWithKEYFromEnvCommnd"
+        SHOPIFY_API_KEY = "ReplaceWithKEYFromEnvCommand"
 
       :
       :
@@ -68,13 +68,13 @@
 1. Set the API secret environment variable for your app:
 
     ```shell
-    flyctl secrets set SHOPIFY_API_SECRET=ReplaceWithSECRETFromEnvCommnd
+    flyctl secrets set SHOPIFY_API_SECRET=ReplaceWithSECRETFromEnvCommand
     ```
 
 1. Build and deploy the app - note that you'll need the `SHOPIFY_API_KEY` to pass to the command
 
     ```shell
-    flyctl deploy --build-arg SHOPIFY_API_KEY=ReplaceWithKEYFromEnvCommnd --remote-only
+    flyctl deploy --build-arg SHOPIFY_API_KEY=ReplaceWithKEYFromEnvCommand --remote-only
     ```
 
 ## Update URLs in Partner Dashboard and test your app
@@ -102,7 +102,7 @@
 1. After updating your code with new features and fixes, rebuild and redeploy using:
 
     ```shell
-    flyctl deploy --build-arg SHOPIFY_API_KEY=ReplaceWithKEYFromEnvCommnd --remote-only
+    flyctl deploy --build-arg SHOPIFY_API_KEY=ReplaceWithKEYFromEnvCommand --remote-only
     ```
 
 ## To scale to multiple regions
