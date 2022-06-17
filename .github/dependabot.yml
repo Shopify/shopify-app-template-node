@@ -19,7 +19,8 @@ updates:
     target-branch: "cli_two"
     # Labels on pull requests for version updates only
     labels:
-      - "cli_two dependencies"
+      - "cli_two"
+      - "dependencies"
 
   # Enable version updates for npm - cli_three/ (new template)
   - package-ecosystem: "npm"
@@ -33,7 +34,8 @@ updates:
     target-branch: "cli_three"
     # Labels on pull requests for version updates only
     labels:
-      - "cli_three dependencies"
+      - "cli_three"
+      - "dependencies"
 
   # Enable version updates for npm - cli_three/web (new template)
   - package-ecosystem: "npm"
@@ -47,4 +49,5 @@ updates:
     target-branch: "cli_three"
     # Labels on pull requests for version updates only
     labels:
-      - "cli_three dependencies"
+      - "cli_three"
+      - "dependencies"
