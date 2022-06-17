@@ -7,6 +7,8 @@ updates:
     # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "daily"
+    reviewers:
+      - Shopify/client-libraries-atc
 
   # Enable version updates for npm - cli_two (old template)
   - package-ecosystem: "npm"
@@ -17,6 +19,8 @@ updates:
       interval: "daily"
     # Raise PRs for version updates to npm against the `cli_two` branch
     target-branch: "cli_two"
+    reviewers:
+      - Shopify/client-libraries-atc
     # Labels on pull requests for version updates only
     labels:
       - "cli_two"
@@ -30,8 +34,10 @@ updates:
     # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "daily"
-    # Raise PRs for version updates to npm against the `cli_two` branch
+    # Raise PRs for version updates to npm against the `cli_three` branch
     target-branch: "cli_three"
+    reviewers:
+      - Shopify/client-libraries-atc
     # Labels on pull requests for version updates only
     labels:
       - "cli_three"
@@ -39,14 +45,15 @@ updates:
 
   # Enable version updates for npm - cli_three/web (new template)
   - package-ecosystem: "npm"
-    # Look for `package.json` and `lock` files in the `root` directory
-    # This will be CLI dependencies only
+    # Look for `package.json` and `lock` files in the `web` directory
     directory: "/web"
     # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "daily"
-    # Raise PRs for version updates to npm against the `cli_two` branch
+    # Raise PRs for version updates to npm against the `cli_three` branch
     target-branch: "cli_three"
+    reviewers:
+      - Shopify/client-libraries-atc
     # Labels on pull requests for version updates only
     labels:
       - "cli_three"
