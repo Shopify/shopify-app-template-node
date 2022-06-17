@@ -1,5 +1,6 @@
 // @ts-check
 import { join } from "path";
+import fs from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
@@ -14,6 +15,12 @@ const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
+
+const versionFilePath = "./version.txt";
+let templateVersion = "unknown";
+if (fs.existsSync(versionFilePath)) {
+  templateVersion = fs.readFileSync(versionFilePath, "utf8").trim();
+}
 
 // TODO: There should be provided by env vars
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
@@ -31,6 +38,7 @@ Shopify.Context.initialize({
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
+  USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
 });
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
