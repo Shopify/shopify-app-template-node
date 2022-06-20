@@ -196,11 +196,15 @@ That happens because of the way HMR websocket requests work, and the way the CLI
 Until we find a permanent solution that enables HMR on Firefox, this template accepts the `SHOPIFY_VITE_HMR_USE_POLLING` env var to replace HMR with polling.
 While not as responsive as HMR, the frontend will still refresh itself every few seconds with your changes.
 
-You can export this variable from your shell profile, or set it when running e.g. `yarn dev`:
+You can export this variable from your shell profile, or set it when running the `dev` command, e.g.:
 
 ```shell
+# Using yarn
 SHOPIFY_VITE_HMR_USE_POLLING=1 yarn dev
-```
+# or using npm
+SHOPIFY_VITE_HMR_USE_POLLING=1 npm run dev
+# or using pnpm
+SHOPIFY_VITE_HMR_USE_POLLING=1 pnpm dev
 
 ## Developer resources
 
