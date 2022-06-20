@@ -205,6 +205,7 @@ SHOPIFY_VITE_HMR_USE_POLLING=1 yarn dev
 SHOPIFY_VITE_HMR_USE_POLLING=1 npm run dev
 # or using pnpm
 SHOPIFY_VITE_HMR_USE_POLLING=1 pnpm dev
+```
 
 ## Developer resources
 
