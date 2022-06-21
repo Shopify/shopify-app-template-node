@@ -52,7 +52,7 @@ We look forward to working with all security researchers and strive to be respec
 - You must report any discovered vulnerability to Shopify as soon as you have validated the vulnerability.
 - Failure to follow any of the foregoing rules will disqualify you from participating in this program.
 
-** Please see our [Hackerone Profile](https://hackerone.com/shopify) for full details
+\*\* Please see our [Hackerone Profile](https://hackerone.com/shopify) for full details
 
 ## Receiving Security Updates
 

@@ -29,9 +29,7 @@ export async function serve(root, isProd, billingSettings) {
     });
   }
 
-  const { createServer } = await import(
-    path.resolve(root, "index.js")
-  );
+  const { createServer } = await import(path.resolve(root, "index.js"));
 
   return await createServer(root, isProd, billingSettings);
 }
