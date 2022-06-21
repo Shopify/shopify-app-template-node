@@ -11,7 +11,7 @@ export default function applyAuthMiddleware(
   app.get("/api/auth", async (req, res) => {
     if (!req.query.shop) {
       res.status(500);
-      return res.send('No shop provided');
+      return res.send("No shop provided");
     }
 
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {

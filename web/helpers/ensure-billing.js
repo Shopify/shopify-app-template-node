@@ -98,7 +98,10 @@ async function hasActivePayment(session, { chargeName, interval }) {
   return false;
 }
 
-async function requestPayment(session, { chargeName, amount, currencyCode, interval }) {
+async function requestPayment(
+  session,
+  { chargeName, amount, currencyCode, interval }
+) {
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
   const returnUrl = `https://${Shopify.Context.HOST_NAME}?shop=${
     session.shop
