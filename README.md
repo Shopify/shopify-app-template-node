@@ -57,7 +57,7 @@ yarn create @shopify/app
 Using npx:
 
 ```shell
-npm init @shopify/app
+npm init @shopify/app@latest
 ```
 
 Using pnpm:
