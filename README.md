@@ -207,6 +207,35 @@ SHOPIFY_VITE_HMR_USE_POLLING=1 npm run dev
 SHOPIFY_VITE_HMR_USE_POLLING=1 pnpm dev
 ```
 
+### I can't get past the ngrok "Visit site" page
+
+When you’re previewing your app or extension, you might see an ngrok interstitial page with a warning:
+
+```
+You are about to visit <id>.ngrok.io: Visit Site
+```
+
+If you click the `Visit Site` button, but continue to see this page, then you should run dev using an alternate tunnel URL that you run using tunneling software.
+We've validated that [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/run-tunnel/trycloudflare/) works with this template.
+
+To do that, you can [install the `cloudflared` CLI tool](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/), and run:
+
+```shell
+# Note that you can also use a different port
+cloudflared tunnel --url http://localhost:3000
+```
+
+In a different terminal window, navigate to your app's root and call:
+
+```shell
+# Using yarn
+yarn dev --tunnel-url https://tunnel-url:3000
+# or using npm
+npm run dev --tunnel-url https://tunnel-url:3000
+# or using pnpm
+pnpm dev --tunnel-url https://tunnel-url:3000
+```
+
 ## Developer resources
 
 - [Introduction to Shopify apps](https://shopify.dev/apps/getting-started)
