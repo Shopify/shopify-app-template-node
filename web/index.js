@@ -8,6 +8,7 @@ import { Shopify, LATEST_API_VERSION } from "@shopify/shopify-api";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
+import productCreator from "./helpers/product-creator.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 
 const USE_ONLINE_TOKENS = false;
@@ -106,7 +107,7 @@ export async function createServer(
     })
   );
 
-  app.get("/api/products-count", async (req, res) => {
+  app.get("/api/products/count", async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
       res,
@@ -120,13 +121,22 @@ export async function createServer(
     res.status(200).send(countData);
   });
 
-  app.post("/api/graphql", async (req, res) => {
+  app.get("/api/products/create", async (req, res) => {
+    const session = await Shopify.Utils.loadCurrentSession(
+      req,
+      res,
+      app.get("use-online-tokens")
+    );
+    let status = 200;
+    let error = null;
+
     try {
-      const response = await Shopify.Utils.graphqlProxy(req, res);
-      res.status(200).send(response.body);
-    } catch (error) {
-      res.status(500).send(error.message);
+      await productCreator(session);
+    } catch (e) {
+      status = 500;
+      error = e.message;
     }
+    res.status(status).send({ success: status === 200, error });
   });
 
   app.use(express.json());
