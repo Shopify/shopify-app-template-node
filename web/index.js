@@ -158,6 +158,18 @@ export async function createServer(
     // include a shop in the query parameters.
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
       res.redirect(`/api/auth?shop=${shop}`);
+    } else if (
+      req.signedCookies[app.get("top-level-oauth-cookie")] &&
+      typeof req.query.host === "string"
+    ) {
+      // TODO: Assume we do soemthing like this:
+      // const adminPath = await Shopify.Auth.getAdminPath(host);
+      // That way we control constucting the URL correctly
+      // This requires updating @shopify/shopify-api & equivelant libraries.
+      const adminPath = Buffer.from(req.query.host, "base64").toString();
+      let redirectUrl = `https://${adminPath}/apps/${Shopify.Context.API_KEY}`;
+
+      res.redirect(redirectUrl);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");

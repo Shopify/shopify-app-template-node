@@ -79,8 +79,18 @@ export default function applyAuthMiddleware(
         }
       });
 
+      // BEFORE:
+      // let redirectUrl = `/?shop=${session.shop}&host=${host}`;
+
+      // AFTER:
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
-      let redirectUrl = `/?shop=${session.shop}&host=${host}`;
+      // TODO: Assume we do soemthing like this:
+      // const adminPath = await Shopify.Auth.getAdminPath(host);
+      // That way we control constucting the URL correctly
+      // This requires updating @shopify/shopify-api & equivelant libraries.
+      const adminPath = Buffer.from(host, "base64").toString();
+      let redirectUrl = `https://${adminPath}/apps/${Shopify.Context.API_KEY}`;
+
       if (billing.required) {
         const [hasPayment, confirmationUrl] = await ensureBilling(
           session,
