@@ -9,6 +9,7 @@ import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
+import { AppInstallationsDB } from "./app_installations_db.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -28,6 +29,19 @@ const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
+let sessionDb;
+if (process.env.NODE_ENV === "test") {
+  sessionDb = new Shopify.Session.MemorySessionStorage();
+} else {
+  sessionDb = new Shopify.Session.SQLiteSessionStorage(DB_PATH);
+  // Rip out the (technically private) SQLite DB from the session storage
+  // so we can re-use it for storing a list of shops that install the app.
+  // This is a temporary workaround until we augment the SQLiteSessionStorage
+  //implementation to also accept a db instance.
+  AppInstallationsDB.db = sessionDb.db;
+}
+await AppInstallationsDB.init();
+
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
@@ -37,17 +51,15 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
+  SESSION_STORAGE: sessionDb,
   USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
 });
 
-// Storing the currently active shops in memory will force them to re-login when your server restarts. You should
-// persist this object in your app.
-const ACTIVE_SHOPIFY_SHOPS = {};
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/api/webhooks",
-  webhookHandler: async (topic, shop, body) =>
-    delete ACTIVE_SHOPIFY_SHOPS[shop],
+  webhookHandler: async (_topic, shop, _body) => {
+    await AppInstallationsDB.delete(shop)
+  },
 });
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
@@ -77,7 +89,6 @@ export async function createServer(
 ) {
   const app = express();
   app.set("top-level-oauth-cookie", TOP_LEVEL_OAUTH_COOKIE);
-  app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
 
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
@@ -154,9 +165,7 @@ export async function createServer(
   app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
 
-    // Detect whether we need to reinstall the app, any request from Shopify will
-    // include a shop in the query parameters.
-    if (app.get("active-shopify-shops")[shop] === undefined && shop) {
+    if (AppInstallationsDB.read(shop) === undefined && shop) {
       res.redirect(`/api/auth?shop=${shop}`);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');

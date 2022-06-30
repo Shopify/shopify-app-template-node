@@ -18,6 +18,7 @@ vi.mock(`${process.cwd()}/helpers/ensure-billing.js`, async () => {
   };
 });
 import { BillingInterval } from "../helpers/ensure-billing.js";
+import { AppInstallationsDB } from "../app_installations_db.js";
 
 vi.mock(`${process.cwd()}/middleware/verify-request.js`, () => ({
   default: vi.fn(() => (req, res, next) => {
@@ -153,8 +154,10 @@ describe("shopify-app-template-node server", async () => {
           shop: "test-shop",
         }
       );
-      expect(app.get("active-shopify-shops")).toEqual({
-        "test-shop": "write_products",
+      expect(AppInstallationsDB.read("test-shop")).toEqual({
+        id: 1,
+        shopDomain: "test-shop",
+        shopScopes: "write_products",
       });
       expect(response.status).toEqual(302);
       expect(response.headers.location).toEqual(
