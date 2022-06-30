@@ -164,8 +164,9 @@ export async function createServer(
 
   app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
+    const appNotInstalled = await AppInstallationsDB.read(shop) === undefined;
 
-    if (AppInstallationsDB.read(shop) === undefined && shop) {
+    if (appNotInstalled && shop) {
       res.redirect(`/api/auth?shop=${shop}`);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');

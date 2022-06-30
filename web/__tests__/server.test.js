@@ -50,10 +50,17 @@ describe("shopify-app-template-node server", async () => {
   );
 
   test("redirects to auth if the app needs to be [re]installed", async () => {
+    const appInstallationDbRead = vi
+      .spyOn(AppInstallationsDB, "read")
+      .mockImplementationOnce(() => { return undefined; });
+
     const response = await request(app)
       .get("/?shop=test-shop")
       .set("Accept", "text/html");
 
+      expect(appInstallationDbRead).toHaveBeenLastCalledWith(
+        "test-shop",
+      );
     expect(response.status).toEqual(302);
     expect(response.headers.location).toEqual("/api/auth?shop=test-shop");
   });
@@ -154,11 +161,6 @@ describe("shopify-app-template-node server", async () => {
           shop: "test-shop",
         }
       );
-      expect(AppInstallationsDB.read("test-shop")).toEqual({
-        id: 1,
-        shopDomain: "test-shop",
-        shopScopes: "write_products",
-      });
       expect(response.status).toEqual(302);
       expect(response.headers.location).toEqual(
         "/?shop=test-shop&host=test-shop-host"

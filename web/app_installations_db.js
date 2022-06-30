@@ -18,10 +18,6 @@ export const AppInstallationsDB = {
   }) {
     await this.ready;
 
-    this.__validateShopDomain({
-      shopDomain,
-    });
-
     const query = `
       INSERT INTO ${this.appInstallationsTableName}
       (shopDomain, shopScope)
@@ -58,10 +54,6 @@ export const AppInstallationsDB = {
   ) {
     await this.ready;
 
-    this.__validateShopDomain({
-      shopDomain,
-    });
-
     const query = `
       UPDATE ${this.appInstallationsTableName}
       SET
@@ -95,7 +87,6 @@ export const AppInstallationsDB = {
   }) {
     await this.ready;
 
-    console.log("createOrUpdate", shopDomain, shopScope);
     const id = await this.read(shopDomain);
     if (id) {
       return this.update(id, {
@@ -166,29 +157,4 @@ export const AppInstallationsDB = {
       });
     });
   },
-
-  __validateShopDomain: function ({
-    shopDomain = null,
-  }) {
-    if (!shopDomain) {
-      throw new AppInstallationValidationError(
-        "Must pass in a shopDomain when installing the app"
-      );
-    }
-
-    if (shopDomain) {
-      try {
-        const url = new URL(shopDomain);
-      } catch (e) {
-        throw new AppInstallationValidationError(`Invalid shopDomain '${shopDomain}'`);
-      }
-    }
-  },
 };
-
-export class AppInstallationValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "AppInstallationValidationError";
-  }
-}

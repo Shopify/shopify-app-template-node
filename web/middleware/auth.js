@@ -57,7 +57,6 @@ export default function applyAuthMiddleware(
       );
 
       const host = req.query.host;
-      console.log('session', session);
       AppInstallationsDB.createOrUpdate({
         shopDomain: session.shop,
         shopScope: session.scope,
