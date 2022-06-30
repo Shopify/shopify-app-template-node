@@ -56,12 +56,6 @@ export default function applyAuthMiddleware(
       );
 
       const host = req.query.host;
-      app.set(
-        "active-shopify-shops",
-        Object.assign(app.get("active-shopify-shops"), {
-          [session.shop]: session.scope,
-        })
-      );
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
