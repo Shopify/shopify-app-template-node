@@ -3,7 +3,7 @@ import { join } from "path";
 import fs from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { Shopify, ApiVersion } from "@shopify/shopify-api";
+import { Shopify, LATEST_API_VERSION } from "@shopify/shopify-api";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
@@ -34,7 +34,7 @@ Shopify.Context.initialize({
   SCOPES: process.env.SCOPES.split(","),
   HOST_NAME: process.env.HOST.replace(/https?:\/\//, ""),
   HOST_SCHEME: process.env.HOST.split("://")[0],
-  API_VERSION: ApiVersion.April22,
+  API_VERSION: LATEST_API_VERSION,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
