@@ -14,9 +14,10 @@ export default function applyAuthMiddleware(
       return res.send("No shop provided");
     }
 
-    if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
-      return res.redirect(`/api/auth/toplevel?shop=${req.query.shop}`);
-    }
+    // BEFORE
+    // if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
+    //   return res.redirect(`/api/auth/toplevel?shop=${req.query.shop}`);
+    // }
 
     const redirectUrl = await Shopify.Auth.beginAuth(
       req,
@@ -29,23 +30,24 @@ export default function applyAuthMiddleware(
     res.redirect(redirectUrl);
   });
 
-  app.get("/api/auth/toplevel", (req, res) => {
-    res.cookie(app.get("top-level-oauth-cookie"), "1", {
-      signed: true,
-      httpOnly: true,
-      sameSite: "strict",
-    });
+  // BEFORE:
+  // app.get("/api/auth/toplevel", (req, res) => {
+  //   res.cookie(app.get("top-level-oauth-cookie"), "1", {
+  //     signed: true,
+  //     httpOnly: true,
+  //     sameSite: false,
+  //   });
 
-    res.set("Content-Type", "text/html");
+  //   res.set("Content-Type", "text/html");
 
-    res.send(
-      topLevelAuthRedirect({
-        apiKey: Shopify.Context.API_KEY,
-        hostName: Shopify.Context.HOST_NAME,
-        shop: req.query.shop,
-      })
-    );
-  });
+  //   res.send(
+  //     topLevelAuthRedirect({
+  //       apiKey: Shopify.Context.API_KEY,
+  //       hostName: Shopify.Context.HOST_NAME,
+  //       shop: req.query.shop,
+  //     })
+  //   );
+  // });
 
   app.get("/api/auth/callback", async (req, res) => {
     try {
