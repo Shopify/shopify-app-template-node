@@ -2,7 +2,7 @@
 import { resolve } from "path";
 import express from "express";
 import cookieParser from "cookie-parser";
-import { Shopify, ApiVersion } from "@shopify/shopify-api";
+import { Shopify, LATEST_API_VERSION } from "@shopify/shopify-api";
 import "dotenv/config";
 
 import applyAuthMiddleware from "./middleware/auth.js";
@@ -19,7 +19,7 @@ Shopify.Context.initialize({
   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
   SCOPES: process.env.SCOPES.split(","),
   HOST_NAME: process.env.HOST.replace(/https:\/\//, ""),
-  API_VERSION: ApiVersion.April22,
+  API_VERSION: LATEST_API_VERSION,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
   SESSION_STORAGE: new Shopify.Session.MemorySessionStorage(),
