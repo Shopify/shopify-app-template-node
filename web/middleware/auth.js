@@ -3,31 +3,15 @@ import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
 
 import ensureBilling from "../helpers/ensure-billing.js";
 import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
+import redirectToAuth from "../helpers/redirectToAuth.js";
 
 export default function applyAuthMiddleware(
   app,
   { billing = { required: false } } = { billing: { required: false } }
 ) {
+  // TODO: Not sure if we still need this around?
   app.get("/api/auth", async (req, res) => {
-    if (!req.query.shop) {
-      res.status(500);
-      return res.send("No shop provided");
-    }
-
-    // BEFORE
-    // if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
-    //   return res.redirect(`/api/auth/toplevel?shop=${req.query.shop}`);
-    // }
-
-    const redirectUrl = await Shopify.Auth.beginAuth(
-      req,
-      res,
-      req.query.shop,
-      "/api/auth/callback",
-      app.get("use-online-tokens")
-    );
-
-    res.redirect(redirectUrl);
+    redirectToAuth(req, res, app);
   });
 
   // BEFORE:
@@ -116,7 +100,11 @@ export default function applyAuthMiddleware(
         case e instanceof Shopify.Errors.CookieNotFound:
         case e instanceof Shopify.Errors.SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          res.redirect(`/api/auth?shop=${req.query.shop}`);
+          redirectToAuth(req, res, app);
+
+          // BEFORE:
+          // This is likely because the OAuth session cookie expired before the merchant approved the request
+          // res.redirect(`/api/auth?shop=${req.query.shop}`);
           break;
         default:
           res.status(500);

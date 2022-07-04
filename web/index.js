@@ -9,6 +9,7 @@ import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
+import redirectToAuth from "./helpers/redirectToAuth.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -157,7 +158,7 @@ export async function createServer(
     // Detect whether we need to reinstall the app, any request from Shopify will
     // include a shop in the query parameters.
     if (app.get("active-shopify-shops")[shop] === undefined && shop) {
-      res.redirect(`/api/auth?shop=${shop}`);
+      redirectToAuth(req, res, app);
     } else if (
       req.signedCookies[app.get("top-level-oauth-cookie")] &&
       typeof req.query.host === "string"
