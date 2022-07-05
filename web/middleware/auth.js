@@ -9,29 +9,12 @@ export default function applyAuthMiddleware(
   app,
   { billing = { required: false } } = { billing: { required: false } }
 ) {
-  // TODO: Not sure if we still need this around?
+  // TODO: Not sure if we still need this?
+  // Instead of redirecting to this route, we call this code directly.
+  // We only need this is something else calls this route
   app.get("/api/auth", async (req, res) => {
     redirectToAuth(req, res, app);
   });
-
-  // BEFORE:
-  // app.get("/api/auth/toplevel", (req, res) => {
-  //   res.cookie(app.get("top-level-oauth-cookie"), "1", {
-  //     signed: true,
-  //     httpOnly: true,
-  //     sameSite: false,
-  //   });
-
-  //   res.set("Content-Type", "text/html");
-
-  //   res.send(
-  //     topLevelAuthRedirect({
-  //       apiKey: Shopify.Context.API_KEY,
-  //       hostName: Shopify.Context.HOST_NAME,
-  //       shop: req.query.shop,
-  //     })
-  //   );
-  // });
 
   app.get("/api/auth/callback", async (req, res) => {
     try {
@@ -65,10 +48,6 @@ export default function applyAuthMiddleware(
         }
       });
 
-      // BEFORE:
-      // let redirectUrl = `/?shop=${session.shop}&host=${host}`;
-
-      // AFTER:
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
       // TODO: Assume we do soemthing like this:
       // const adminPath = await Shopify.Auth.getAdminPath(host);
@@ -101,10 +80,6 @@ export default function applyAuthMiddleware(
         case e instanceof Shopify.Errors.SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
           redirectToAuth(req, res, app);
-
-          // BEFORE:
-          // This is likely because the OAuth session cookie expired before the merchant approved the request
-          // res.redirect(`/api/auth?shop=${req.query.shop}`);
           break;
         default:
           res.status(500);
