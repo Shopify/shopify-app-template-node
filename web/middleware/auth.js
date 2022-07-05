@@ -24,12 +24,6 @@ export default function applyAuthMiddleware(
       );
 
       const host = req.query.host;
-      app.set(
-        "active-shopify-shops",
-        Object.assign(app.get("active-shopify-shops"), {
-          [session.shop]: session.scope,
-        })
-      );
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
@@ -65,6 +59,14 @@ export default function applyAuthMiddleware(
           redirectUrl = confirmationUrl;
         }
       }
+
+      // TODO: Is this the right place?
+      // TODO: This does not seem to fix the error that we are seeing
+      res.cookie(app.get("top-level-oauth-cookie"), "1", {
+        signed: true,
+        httpOnly: true,
+        sameSite: "lax",
+      });
 
       // Redirect to app with shop parameter upon auth
       res.redirect(redirectUrl);

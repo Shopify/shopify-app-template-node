@@ -27,7 +27,9 @@ if (fs.existsSync(versionFilePath)) {
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
 const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+const db = new Shopify.Session.SQLiteSessionStorage(
+  `${process.cwd()}/database.sqlite`
+);
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -38,17 +40,19 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
   // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
+  SESSION_STORAGE: db,
   USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
 });
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
 // persist this object in your app.
-const ACTIVE_SHOPIFY_SHOPS = {};
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/api/webhooks",
-  webhookHandler: async (topic, shop, body) =>
-    delete ACTIVE_SHOPIFY_SHOPS[shop],
+  webhookHandler: async (topic, shop, body) => {
+    const [session] = await db.query(
+      `DELETE * FROM shopify_sessions WHERE shop="${shop}" ORDER BY expires DESC LIMIT 1`
+    );
+  },
 });
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
@@ -78,7 +82,6 @@ export async function createServer(
 ) {
   const app = express();
   app.set("top-level-oauth-cookie", TOP_LEVEL_OAUTH_COOKIE);
-  app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
 
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
@@ -155,9 +158,12 @@ export async function createServer(
   app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
 
-    // Detect whether we need to reinstall the app, any request from Shopify will
-    // include a shop in the query parameters.
-    if (app.get("active-shopify-shops")[shop] === undefined && shop) {
+    // TODO: Where should this code go?
+    const [session] = await db.query(
+      `SELECT * FROM shopify_sessions WHERE shop="${shop}" ORDER BY expires DESC LIMIT 1`
+    );
+
+    if (!session && shop) {
       redirectToAuth(req, res, app);
     } else if (
       req.signedCookies[app.get("top-level-oauth-cookie")] &&
