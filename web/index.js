@@ -29,12 +29,7 @@ const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
-let sessionDb;
-if (process.env.NODE_ENV === "test") {
-  sessionDb = new Shopify.Session.MemorySessionStorage();
-} else {
-  sessionDb = new Shopify.Session.SQLiteSessionStorage(DB_PATH);
-}
+const sessionDb = new Shopify.Session.SQLiteSessionStorage(DB_PATH);
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
