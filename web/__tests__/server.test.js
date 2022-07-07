@@ -18,7 +18,7 @@ vi.mock(`${process.cwd()}/helpers/ensure-billing.js`, async () => {
   };
 });
 import { BillingInterval } from "../helpers/ensure-billing.js";
-import { AppInstallationsDB } from "../app_installations_db.js";
+import { AppInstallations } from "../app_installations.js";
 
 vi.mock(`${process.cwd()}/middleware/verify-request.js`, () => ({
   default: vi.fn(() => (req, res, next) => {
@@ -50,17 +50,15 @@ describe("shopify-app-template-node server", async () => {
   );
 
   test("redirects to auth if the app needs to be [re]installed", async () => {
-    const appInstallationDbRead = vi
-      .spyOn(AppInstallationsDB, "read")
-      .mockImplementationOnce(() => { return undefined; });
+    const appInstallationIncludes = vi
+      .spyOn(AppInstallations, "includes")
+      .mockImplementationOnce(() => { return false; });
 
     const response = await request(app)
       .get("/?shop=test-shop")
       .set("Accept", "text/html");
 
-      expect(appInstallationDbRead).toHaveBeenLastCalledWith(
-        "test-shop",
-      );
+    expect(appInstallationIncludes).toHaveBeenLastCalledWith("test-shop");
     expect(response.status).toEqual(302);
     expect(response.headers.location).toEqual("/api/auth?shop=test-shop");
   });

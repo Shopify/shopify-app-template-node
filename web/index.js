@@ -9,7 +9,7 @@ import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
-import { AppInstallationsDB } from "./app_installations_db.js";
+import { AppInstallations } from "./app_installations.js";
 
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -34,13 +34,7 @@ if (process.env.NODE_ENV === "test") {
   sessionDb = new Shopify.Session.MemorySessionStorage();
 } else {
   sessionDb = new Shopify.Session.SQLiteSessionStorage(DB_PATH);
-  // Rip out the (technically private) SQLite DB from the session storage
-  // so we can re-use it for storing a list of shops that install the app.
-  // This is a temporary workaround until we augment the SQLiteSessionStorage
-  //implementation to also accept a db instance.
-  AppInstallationsDB.db = sessionDb.db;
 }
-await AppInstallationsDB.init();
 
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -55,10 +49,12 @@ Shopify.Context.initialize({
   USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
 });
 
+AppInstallations.init(sessionDb);
+
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/api/webhooks",
   webhookHandler: async (_topic, shop, _body) => {
-    await AppInstallationsDB.delete(shop)
+    await AppInstallations.delete(shop)
   },
 });
 
@@ -164,9 +160,9 @@ export async function createServer(
 
   app.use("/*", async (req, res, next) => {
     const shop = req.query.shop;
-    const appNotInstalled = await AppInstallationsDB.read(shop) === undefined;
+    const appInstalled = await AppInstallations.includes(shop);
 
-    if (appNotInstalled && shop) {
+    if (shop && !appInstalled) {
       res.redirect(`/api/auth?shop=${shop}`);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
