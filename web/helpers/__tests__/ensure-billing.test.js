@@ -6,7 +6,7 @@ import ensureBilling, { BillingInterval } from "../ensure-billing";
 const SHOPIFY_CHARGE_NAME = "Shopify app test billing";
 
 describe("ensureBilling", async () => {
-  const session = new Shopify.Session.Session("1", "test-shop", "state", true);
+  const session = new Shopify.Session.Session("1", "test-shop", "state", false);
   session.scope = Shopify.Context.SCOPES;
   session.accessToken = "access-token";
   session.expires = null;
