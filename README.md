@@ -26,6 +26,7 @@ This template combines a number of third party open-source tools:
 - [Vitest](https://vitest.dev/) tests the express backend.
 - [Vite](https://vitejs.dev/) builds the [React](https://reactjs.org/) frontend.
 - [React Router](https://reactrouter.com/) is used for routing. We wrap this with file-based routing.
+- [React Query](https://react-query.tanstack.com/) queries the Admin API.
 
 The following Shopify tools complement these third-party tools to ease app development:
 

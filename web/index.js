@@ -91,10 +91,10 @@ export async function createServer(
     try {
       await Shopify.Webhooks.Registry.process(req, res);
       console.log(`Webhook processed, returned status code 200`);
-    } catch (error) {
-      console.log(`Failed to process webhook: ${error}`);
+    } catch (e) {
+      console.log(`Failed to process webhook: ${e.message}`);
       if (!res.headersSent) {
-        res.status(500).send(error.message);
+        res.status(500).send(e.message);
       }
     }
   });
@@ -133,6 +133,7 @@ export async function createServer(
     try {
       await productCreator(session);
     } catch (e) {
+      console.log(`Failed to process products/create: ${e.message}`);
       status = 500;
       error = e.message;
     }
