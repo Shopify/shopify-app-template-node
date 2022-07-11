@@ -6,6 +6,12 @@ export default async function redirectToAuth(req, res, app) {
     return res.send("No shop provided");
   }
 
+  res.cookie(app.get("top-level-oauth-cookie"), "1", {
+    signed: true,
+    httpOnly: true,
+    sameSite: "lax",
+  });
+
   const redirectUrl = await Shopify.Auth.beginAuth(
     req,
     res,

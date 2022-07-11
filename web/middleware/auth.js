@@ -60,14 +60,6 @@ export default function applyAuthMiddleware(
         }
       }
 
-      // TODO: Is this the right place?
-      // TODO: This does not seem to fix the error that we are seeing
-      res.cookie(app.get("top-level-oauth-cookie"), "1", {
-        signed: true,
-        httpOnly: true,
-        sameSite: "lax",
-      });
-
       // Redirect to app with shop parameter upon auth
       res.redirect(redirectUrl);
     } catch (e) {
