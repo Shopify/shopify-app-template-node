@@ -148,7 +148,7 @@ export async function createServer(
       ({ default: fn }) => fn
     );
     app.use(compression());
-    app.use(serveStatic(PROD_INDEX_PATH));
+    app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
   }
 
   app.use("/*", async (req, res, next) => {
