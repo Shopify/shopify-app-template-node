@@ -26,6 +26,4 @@ Fixes #0000 <!-- link to issue if one exists -->
 **Note**: once this PR is merged, it becomes a new release for this template.
 
 - [ ] I have added/updated tests for this change
-- [ ] I have incremented the version in the top-level `package.json` file **AND** in the `web/version.txt` file
-- [ ] I have added an entry to the `CHANGELOG.md` file
 - [ ] I have made changes to the `README.md` file and other related documentation, if applicable
