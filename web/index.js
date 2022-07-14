@@ -9,8 +9,10 @@ import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import productCreator from "./helpers/product-creator.js";
+import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 import { AppInstallations } from "./app_installations.js";
+
 
 const USE_ONLINE_TOKENS = false;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -174,7 +176,7 @@ export async function createServer(
     const appInstalled = await AppInstallations.includes(shop);
 
     if (shop && !appInstalled) {
-      res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
+      return redirectToAuth(req, res, app)
     } else {
       const fs = await import("fs");
       const fallbackFile = join(

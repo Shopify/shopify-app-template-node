@@ -1,11 +1,17 @@
 import { Shopify } from "@shopify/shopify-api";
 import express from "express";
 import request from "supertest";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi, beforeEach } from "vitest";
 import jwt from "jsonwebtoken";
 import { serve } from "../../__tests__/serve";
 
 import verifyRequest from "../verify-request.js";
+
+const beginAuthMock = vi.fn().mockImplementation(async (_req, _res, _app) => {
+  return Promise.resolve("mock/begin/auth/url");
+});
+
+vi.spyOn(Shopify.Auth, "beginAuth").mockImplementation(beginAuthMock);
 
 describe("verify-request middleware", async () => {
   // this is only used to grab app wide constants
@@ -22,6 +28,10 @@ describe("verify-request middleware", async () => {
       algorithm: "HS256",
     }
   );
+
+  beforeEach(() => {
+    beginAuthMock.mockClear();
+  });
 
   test("should return a function", () => {
     expect(verifyRequest(app, {})).toBeInstanceOf(Function);
@@ -126,7 +136,7 @@ describe("verify-request middleware", async () => {
 
     const mockApp = express();
     mockApp.use(verifyRequest(app));
-    mockApp.get("/", (req, res) => {
+    mockApp.get("/", (_req, res) => {
       res.status(200).end();
     });
 
@@ -135,6 +145,13 @@ describe("verify-request middleware", async () => {
     });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toEqual(`/api/auth?shop=test-shop`);
+    expect(response.headers.location).toEqual("mock/begin/auth/url");
+    expect(Shopify.Auth.beginAuth).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      "test-shop",
+      "/api/auth/callback",
+      false
+    );
   });
 });
