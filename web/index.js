@@ -80,6 +80,10 @@ export async function createServer(
     billing: billingSettings,
   });
 
+  // Do not call app.use(express.json()) before processing webhooks with
+  // Shopify.Webhooks.Registry.process().
+  // See https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-express
+  // for more details.
   app.post("/api/webhooks", async (req, res) => {
     try {
       await Shopify.Webhooks.Registry.process(req, res);
@@ -133,6 +137,7 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
+  // All endpoints after this point will use the express.json() middleware
   app.use(express.json());
 
   app.use((req, res, next) => {

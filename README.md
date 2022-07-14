@@ -186,6 +186,12 @@ The following pages document the basic steps to host and deploy your application
 - [fly.io](/web/docs/fly-io.md)
 - [Heroku](/web/docs/heroku.md)
 
+## Some things to watch out for
+
+### Using `express.json` middleware
+
+If you use the `express.json()` middleware in your app **and** if you use `Shopify.Webhooks.Registry.process()` to process webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.  See the [API documentation](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-express) for more details.
+
 ## Known issues
 
 ### Hot module replacement and Firefox
@@ -211,7 +217,7 @@ SHOPIFY_VITE_HMR_USE_POLLING=1 pnpm dev
 
 When you’re previewing your app or extension, you might see an ngrok interstitial page with a warning:
 
-```
+```text
 You are about to visit <id>.ngrok.io: Visit Site
 ```
 
