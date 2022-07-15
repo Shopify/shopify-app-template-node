@@ -271,7 +271,7 @@ describe("shopify-app-template-node server", async () => {
 
       expect(response.status).toEqual(400);
       expect(consoleSpy).toHaveBeenCalled();
-      expect(consoleSpy.mock.lastCall[0]).toContain("something went wrong");
+      expect(consoleSpy.mock.calls[0][0]).toContain("something went wrong");
     });
   });
 

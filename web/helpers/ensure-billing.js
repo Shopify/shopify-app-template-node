@@ -105,7 +105,7 @@ async function requestPayment(
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
   const returnUrl = `https://${Shopify.Context.HOST_NAME}?shop=${
     session.shop
-  }&host=${btoa(`${session.shop}/admin`)}`;
+  }&host=${Buffer.from(`${session.shop}/admin`).toString('base64')}`;
 
   let data;
   if (isRecurring(interval)) {
