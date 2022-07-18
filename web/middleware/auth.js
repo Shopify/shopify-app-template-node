@@ -20,8 +20,6 @@ export default function applyAuthMiddleware(
         req.query
       );
 
-      const host = Shopify.Utils.sanitizeHost(req.query.host, true);
-
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
         accessToken: session.accessToken,
@@ -39,9 +37,6 @@ export default function applyAuthMiddleware(
       });
 
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
-      let redirectUrl = `/?shop=${encodeURIComponent(
-        session.shop
-      )}&host=${encodeURIComponent(host)}`;
       if (billing.required) {
         const [hasPayment, confirmationUrl] = await ensureBilling(
           session,
@@ -49,11 +44,14 @@ export default function applyAuthMiddleware(
         );
 
         if (!hasPayment) {
-          redirectUrl = confirmationUrl;
+          return res.redirect(confirmationUrl);
         }
       }
 
-      // Redirect to app with shop parameter upon auth
+      const redirectUrl = Shopify.Context.IS_EMBEDDED_APP
+        ? Shopify.Utils.getEmbeddedAppUrl(req)
+        : `/?shop=${session.shop}&host=${encodeURIComponent(req.query.host)}`;
+
       res.redirect(redirectUrl);
     } catch (e) {
       console.warn(e);
@@ -65,17 +63,7 @@ export default function applyAuthMiddleware(
         case e instanceof Shopify.Errors.CookieNotFound:
         case e instanceof Shopify.Errors.SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-<<<<<<< HEAD
-          const shop = Shopify.Utils.sanitizeShop(req.query.shop);
-          if (!shop) {
-            res.status(500);
-            return res.send("No shop provided");
-          }
-
-          res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
-=======
           return redirectToAuth(req, res, app);
->>>>>>> a756cd1 (Execute the code to redirectToAuth directly, rather than through a HTTP redirect)
           break;
         default:
           res.status(500);
