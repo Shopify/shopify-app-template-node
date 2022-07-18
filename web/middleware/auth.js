@@ -2,7 +2,6 @@ import { Shopify } from "@shopify/shopify-api";
 import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
 
 import ensureBilling from "../helpers/ensure-billing.js";
-import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
 export default function applyAuthMiddleware(
@@ -11,30 +10,6 @@ export default function applyAuthMiddleware(
 ) {
   app.get("/api/auth", async (req, res) => {
     return redirectToAuth(req, res, app)
-  });
-
-  app.get("/api/auth/toplevel", (req, res) => {
-    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
-    if (!shop) {
-      res.status(500);
-      return res.send("No shop provided");
-    }
-
-    res.cookie(app.get("top-level-oauth-cookie"), "1", {
-      signed: true,
-      httpOnly: true,
-      sameSite: "strict",
-    });
-
-    res.set("Content-Type", "text/html");
-
-    res.send(
-      topLevelAuthRedirect({
-        apiKey: Shopify.Context.API_KEY,
-        hostName: Shopify.Context.HOST_NAME,
-        shop: shop,
-      })
-    );
   });
 
   app.get("/api/auth/callback", async (req, res) => {

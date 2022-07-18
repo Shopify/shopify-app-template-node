@@ -70,9 +70,9 @@ export async function createServer(
   billingSettings = BILLING_SETTINGS
 ) {
   const app = express();
+
   app.set("top-level-oauth-cookie", TOP_LEVEL_OAUTH_COOKIE);
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
-
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
   applyAuthMiddleware(app, {
