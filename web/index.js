@@ -137,7 +137,8 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
-  // All endpoints after this point will use the express.json() middleware
+  // All endpoints after this point will have access to a request.body
+  // attribute, as a result of the express.json() middleware
   app.use(express.json());
 
   app.use((req, res, next) => {
