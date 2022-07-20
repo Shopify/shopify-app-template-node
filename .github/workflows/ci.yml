@@ -26,4 +26,3 @@ jobs:
       - name: Build FE for production test
         working-directory: ./web/frontend
         run: yarn install && yarn build
-      - run: NODE_ENV=test yarn test

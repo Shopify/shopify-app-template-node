@@ -23,7 +23,6 @@ The Node app template comes with the following out-of-the-box functionality:
 This template combines a number of third party open-source tools:
 
 - [Express](https://expressjs.com/) builds the backend.
-- [Vitest](https://vitest.dev/) tests the express backend.
 - [Vite](https://vitejs.dev/) builds the [React](https://reactjs.org/) frontend.
 - [React Router](https://reactrouter.com/) is used for routing. We wrap this with file-based routing.
 - [React Query](https://react-query.tanstack.com/) queries the Admin API.
@@ -93,50 +92,6 @@ pnpm run dev
 ```
 
 Open the URL generated in your console. Once you grant permission to the app, you can start development.
-
-### Testing backend code
-
-Unit tests exist for the backend. First, build the [frontend](#build) and then run them using your preferred package manager:
-
-Using yarn:
-
-```shell
-cd web && yarn test
-```
-
-Using npm:
-
-```shell
-cd web && npm run test
-```
-
-Using pnpm:
-
-```shell
-cd web && pnpm run test
-```
-
-### Testing frontend code
-
-Unit tests exist for the frontend. Run these using your preferred package manager:
-
-Using yarn:
-
-```shell
-cd web/frontend/ && yarn test
-```
-
-Using npm:
-
-```shell
-cd web/frontend/ && npm run test
-```
-
-Using pnpm:
-
-```shell
-cd web/frontend/ && pnpm run test
-```
 
 ## Deployment
 
