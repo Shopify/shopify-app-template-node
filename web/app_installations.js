@@ -4,7 +4,7 @@ export const AppInstallations = {
   includes: async function (shopDomain) {
     const shopSessions = Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);
 
-    if (shopSessions) {
+    if (shopSessions.length > 0) {
       for (const session in shopSessions) {
         if (session.accessToken) return true;
       }
@@ -15,8 +15,8 @@ export const AppInstallations = {
 
   delete: async function (shopDomain) {
     const shopSessions = Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);
-    if (shopSessions) {
-      return Shopify.Context.SESSION_STORAGE.deleteSessions(shopSessions.map((session) => session.id));
+    if (shopSessions.length > 0) {
+      Shopify.Context.SESSION_STORAGE.deleteSessions(shopSessions.map((session) => session.id));
     }
   },
 };
