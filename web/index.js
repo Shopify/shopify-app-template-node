@@ -11,6 +11,7 @@ import { setupGDPRWebHooks } from "./gdpr.js";
 import productCreator from "./helpers/product-creator.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 import { AppInstallations } from "./app_installations.js";
+import beginAuth from "./helpers/begin-auth.js";
 
 const USE_ONLINE_TOKENS = false;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -167,7 +168,7 @@ export async function createServer(
     const appInstalled = await AppInstallations.includes(shop);
 
     if (shop && !appInstalled) {
-      res.redirect(`/api/auth?shop=${shop}`);
+      beginAuth(req, res, app);
     } else {
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");

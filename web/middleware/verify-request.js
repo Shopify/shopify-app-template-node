@@ -1,4 +1,5 @@
 import { Shopify } from "@shopify/shopify-api";
+import beginAuth from "../helpers/begin-auth.js";
 import ensureBilling, {
   ShopifyBillingError,
 } from "../helpers/ensure-billing.js";
@@ -27,7 +28,7 @@ export default function verifyRequest(
 
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      return res.redirect(`/api/auth?shop=${shop}`);
+      return beginAuth(req, res, app);
     }
 
     if (session?.isActive()) {
