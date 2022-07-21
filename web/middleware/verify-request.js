@@ -27,7 +27,7 @@ export default function verifyRequest(
 
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      return res.redirect(`/api/auth?shop=${shop}`);
+      return res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
     }
 
     if (session?.isActive()) {

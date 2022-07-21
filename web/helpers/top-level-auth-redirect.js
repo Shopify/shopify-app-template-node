@@ -1,4 +1,8 @@
+import querystring from "querystring";
+
 export default function topLevelAuthRedirect({ apiKey, hostName, shop }) {
+  const queryString = querystring.stringify({ shop });
+
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -16,17 +20,17 @@ export default function topLevelAuthRedirect({ apiKey, hostName, shop }) {
 
           const app = createApp({
             apiKey: '${apiKey}',
-            shopOrigin: '${shop}',
+            shopOrigin: ${JSON.stringify(shop.replaceAll(["<", ">"], ""))},
           });
 
           const redirect = Redirect.create(app);
 
           redirect.dispatch(
             Redirect.Action.REMOTE,
-            'https://${hostName}/api/auth/toplevel?shop=${shop}',
+            'https://${hostName}/api/auth/toplevel?${queryString}',
           );
         } else {
-          window.location.href = '/api/auth?shop=${shop}';
+          window.location.href = '/api/auth?${queryString}';
         }
       });
     </script>

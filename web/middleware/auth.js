@@ -9,19 +9,22 @@ export default function applyAuthMiddleware(
   { billing = { required: false } } = { billing: { required: false } }
 ) {
   app.get("/api/auth", async (req, res) => {
-    if (!req.query.shop) {
+    const shop = req.query.shop;
+    if (!shop) {
       res.status(500);
       return res.send("No shop provided");
     }
 
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
-      return res.redirect(`/api/auth/toplevel?shop=${req.query.shop}`);
+      return res.redirect(
+        `/api/auth/toplevel?shop=${encodeURIComponent(shop)}`
+      );
     }
 
     const redirectUrl = await Shopify.Auth.beginAuth(
       req,
       res,
-      req.query.shop,
+      shop,
       "/api/auth/callback",
       app.get("use-online-tokens")
     );
@@ -48,14 +51,15 @@ export default function applyAuthMiddleware(
   });
 
   app.get("/api/auth/callback", async (req, res) => {
+    const shop = req.query.shop;
+    const host = req.query.host;
+
     try {
       const session = await Shopify.Auth.validateAuthCallback(
         req,
         res,
         req.query
       );
-
-      const host = req.query.host;
 
       const responses = await Shopify.Webhooks.Registry.registerAll({
         shop: session.shop,
@@ -74,7 +78,9 @@ export default function applyAuthMiddleware(
       });
 
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
-      let redirectUrl = `/?shop=${session.shop}&host=${host}`;
+      let redirectUrl = `/?shop=${session.shop}&host=${encodeURIComponent(
+        host
+      )}`;
       if (billing.required) {
         const [hasPayment, confirmationUrl] = await ensureBilling(
           session,
@@ -98,7 +104,7 @@ export default function applyAuthMiddleware(
         case e instanceof Shopify.Errors.CookieNotFound:
         case e instanceof Shopify.Errors.SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          res.redirect(`/api/auth?shop=${req.query.shop}`);
+          res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
           break;
         default:
           res.status(500);
