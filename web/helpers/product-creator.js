@@ -83,17 +83,27 @@ export default async function productCreator(session, count = DEFAULT_PRODUCTS_C
   const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);
 
   for (let i = 0; i < count; i++) {
-    await client.query({
-      data: {
-        query: CREATE_PRODUCTS_MUTATION,
-        variables: {
-          input: {
-            title: `${randomTitle()}`,
-            variants: [{ price: randomPrice() }],
+    try {
+      await client.query({
+        data: {
+          query: CREATE_PRODUCTS_MUTATION,
+          variables: {
+            input: {
+              title: `${randomTitle()}`,
+              variants: [{ price: randomPrice() }],
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      let message;
+      if (error instanceof ShopifyErrors.GraphqlQueryError) {
+        message = `${error.message}\n${JSON.stringify(error.response, null, 2)}`;
+      } else {
+        message = error.message;
+      }
+      throw new Error(message);
+    }
   }
 }
 
