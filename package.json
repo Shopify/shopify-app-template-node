@@ -20,7 +20,7 @@
     "@apollo/client": "^3.5.10",
     "@shopify/app-bridge": "^2.0.22",
     "@shopify/app-bridge-react": "^2.0.26",
-    "@shopify/app-bridge-utils": "^2.0.26",
+    "@shopify/app-bridge-utils": "^3.1.4",
     "@shopify/polaris": "^9.14.1",
     "@shopify/shopify-api": "^3.0.0",
     "@vitejs/plugin-react": "1.3.2",
