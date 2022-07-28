@@ -38,7 +38,7 @@ Shopify.Context.initialize({
 Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   path: "/api/webhooks",
   webhookHandler: async (_topic, shop, _body) => {
-    await AppInstallations.delete(shop)
+    await AppInstallations.delete(shop);
   },
 });
 
@@ -139,11 +139,13 @@ export async function createServer(
   app.use(express.json());
 
   app.use((req, res, next) => {
-    const shop = req.query.shop;
+    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
     if (Shopify.Context.IS_EMBEDDED_APP && shop) {
       res.setHeader(
         "Content-Security-Policy",
-        `frame-ancestors https://${shop} https://admin.shopify.com;`
+        `frame-ancestors https://${encodeURIComponent(
+          shop
+        )} https://admin.shopify.com;`
       );
     } else {
       res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
@@ -163,13 +165,17 @@ export async function createServer(
   }
 
   app.use("/*", async (req, res, next) => {
-    const shop = req.query.shop;
+    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
+    if (!shop) {
+      res.status(500);
+      return res.send("No shop provided");
+    }
+
     const appInstalled = await AppInstallations.includes(shop);
 
     if (shop && !appInstalled) {
-      res.redirect(`/api/auth?shop=${shop}`);
+      res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
     } else {
-      // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");
       const fallbackFile = join(
         isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
