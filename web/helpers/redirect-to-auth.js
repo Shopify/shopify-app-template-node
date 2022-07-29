@@ -6,6 +6,29 @@ export default async function redirectToAuth(req, res, app) {
     return res.send("No shop provided");
   }
 
+  if (req.query.embedded === "1") {
+    return clientSideRedirect(req, res);
+  }
+
+  return await serverSideRedirect(req, res, app);
+}
+
+function clientSideRedirect(req, res) {
+  const shop = Shopify.Utils.sanitizeShop(req.query.shop);
+  const redirectUriParams = new URLSearchParams({
+    shop,
+    host: req.query.host,
+  }).toString();
+  const queryParams = new URLSearchParams({
+    ...req.query,
+    shop,
+    redirectUri: `https://${Shopify.Context.HOST_NAME}/api/auth?${redirectUriParams}`,
+  }).toString();
+
+  return res.redirect(`/ExitIframe?${queryParams}`);
+}
+
+async function serverSideRedirect(req, res, app) {
   const redirectUrl = await Shopify.Auth.beginAuth(
     req,
     res,
