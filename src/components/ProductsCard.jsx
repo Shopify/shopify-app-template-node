@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Heading,
@@ -29,14 +29,12 @@ export function ProductsCard() {
 
   const app = useAppBridge();
   const fetch = userLoggedInFetch(app);
-  const updateProductCount = useCallback(async () => {
+  const updateProductCount = async () => {
     const { count } = await fetch("/products-count").then((res) => res.json());
     setProductCount(count);
-  }, []);
+  };
 
-  useEffect(() => {
-    updateProductCount();
-  }, [updateProductCount]);
+  useEffect(updateProductCount, []);
 
   const toastMarkup = hasResults && (
     <Toast
