@@ -23,11 +23,10 @@ export default function verifyRequest(
       app.get("use-online-tokens")
     );
 
-    let shop = req.query.shop;
-
+    let shop = Shopify.Utils.sanitizeShop(req.query.shop);
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      return res.redirect(`/api/auth?shop=${shop}`);
+      return res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
     }
 
     if (session?.isActive()) {
@@ -82,6 +81,10 @@ export default function verifyRequest(
       }
     }
 
-    returnTopLevelRedirection(req, res, `/api/auth?shop=${shop}`);
+    returnTopLevelRedirection(
+      req,
+      res,
+      `/api/auth?shop=${encodeURIComponent(shop)}`
+    );
   };
 }
