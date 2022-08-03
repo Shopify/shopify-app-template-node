@@ -145,28 +145,49 @@ The following pages document the basic steps to host and deploy your application
 
 ### Using `express.json` middleware
 
-If you use the `express.json()` middleware in your app **and** if you use `Shopify.Webhooks.Registry.process()` to process webhooks API calls from Shopify (which we recommend), the webhook processing must occur ***before*** calling `app.use(express.json())`.  See the [API documentation](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-use-of-body-parsers) for more details.
+If you use the `express.json()` middleware in your app **and** if you use `Shopify.Webhooks.Registry.process()` to process webhooks API calls from Shopify (which we recommend), the webhook processing must occur **_before_** calling `app.use(express.json())`. See the [API documentation](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-use-of-body-parsers) for more details.
 
 ## Known issues
 
 ### Hot module replacement and Firefox
 
 When running the app with the CLI in development mode on Firefox, you might see your app constantly reloading when you access it.
-That happens because of the way HMR websocket requests work, and the way the CLI is set up to tunnel requests through ngrok.
+That happened in previous versions of the CLI, because of the way HMR websocket requests work.
 
-Until we find a permanent solution that enables HMR on Firefox, this template accepts the `SHOPIFY_VITE_HMR_USE_POLLING` env var to replace HMR with polling.
-While not as responsive as HMR, the frontend will still refresh itself every few seconds with your changes.
+We fixed this issue with v3.4.0 of the CLI, so after updating it, you can make the following changes to your app's `web/frontend/vite.config.js` file:
 
-You can export this variable from your shell profile, or set it when running the `dev` command, e.g.:
+1. Change the definition `hmrConfig` object to be:
 
-```shell
-# Using yarn
-SHOPIFY_VITE_HMR_USE_POLLING=1 yarn dev
-# or using npm
-SHOPIFY_VITE_HMR_USE_POLLING=1 npm run dev
-# or using pnpm
-SHOPIFY_VITE_HMR_USE_POLLING=1 pnpm dev
-```
+   ```js
+   const host = process.env.HOST
+     ? process.env.HOST.replace(/https?:\/\//, "")
+     : "localhost";
+
+   let hmrConfig;
+   if (host === "localhost") {
+     hmrConfig = {
+       protocol: "ws",
+       host: "localhost",
+       port: 64999,
+       clientPort: 64999,
+     };
+   } else {
+     hmrConfig = {
+       protocol: "wss",
+       host: host,
+       port: process.env.FRONTEND_PORT,
+       clientPort: 443,
+     };
+   }
+   ```
+
+1. Change the `server.host` setting in the configs to `"localhost"`:
+
+   ```js
+   server: {
+     host: "localhost",
+     ...
+   ```
 
 ### I can't get past the ngrok "Visit site" page
 
