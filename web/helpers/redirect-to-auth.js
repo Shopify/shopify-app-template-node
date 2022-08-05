@@ -25,7 +25,7 @@ function clientSideRedirect(req, res) {
     redirectUri: `https://${Shopify.Context.HOST_NAME}/api/auth?${redirectUriParams}`,
   }).toString();
 
-  return res.redirect(`/ExitIframe?${queryParams}`);
+  return res.redirect(`/exitiframe?${queryParams}`);
 }
 
 async function serverSideRedirect(req, res, app) {
@@ -37,5 +37,5 @@ async function serverSideRedirect(req, res, app) {
     app.get("use-online-tokens")
   );
 
-  res.redirect(redirectUrl);
+  return res.redirect(redirectUrl);
 }
