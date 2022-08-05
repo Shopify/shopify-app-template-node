@@ -1,6 +1,6 @@
 // @ts-check
 import { join } from "path";
-import fs from "fs";
+import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, LATEST_API_VERSION } from "@shopify/shopify-api";
@@ -12,7 +12,6 @@ import productCreator from "./helpers/product-creator.js";
 import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 import { AppInstallations } from "./app_installations.js";
-
 
 const USE_ONLINE_TOKENS = false;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
@@ -167,26 +166,33 @@ export async function createServer(
   }
 
   app.use("/*", async (req, res, next) => {
-    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
-    if (!shop) {
+
+    if (typeof req.query.shop !== "string") {
       res.status(500);
       return res.send("No shop provided");
     }
 
+    const shop = Shopify.Utils.sanitizeShop(req.query.shop);
     const appInstalled = await AppInstallations.includes(shop);
 
-    if (shop && !appInstalled) {
-      return redirectToAuth(req, res, app)
+    if (!appInstalled) {
+      return redirectToAuth(req, res, app);
     } else {
-      const fs = await import("fs");
-      const fallbackFile = join(
-        isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
-        "index.html"
-      );
-      res
-        .status(200)
-        .set("Content-Type", "text/html")
-        .send(fs.readFileSync(fallbackFile));
+      if (Shopify.Context.IS_EMBEDDED_APP && req.query.embedded !== "1") {
+        const embeddedUrl = Shopify.Utils.getEmbeddedAppUrl(req);
+
+        return res.redirect(embeddedUrl + req.path);
+      } else {
+        const fallbackFile = join(
+          isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
+          "index.html"
+        );
+
+        return res
+          .status(200)
+          .set("Content-Type", "text/html")
+          .send(readFileSync(fallbackFile));
+      }
     }
   });
 
