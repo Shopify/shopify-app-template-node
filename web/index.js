@@ -175,23 +175,23 @@ export async function createServer(
 
     if (!appInstalled) {
       return redirectToAuth(req, res, app);
-    } else {
-      if (Shopify.Context.IS_EMBEDDED_APP && req.query.embedded !== "1") {
-        const embeddedUrl = Shopify.Utils.getEmbeddedAppUrl(req);
-
-        return res.redirect(embeddedUrl + req.path);
-      } else {
-        const fallbackFile = join(
-          isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
-          "index.html"
-        );
-
-        return res
-          .status(200)
-          .set("Content-Type", "text/html")
-          .send(readFileSync(fallbackFile));
-      }
     }
+
+    if (Shopify.Context.IS_EMBEDDED_APP && req.query.embedded !== "1") {
+      const embeddedUrl = Shopify.Utils.getEmbeddedAppUrl(req);
+
+      return res.redirect(embeddedUrl + req.path);
+    }
+
+    const htmlFile = join(
+      isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
+      "index.html"
+    );
+
+    return res
+      .status(200)
+      .set("Content-Type", "text/html")
+      .send(readFileSync(htmlFile));
   });
 
   return { app };
