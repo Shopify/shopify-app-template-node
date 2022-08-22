@@ -2,6 +2,7 @@ import { Shopify } from "@shopify/shopify-api";
 import ensureBilling, {
   ShopifyBillingError,
 } from "../helpers/ensure-billing.js";
+import redirectToAuth from "../helpers/redirect-to-auth.js";
 
 import returnTopLevelRedirection from "../helpers/return-top-level-redirection.js";
 
@@ -26,7 +27,7 @@ export default function verifyRequest(
     let shop = Shopify.Utils.sanitizeShop(req.query.shop);
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      return res.redirect(`/api/auth?shop=${encodeURIComponent(shop)}`);
+      return redirectToAuth(req, res, app);
     }
 
     if (session?.isActive()) {
