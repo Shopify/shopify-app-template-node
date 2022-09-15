@@ -8,7 +8,7 @@
     "build": "shopify app build",
     "dev": "shopify app dev",
     "info": "shopify app info",
-    "scaffold": "shopify app scaffold",
+    "generate": "shopify app generate",
     "deploy": "shopify app deploy"
   },
   "dependencies": {
