@@ -136,9 +136,9 @@ You do not need to build the backend.
 
 ## Hosting
 
-Once you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/apps/deployment) to host your app on a cloud provider like [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io/).
+When you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/apps/deployment/web) to host your app on a cloud provider like [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io/).
 
-**Note**: Once you reach the step for [setting up environment variables](https://shopify.dev/apps/deployment/web#step-3-set-environment-variables) in the docs, please ensure your platform sets `NODE_ENV=production`.
+When you reach the step for [setting up environment variables](https://shopify.dev/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
 
 ## Some things to watch out for
 
