@@ -164,7 +164,6 @@ export async function createServer(
   }
 
   app.use("/*", async (req, res, next) => {
-
     if (typeof req.query.shop !== "string") {
       res.status(500);
       return res.send("No shop provided");
@@ -173,7 +172,7 @@ export async function createServer(
     const shop = Shopify.Utils.sanitizeShop(req.query.shop);
     const appInstalled = await AppInstallations.includes(shop);
 
-    if (!appInstalled) {
+    if (!appInstalled && !req.originalUrl.match(/^\/exitiframe/i)) {
       return redirectToAuth(req, res, app);
     }
 
