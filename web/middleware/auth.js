@@ -31,7 +31,7 @@ export default function applyAuthMiddleware(
         // 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard.
         if (!response.success && !gdprTopics.includes(topic)) {
           console.log(
-            `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
+            `Failed to register ${topic} webhook: ${response.result.errors?.[0]?.message}`
           );
         }
       });
