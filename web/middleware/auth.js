@@ -35,12 +35,10 @@ export default function applyAuthMiddleware(
               `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
             );
           } else {
-            // There should be an error message at data.X.userErrors[0].message, where X is one of
-            //   webhookSubscriptionCreate, webhookSubscriptionUpdate,
-            //   eventBridgeWebhookSubscriptionCreate, eventBridgeWebhookSubscriptionUpdate
-            //   pubSubWebhookSubscriptionCreate, pubSubWebhookSubscriptionUpdate
             console.log(
-              `Failed to register ${topic} webhook: ${JSON.stringify(response.result.data)}`
+              `Failed to register ${topic} webhook: ${
+                JSON.stringify(response.result.data, undefined, 2)
+              }`
             );
           }
         }
