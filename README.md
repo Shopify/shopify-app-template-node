@@ -97,7 +97,7 @@ Open the URL generated in your console. Once you grant permission to the app, yo
 
 ### Application Storage
 
-This template uses [SQLite](https://www.sqlite.org/index.html) to store session data. The database is a file called `database.sqlite` which is automatically created in the root. This use of SQLite works in production if your app runs as a single instance.
+This template uses [SQLite](https://www.sqlite.org/index.html) to store session data. The database is a file called `db_APIKEY.sqlite` (with `APIKEY` replaced with your app's actual API key) which is automatically created in the root. This use of SQLite works in production if your app runs as a single instance.
 
 The database that works best for you depends on the data your app needs and how it is queried. You can run your database of choice on a server yourself or host it with a SaaS company. Here’s a short list of databases providers that provide a free tier to get started:
 
