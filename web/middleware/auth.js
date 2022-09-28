@@ -1,28 +1,29 @@
-import { Shopify } from "@shopify/shopify-api";
-import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
+import {
+  CookieNotFound,
+  gdprTopics,
+  InvalidOAuthError,
+  SessionNotFound
+} from "@shopify/shopify-api";
 
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
-export default function applyAuthMiddleware(
-  app,
-  { billing = { required: false } } = { billing: { required: false } }
-) {
+export default function applyAuthMiddleware(shopify, app) {
   app.get("/api/auth", async (req, res) => {
-    return redirectToAuth(req, res, app)
+    return redirectToAuth(req, res, shopify, app)
   });
 
   app.get("/api/auth/callback", async (req, res) => {
     try {
-      const session = await Shopify.Auth.validateAuthCallback(
-        req,
-        res,
-        req.query
-      );
+      const callbackResponse = await shopify.auth.callback({
+        rawRequest: req,
+        rawResponse: res,
+        isOnline: app.get("use-online-tokens"),
+      });
 
-      const responses = await Shopify.Webhooks.Registry.registerAll({
-        shop: session.shop,
-        accessToken: session.accessToken,
+      const responses = await shopify.webhooks.registerAll({
+        shop: callbackResponse.session.shop,
+        accessToken: callbackResponse.session.accessToken,
       });
 
       Object.entries(responses).map(([topic, response]) => {
@@ -45,34 +46,28 @@ export default function applyAuthMiddleware(
       });
 
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
-      if (billing.required) {
-        const [hasPayment, confirmationUrl] = await ensureBilling(
-          session,
-          billing
-        );
-
-        if (!hasPayment) {
-          return res.redirect(confirmationUrl);
-        }
+      const [hasPayment, confirmationUrl] = await ensureBilling(callbackResponse.session, shopify);
+      if (!hasPayment) {
+        return res.redirect(confirmationUrl);
       }
 
-      const host = Shopify.Utils.sanitizeHost(req.query.host);
-      const redirectUrl = Shopify.Context.IS_EMBEDDED_APP
-        ? Shopify.Utils.getEmbeddedAppUrl(req)
+      const host = shopify.utils.sanitizeHost(req.query.host);
+      const redirectUrl = shopify.config.isEmbeddedApp
+        ? shopify.auth.getEmbeddedAppUrl(req)
         : `/?shop=${session.shop}&host=${encodeURIComponent(host)}`;
 
       res.redirect(redirectUrl);
     } catch (e) {
       console.warn(e);
       switch (true) {
-        case e instanceof Shopify.Errors.InvalidOAuthError:
+        case e instanceof InvalidOAuthError:
           res.status(400);
           res.send(e.message);
           break;
-        case e instanceof Shopify.Errors.CookieNotFound:
-        case e instanceof Shopify.Errors.SessionNotFound:
+        case e instanceof CookieNotFound:
+        case e instanceof SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          return redirectToAuth(req, res, app);
+          return redirectToAuth(req, res, shopify, app);
           break;
         default:
           res.status(500);

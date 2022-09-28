@@ -1,8 +1,6 @@
-import { Shopify } from "@shopify/shopify-api";
-
 export const AppInstallations = {
-  includes: async function (shopDomain) {
-    const shopSessions = await Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);
+  includes: async function (shopDomain, shopify) {
+    const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
 
     if (shopSessions.length > 0) {
       for (const session of shopSessions) {
@@ -13,10 +11,10 @@ export const AppInstallations = {
     return false;
   },
 
-  delete: async function (shopDomain) {
-    const shopSessions = await Shopify.Context.SESSION_STORAGE.findSessionsByShop(shopDomain);
+  delete: async function (shopDomain, shopify) {
+    const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
     if (shopSessions.length > 0) {
-      await Shopify.Context.SESSION_STORAGE.deleteSessions(shopSessions.map((session) => session.id));
+      await shopify.config.sessionStorage.deleteSessions(shopSessions.map((session) => session.id));
     }
   },
 };
