@@ -4,12 +4,7 @@ import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
 import "@shopify/shopify-api/adapters/node";
-import {
-  shopifyApi,
-  BillingInterval,
-  LATEST_API_VERSION,
-} from "@shopify/shopify-api";
-import { SQLiteSessionStorage } from "@shopify/shopify-api/session-storage/sqlite";
+import shopify from "./shopify.js";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
@@ -26,39 +21,10 @@ const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
 const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
-const DB_PATH = `${process.cwd()}/database.sqlite`;
-
-// The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
-// See the ensureBilling helper to learn more about billing in this template.
-const billingConfig = {
-  "My Shopify One-Time Charge": {
-    // This is an example configuration that would do a one-time charge for $5 (only USD is currently supported)
-    amount: 5.0,
-    currencyCode: "USD",
-    interval: BillingInterval.OneTime,
-  },
-};
-
-const appConfig = {
-  apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES.split(","),
-  hostName: process.env.HOST.replace(/https?:\/\//, ""),
-  hostScheme: process.env.HOST.split("://")[0],
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
-  // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
-  billing: undefined, // or replace with billingConfig above to enable example billing
-};
-
-const shopify = shopifyApi(appConfig);
-
-shopify.webhooks.addHandler({
+shopify.webhooks.addHttpHandler({
   topic: "APP_UNINSTALLED",
-  path: "/api/webhooks",
-  webhookHandler: async (_topic, shop, _body) => {
-    await AppInstallations.delete(shop, shopify);
+  handler: async (_topic, shop, _body) => {
+    await AppInstallations.delete(shop);
   },
 });
 
@@ -68,7 +34,7 @@ shopify.webhooks.addHandler({
 //
 // More details can be found on shopify.dev:
 // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
-setupGDPRWebHooks(shopify, "/api/webhooks");
+setupGDPRWebHooks();
 
 // export for test use only
 export async function createServer(
@@ -80,16 +46,12 @@ export async function createServer(
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
   app.use(cookieParser(shopify.config.apiSecretKey));
 
-  applyAuthMiddleware(shopify, app);
+  applyAuthMiddleware(app);
 
-  // All endpoints after this point will have access to a request.body
-  // attribute, as a result of the express.json() middleware
-  app.use(express.json());
-
-  app.post("/api/webhooks", async (req, res) => {
+  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {
     try {
       await shopify.webhooks.process({
-        rawBody: JSON.stringify(req.body),
+        rawBody: req.body,
         rawRequest: req,
         rawResponse: res,
       });
@@ -102,8 +64,12 @@ export async function createServer(
     }
   });
 
+  // All endpoints after this point will have access to a request.body
+  // attribute, as a result of the express.json() middleware
+  app.use(express.json());
+
   // All endpoints after this point will require an active session
-  app.use("/api/*", verifyRequest(shopify, app));
+  app.use("/api/*", verifyRequest(app));
 
   app.get("/api/products/count", async (req, res) => {
     const session = await shopify.session.getCurrent({
@@ -111,11 +77,8 @@ export async function createServer(
       rawRequest: req,
       rawResponse: res,
     });
-    const { Product } = await import(
-      `@shopify/shopify-api/rest/admin/${shopify.config.apiVersion}`
-    );
 
-    const countData = await Product.count({ session });
+    const countData = await shopify.rest.Product.count({ session });
     res.status(200).send(countData);
   });
 
@@ -129,7 +92,7 @@ export async function createServer(
     let error = null;
 
     try {
-      await productCreator(session, shopify);
+      await productCreator(session);
     } catch (e) {
       console.log(`Failed to process products/create: ${e.message}`);
       status = 500;
@@ -171,10 +134,10 @@ export async function createServer(
     }
 
     const shop = shopify.utils.sanitizeShop(req.query.shop);
-    const appInstalled = await AppInstallations.includes(shop, shopify);
+    const appInstalled = await AppInstallations.includes(shop);
 
     if (!appInstalled && !req.originalUrl.match(/^\/exitiframe/i)) {
-      return redirectToAuth(req, res, shopify, app);
+      return redirectToAuth(req, res, app);
     }
 
     if (shopify.config.isEmbeddedApp && req.query.embedded !== "1") {

@@ -1,4 +1,6 @@
 import { BillingError, HttpResponseError } from "@shopify/shopify-api";
+
+import shopify from "../shopify.js";
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
@@ -11,7 +13,7 @@ const TEST_GRAPHQL_QUERY = `
   }
 }`;
 
-export default function verifyRequest(shopify, app) {
+export default function verifyRequest(app) {
   return async (req, res, next) => {
     const session = await shopify.session.getCurrent({
       isOnline: app.get("use-online-tokens"),
@@ -22,12 +24,12 @@ export default function verifyRequest(shopify, app) {
     let shop = shopify.utils.sanitizeShop(req.query.shop);
     if (session && shop && session.shop !== shop) {
       // The current request is for a different shop. Redirect gracefully.
-      return redirectToAuth(req, res, shopify, app);
+      return redirectToAuth(req, res, app);
     }
 
-    if (session?.isActive()) {
+    if (session?.isActive(shopify.config.scopes)) {
       try {
-        const [hasPayment, confirmationUrl] = await ensureBilling(session, shopify);
+        const [hasPayment, confirmationUrl] = await ensureBilling(session);
         if (!hasPayment) {
           returnTopLevelRedirection(req, res, confirmationUrl);
           return;

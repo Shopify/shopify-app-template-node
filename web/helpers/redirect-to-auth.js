@@ -1,17 +1,19 @@
-export default async function redirectToAuth(req, res, shopify, app) {
+import shopify from "../shopify.js";
+
+export default async function redirectToAuth(req, res, app) {
   if (!req.query.shop) {
     res.status(500);
     return res.send("No shop provided");
   }
 
   if (req.query.embedded === "1") {
-    return clientSideRedirect(req, res, shopify);
+    return clientSideRedirect(req, res);
   }
 
-  return await serverSideRedirect(req, res, shopify, app);
+  return await serverSideRedirect(req, res, app);
 }
 
-function clientSideRedirect(req, res, shopify) {
+function clientSideRedirect(req, res) {
   const shop = shopify.utils.sanitizeShop(req.query.shop);
   const redirectUriParams = new URLSearchParams({
     shop,
@@ -26,14 +28,12 @@ function clientSideRedirect(req, res, shopify) {
   return res.redirect(`/exitiframe?${queryParams}`);
 }
 
-async function serverSideRedirect(req, res, shopify, app) {
-  const redirectUrl = await shopify.auth.begin({
+async function serverSideRedirect(req, res, app) {
+  await shopify.auth.begin({
     rawRequest: req,
     rawResponse: res,
     shop: req.query.shop,
     callbackPath: "/api/auth/callback",
     isOnline: app.get("use-online-tokens"),
   });
-
-  return res.redirect(redirectUrl);
 }

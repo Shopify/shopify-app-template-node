@@ -1,5 +1,7 @@
+import shopify from "./shopify.js";
+
 export const AppInstallations = {
-  includes: async function (shopDomain, shopify) {
+  includes: async function (shopDomain) {
     const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
 
     if (shopSessions.length > 0) {
@@ -11,7 +13,7 @@ export const AppInstallations = {
     return false;
   },
 
-  delete: async function (shopDomain, shopify) {
+  delete: async function (shopDomain) {
     const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
     if (shopSessions.length > 0) {
       await shopify.config.sessionStorage.deleteSessions(shopSessions.map((session) => session.id));
