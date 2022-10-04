@@ -5,12 +5,13 @@ import {
   SessionNotFound
 } from "@shopify/shopify-api";
 
+import shopify from "../shopify.js";
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
-export default function applyAuthMiddleware(shopify, app) {
+export default function applyAuthMiddleware(app) {
   app.get("/api/auth", async (req, res) => {
-    return redirectToAuth(req, res, shopify, app)
+    return redirectToAuth(req, res, app)
   });
 
   app.get("/api/auth/callback", async (req, res) => {
@@ -21,13 +22,14 @@ export default function applyAuthMiddleware(shopify, app) {
         isOnline: app.get("use-online-tokens"),
       });
 
-      const responses = await shopify.webhooks.registerAll({
+      const responses = await shopify.webhooks.registerAllHttp({
         shop: callbackResponse.session.shop,
+        path: "/api/webhooks",
         accessToken: callbackResponse.session.accessToken,
       });
 
       Object.entries(responses).map(([topic, response]) => {
-        // The response from registerAll will include errors for the GDPR topics.  These can be safely ignored.
+        // The response from registerAllHttp will include errors for the GDPR topics.  These can be safely ignored.
         // To register the GDPR topics, please set the appropriate webhook endpoint in the
         // 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard.
         if (!response.success && !gdprTopics.includes(topic)) {
@@ -46,14 +48,17 @@ export default function applyAuthMiddleware(shopify, app) {
       });
 
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
-      const [hasPayment, confirmationUrl] = await ensureBilling(callbackResponse.session, shopify);
+      const [hasPayment, confirmationUrl] = await ensureBilling(callbackResponse.session);
       if (!hasPayment) {
         return res.redirect(confirmationUrl);
       }
 
       const host = shopify.utils.sanitizeHost(req.query.host);
       const redirectUrl = shopify.config.isEmbeddedApp
-        ? shopify.auth.getEmbeddedAppUrl(req)
+        ? await shopify.auth.getEmbeddedAppUrl({
+          rawRequest: req,
+          rawResponse: res,
+        })
         : `/?shop=${session.shop}&host=${encodeURIComponent(host)}`;
 
       res.redirect(redirectUrl);
@@ -67,7 +72,7 @@ export default function applyAuthMiddleware(shopify, app) {
         case e instanceof CookieNotFound:
         case e instanceof SessionNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          return redirectToAuth(req, res, shopify, app);
+          return redirectToAuth(req, res, app);
           break;
         default:
           res.status(500);
