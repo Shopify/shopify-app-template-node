@@ -1,3 +1,5 @@
+import shopify from "../shopify.js";
+
 /**
  * You may want to charge merchants for using your app. This helper provides that function by checking if the current
  * merchant has an active one-time payment or subscription named `chargeName`. If no payment is found,
@@ -7,16 +9,15 @@
  */
 export default async function ensureBilling(
   session,
-  shopify,
   isProdOverride = process.env.NODE_ENV === "production"
 ) {
-  let hasPayment = false;
+  let hasPayment = true;
   let confirmationUrl = null;
 
   if (shopify.config.billing) {
     hasPayment = await shopify.billing.check({
       session,
-      plans: Object.keys(shopify.billing),
+      plans: Object.keys(shopify.config.billing),
       isTest: !isProdOverride,
     });
 
@@ -26,7 +27,7 @@ export default async function ensureBilling(
       // for this example, we'll just redirect to the first plan
       confirmationUrl = await shopify.billing.request({
         session: callback.session,
-        plan: Object.keys(shopify.billing)[0],
+        plan: Object.keys(shopify.config.billing)[0],
         isTest: !isProdOverride,
       });
     }
