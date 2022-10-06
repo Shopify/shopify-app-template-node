@@ -217,46 +217,6 @@ npm run dev --tunnel-url https://tunnel-url:3000
 pnpm dev --tunnel-url https://tunnel-url:3000
 ```
 
-### I want to run the CLI inside a spin instance but my store domain is not valid
-When you run a `dev` command and you see an error like this in the cli consol
-```shell
-backend  | InvalidShopError: Received invalid shop argument
-backend  |     at InvalidShopError.ShopifyError [as constructor] (/home/spin/apps/first/web/node_modules/@shopify/shopify-api/dist/error.js:13:28)
-```
-
-To fix the problem you should modifify the file `web/index.js` to add the environment variable `CUSTOM_SHOP_DOMAINS` to the `Shopify context` initialization:
-```js
-Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
-  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-  SCOPES: process.env.SCOPES.split(","),
-  HOST_NAME: process.env.HOST.replace(/https?:\/\//, ""),
-  HOST_SCHEME: process.env.HOST.split("://")[0],
-  API_VERSION: LATEST_API_VERSION,
-  IS_EMBEDDED_APP: true,
-  // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
-  ...(process.env.SHOP_CUSTOM_DOMAIN && {CUSTOM_SHOP_DOMAINS: [process.env.SHOP_CUSTOM_DOMAIN]}),
-});
-```
-
-In case the CLI version used does not support the environment varibale `SHOP_CUSTOM_DOMAIN` you should add you complete spin domain. If the url of one of your stores is https://spin-store.shopify.constellation-t90f.my-spin-instance.eu.spin.dev/ the content of the context should be:
-```js
-Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
-  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-  SCOPES: process.env.SCOPES.split(","),
-  HOST_NAME: process.env.HOST.replace(/https?:\/\//, ""),
-  HOST_SCHEME: process.env.HOST.split("://")[0],
-  API_VERSION: LATEST_API_VERSION,
-  IS_EMBEDDED_APP: true,
-  // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
-  CUSTOM_SHOP_DOMAINS: "shopify.constellation-t90f.my-spin-instance.eu.spin.dev",
-});
-```
-
-
 ## Developer resources
 
 - [Introduction to Shopify apps](https://shopify.dev/apps/getting-started)
