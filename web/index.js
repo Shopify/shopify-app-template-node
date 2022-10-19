@@ -18,7 +18,7 @@ export async function createServer(
   const app = express();
 
   app.use("/api", shopify.auth());
-  app.use("/webhooks", shopify.webhooks());
+  app.use("/api", shopify.webhooks({handlers: shopify.config.webhooks.handlers}));
 
   // All endpoints after this point will require an active session
   app.use("/api/*", shopify.authenticatedRequest());
