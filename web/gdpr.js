@@ -1,13 +1,11 @@
-import shopify from "./shopify.js";
-
-export function setupGDPRWebHooks() {
+export const GDPRWebhookHandlers = [
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request
    */
-  shopify.webhooks.addHttpHandler({
+  {
     topic: "CUSTOMERS_DATA_REQUEST",
     handler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
@@ -30,7 +28,7 @@ export function setupGDPRWebHooks() {
       //   }
       // }
     },
-  });
+  },
 
   /**
    * Store owners can request that data is deleted on behalf of a customer. When
@@ -38,7 +36,7 @@ export function setupGDPRWebHooks() {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-redact
    */
-  shopify.webhooks.addHttpHandler({
+  {
     topic: "CUSTOMERS_REDACT",
     handler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
@@ -58,7 +56,7 @@ export function setupGDPRWebHooks() {
       //   ]
       // }
     },
-  });
+  },
 
   /**
    * 48 hours after a store owner uninstalls your app, Shopify invokes this
@@ -66,7 +64,7 @@ export function setupGDPRWebHooks() {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#shop-redact
    */
-  shopify.webhooks.addHttpHandler({
+  {
     topic: "SHOP_REDACT",
     handler: async (topic, shop, body) => {
       const payload = JSON.parse(body);
@@ -76,5 +74,5 @@ export function setupGDPRWebHooks() {
       //   "shop_domain": "{shop}.myshopify.com"
       // }
     },
-  });
-}
+  },
+];

@@ -12,11 +12,9 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^6.0.0-rc3",
+    "@shopify/shopify-app-express": "^1.0.0-rc1",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
-    "express": "^4.17.3",
     "serve-static": "^1.14.1"
   },
   "devDependencies": {
