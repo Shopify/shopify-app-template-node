@@ -3,8 +3,6 @@ import {BillingInterval} from "@shopify/shopify-api";
 import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';
 import {SQLiteSessionStorage} from '@shopify/shopify-api/session-storage/sqlite';
 
-import {GDPRWebhookHandlers} from './gdpr.js';
-
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
@@ -27,9 +25,6 @@ const apiConfig = {
 
 const shopify = shopifyApp({
   api: apiConfig,
-  webhooks: {
-    handlers: GDPRWebhookHandlers,
-  },
 });
 
 export default shopify;

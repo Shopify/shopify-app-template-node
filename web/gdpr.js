@@ -1,4 +1,4 @@
-export const GDPRWebhookHandlers = [
+const GDPRWebhookHandlers = [
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
@@ -76,3 +76,5 @@ export const GDPRWebhookHandlers = [
     },
   },
 ];
+
+export default GDPRWebhookHandlers;
