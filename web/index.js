@@ -4,6 +4,8 @@ import { readFileSync } from "fs";
 import express from "express";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
+import GDPRWebhookHandlers from './gdpr.js';
+
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
@@ -11,14 +13,13 @@ const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
 const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
-// export for test use only
-export async function createServer(
-  isProd = process.env.NODE_ENV === "production"
+async function createServer(
+  isProd = process.env.NODE_ENV === "production",
 ) {
   const app = express();
 
   app.use("/api", shopify.auth());
-  app.use("/api", shopify.webhooks({handlers: shopify.config.webhooks.handlers}));
+  app.use("/api", shopify.webhooks({handlers: GDPRWebhookHandlers}));
 
   // All endpoints after this point will require an active session
   app.use("/api/*", shopify.authenticatedRequest());
@@ -44,16 +45,23 @@ export async function createServer(
     res.status(status).send({ success: status === 200, error });
   });
 
-  if (isProd) {
-    const compression = await import("compression").then(
-      ({ default: fn }) => fn
-    );
-    const serveStatic = await import("serve-static").then(
-      ({ default: fn }) => fn
-    );
-    app.use(compression());
-    app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
-  }
+  app.use((req, res, next) => {
+    const shop = shopify.utils.sanitizeShop(req.query.shop);
+    if (shopify.config.isEmbeddedApp && shop) {
+      res.setHeader(
+        "Content-Security-Policy",
+        `frame-ancestors https://${encodeURIComponent(
+          shop
+        )} https://admin.shopify.com;`
+      );
+    } else {
+      res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
+    }
+    next();
+  });
+
+  const serveStatic = await import("serve-static").then(({default: fn}) => fn);
+  app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
 
   app.use("/*", shopify.ensureInstalled(), async (_req, res, _next) => {
     const htmlFile = join(
