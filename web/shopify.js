@@ -1,10 +1,9 @@
-import {
-  shopifyApi,
-  BillingInterval,
-  LATEST_API_VERSION
-} from "@shopify/shopify-api";
+import {shopifyApp} from '@shopify/shopify-app-express';
+import {BillingInterval} from "@shopify/shopify-api";
 import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';
 import {SQLiteSessionStorage} from '@shopify/shopify-api/session-storage/sqlite';
+
+import {GDPRWebhookHandlers} from './gdpr.js';
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
@@ -19,20 +18,18 @@ const billingConfig = {
   },
 };
 
-const appConfig = {
-  apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES.split(","),
-  hostName: process.env.HOST.replace(/https?:\/\//, ""),
-  hostScheme: process.env.HOST.split("://")[0],
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: true,
+const apiConfig = {
   // This should be replaced with your preferred storage strategy
   sessionStorage: new SQLiteSessionStorage(DB_PATH),
   billing: undefined,  // or replace with billingConfig above to enable example billing
   restResources,
 };
 
-const shopify = shopifyApi(appConfig);
+const shopify = shopifyApp({
+  api: apiConfig,
+  webhooks: {
+    handlers: GDPRWebhookHandlers,
+  },
+});
 
 export default shopify;
