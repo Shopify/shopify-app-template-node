@@ -2,6 +2,8 @@
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
+import serveStatic from "serve-static";
+
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
@@ -42,9 +44,6 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
     res.status(status).send({ success: status === 200, error });
   });
 
-  const serveStatic = await import("serve-static").then(
-    ({ default: fn }) => fn
-  );
   app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
 
   app.use("/*", shopify.ensureInstalled(), async (_req, res, _next) => {
