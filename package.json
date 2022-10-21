@@ -19,7 +19,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.10",
     "@shopify/app-bridge": "^2.0.22",
-    "@shopify/app-bridge-react": "^2.0.26",
+    "@shopify/app-bridge-react": "^3.4.3",
     "@shopify/app-bridge-utils": "^2.0.26",
     "@shopify/polaris": "^9.2.2",
     "@shopify/shopify-api": "^4.0.0",
