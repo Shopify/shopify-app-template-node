@@ -97,7 +97,7 @@ export default async function productCreator(session, count = DEFAULT_PRODUCTS_C
       });
     }
   } catch (error) {
-    if (error instanceof ShopifyErrors.GraphqlQueryError) {
+    if (error instanceof Shopify.Errors.GraphqlQueryError) {
       throw new Error(`${error.message}\n${JSON.stringify(error.response, null, 2)}`);
     } else {
       throw error;
