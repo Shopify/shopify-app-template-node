@@ -1,12 +1,9 @@
 import {
   shopifyApi,
   BillingInterval,
-  LATEST_API_VERSION
+  LATEST_API_VERSION,
 } from "@shopify/shopify-api";
-import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';
-import {SQLiteSessionStorage} from '@shopify/shopify-api/session-storage/sqlite';
-
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+import { restResources } from "@shopify/shopify-api/rest/admin/2022-10";
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
@@ -27,9 +24,7 @@ const appConfig = {
   hostScheme: process.env.HOST.split("://")[0],
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
-  // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
-  billing: undefined,  // or replace with billingConfig above to enable example billing
+  billing: undefined, // or replace with billingConfig above to enable example billing
   restResources,
 };
 

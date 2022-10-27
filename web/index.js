@@ -12,7 +12,7 @@ import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import productCreator from "./helpers/product-creator.js";
 import redirectToAuth from "./helpers/redirect-to-auth.js";
-import { AppInstallations } from "./app_installations.js";
+import { storage } from "./storage/sqlite.js";
 
 const USE_ONLINE_TOKENS = false;
 
@@ -27,7 +27,7 @@ shopify.webhooks.addHandlers({
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: "/api/webhooks",
     callback: async (_topic, shop, _body) => {
-      await AppInstallations.delete(shop);
+      await storage.deleteForShop(shop);
     },
   },
 });
@@ -76,22 +76,24 @@ export async function createServer(
   app.use("/api/*", verifyRequest(app));
 
   app.get("/api/products/count", async (req, res) => {
-    const session = await shopify.session.getCurrent({
+    const sessionId = await shopify.session.getCurrentId({
       isOnline: app.get("use-online-tokens"),
       rawRequest: req,
       rawResponse: res,
     });
+    const session = await storage.loadSession(sessionId);
 
     const countData = await shopify.rest.Product.count({ session });
     res.status(200).send(countData);
   });
 
   app.get("/api/products/create", async (req, res) => {
-    const session = await shopify.session.getCurrent({
+    const sessionId = await shopify.session.getCurrentId({
       isOnline: app.get("use-online-tokens"),
       rawRequest: req,
       rawResponse: res,
     });
+    const session = await storage.loadSession(sessionId);
     let status = 200;
     let error = null;
 
@@ -138,7 +140,7 @@ export async function createServer(
     }
 
     const shop = shopify.utils.sanitizeShop(req.query.shop);
-    const appInstalled = await AppInstallations.includes(shop);
+    const appInstalled = await storage.hasShop(shop);
 
     if (!appInstalled && !req.originalUrl.match(/^\/exitiframe/i)) {
       return redirectToAuth(req, res, app);

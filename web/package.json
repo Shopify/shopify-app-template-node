@@ -12,12 +12,13 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^6.0.0-rc3",
+    "@shopify/shopify-api": "file:../../shopify-api-node/shopify-shopify-api-6.0.0-rc7.tgz",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "express": "^4.17.3",
-    "serve-static": "^1.14.1"
+    "serve-static": "^1.14.1",
+    "sqlite3": "^5.0.8"
   },
   "devDependencies": {
     "jsonwebtoken": "^8.5.1",
