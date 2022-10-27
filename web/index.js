@@ -3,7 +3,8 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
-import '@shopify/shopify-api/adapters/node';
+import "@shopify/shopify-api/adapters/node";
+import { DeliveryMethod } from "@shopify/shopify-api";
 import shopify from "./shopify.js";
 
 import applyAuthMiddleware from "./middleware/auth.js";
@@ -21,10 +22,13 @@ const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
 const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
-shopify.webhooks.addHttpHandler({
-  topic: "APP_UNINSTALLED",
-  handler: async (_topic, shop, _body) => {
-    await AppInstallations.delete(shop);
+shopify.webhooks.addHandlers({
+  APP_UNINSTALLED: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (_topic, shop, _body) => {
+      await AppInstallations.delete(shop);
+    },
   },
 });
 
@@ -48,7 +52,7 @@ export async function createServer(
 
   applyAuthMiddleware(app);
 
-  app.post("/api/webhooks", express.text({type: '*/*'}), async (req, res) => {
+  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {
     try {
       await shopify.webhooks.process({
         rawBody: req.body,
@@ -77,12 +81,6 @@ export async function createServer(
       rawRequest: req,
       rawResponse: res,
     });
-<<<<<<< HEAD
-    const { Product } = await import(
-      `@shopify/shopify-api/rest/admin/${shopify.config.apiVersion}`
-    );
-=======
->>>>>>> 22f2287 (Move creation of shopify api to a separate file...)
 
     const countData = await shopify.rest.Product.count({ session });
     res.status(200).send(countData);
