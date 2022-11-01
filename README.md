@@ -4,7 +4,7 @@
 
 This is a sample app to help developers bootstrap their Shopify app development.
 
-It leverages the [Shopify API Library](https://github.com/Shopify/shopify-node-api) on the backend to create [an embedded app](https://shopify.dev/apps/tools/app-bridge/getting-started#embed-your-app-in-the-shopify-admin), and [Polaris](https://github.com/Shopify/polaris-react) and [App Bridge React](https://shopify.dev/tools/app-bridge/react-components) on the frontend.
+It leverages the [Shopify API Library](https://github.com/Shopify/shopify-node-api) on the backend to create [an embedded app](https://shopify.dev/apps/tools/app-bridge/getting-started#embed-your-app-in-the-shopify-admin), and [Polaris](https://github.com/Shopify/polaris-react) and [App Bridge React](https://shopify.dev/apps/tools/app-bridge/getting-started/using-react) on the frontend.
 
 This is the repository used when you create a new Node app with the [Shopify CLI](https://shopify.dev/apps/tools/cli).
 
