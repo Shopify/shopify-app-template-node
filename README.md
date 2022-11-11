@@ -210,19 +210,19 @@ Out of the logs produced by cloudflare you will notice a https URL where the dom
 2022-11-11T19:57:55Z INF Requesting new quick Tunnel on trycloudflare.com...
 2022-11-11T19:57:58Z INF +--------------------------------------------------------------------------------------------+
 2022-11-11T19:57:58Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
-2022-11-11T19:57:58Z INF |  https://four-dashed-word-url.trycloudflare.com                                     |
+2022-11-11T19:57:58Z INF |  https://randomly-generated-hostname.trycloudflare.com                                     |
 2022-11-11T19:57:58Z INF +--------------------------------------------------------------------------------------------+
 ```
 
-Below you would replace `four-dashed-word-url` with what you have copied from the terminal. In a different terminal window, navigate to your app's root and with the URL from above you would call:
+Below you would replace `randomly-generated-hostname` with what you have copied from the terminal. In a different terminal window, navigate to your app's root and with the URL from above you would call:
 
 ```shell
 # Using yarn
-yarn dev --tunnel-url https://four-dashed-word-url.trycloudflare.com:3000
+yarn dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
 # or using npm
-npm run dev --tunnel-url https://four-dashed-word-url.trycloudflare.com:3000
+npm run dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
 # or using pnpm
-pnpm dev --tunnel-url https://four-dashed-word-url.trycloudflare.com:3000
+pnpm dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
 ```
 
 ## Developer resources
