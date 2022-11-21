@@ -1,4 +1,5 @@
 import { Shopify } from "@shopify/shopify-api";
+import loadOfflineSession from "@shopify/shopify-api/dist/utils/load-offline-session.js";
 
 export default async function redirectToAuth(req, res, app) {
   if (!req.query.shop) {
@@ -8,6 +9,12 @@ export default async function redirectToAuth(req, res, app) {
 
   if (req.query.embedded === "1") {
     return clientSideRedirect(req, res);
+  }
+
+  const offlineSession = await loadOfflineSession.default(req.query.shop)
+
+  if(!offlineSession){
+    return await offlineServerSideRedirect(req, res, app)
   }
 
   return await serverSideRedirect(req, res, app);
@@ -34,7 +41,19 @@ async function serverSideRedirect(req, res, app) {
     res,
     req.query.shop,
     "/api/auth/callback",
-    app.get("use-online-tokens")
+    true
+  );
+
+  return res.redirect(redirectUrl);
+}
+
+async function offlineServerSideRedirect(req, res, app) {
+  const redirectUrl = await Shopify.Auth.beginAuth(
+    req,
+    res,
+    req.query.shop,
+    "/api/auth/callback",
+    false
   );
 
   return res.redirect(redirectUrl);

@@ -20,8 +20,7 @@ export default function verifyRequest(
   return async (req, res, next) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
-      res,
-      app.get("use-online-tokens")
+      res
     );
 
     let shop = Shopify.Utils.sanitizeShop(req.query.shop);

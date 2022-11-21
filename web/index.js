@@ -13,8 +13,6 @@ import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 import { AppInstallations } from "./app_installations.js";
 
-const USE_ONLINE_TOKENS = false;
-
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
 // TODO: There should be provided by env vars
@@ -77,7 +75,6 @@ export async function createServer(
 ) {
   const app = express();
 
-  app.set("use-online-tokens", USE_ONLINE_TOKENS);
   app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 
   applyAuthMiddleware(app, {
@@ -111,8 +108,7 @@ export async function createServer(
   app.get("/api/products/count", async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
-      res,
-      app.get("use-online-tokens")
+      res
     );
     const { Product } = await import(
       `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
@@ -125,8 +121,7 @@ export async function createServer(
   app.get("/api/products/create", async (req, res) => {
     const session = await Shopify.Utils.loadCurrentSession(
       req,
-      res,
-      app.get("use-online-tokens")
+      res
     );
     let status = 200;
     let error = null;
