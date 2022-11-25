@@ -1,7 +1,7 @@
 import { LogSeverity } from "@shopify/shopify-api";
 import { restResources } from "@shopify/shopify-api/rest/admin/2022-10";
 import { shopifyApp } from "@shopify/shopify-app-express";
-import { SQLiteSessionStorage } from "@shopify/shopify-app-express/session-storage/sqlite";
+import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
 
 const DB_PATH = `${process.cwd()}/database.sqlite`;
 
