@@ -108,7 +108,7 @@ The database that works best for you depends on the data your app needs and how 
 | Redis      | Key-value        | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-redis), [Amazon MemoryDB](https://aws.amazon.com/memorydb/)                                                                                                        |
 | MongoDB    | NoSQL / Document | [Digital Ocean](https://www.digitalocean.com/try/managed-databases-mongodb), [MongoDB Atlas](https://www.mongodb.com/atlas/database)                                                                                                  |
 
-To use one of these, you need to change your session storage configuration. To help, here’s a list of [SessionStorage adapters](https://github.com/Shopify/shopify-api-node/tree/main/src/auth/session/storage).
+To use one of these, you need to change your session storage configuration. To help, here’s a list of [SessionStorage adapter packages](https://github.com/Shopify/shopify-api-node/tree/main/docs/usage/session-storage.md).
 
 ### Build
 
@@ -139,12 +139,6 @@ You do not need to build the backend.
 When you're ready to set up your app in production, you can follow [our deployment documentation](https://shopify.dev/apps/deployment/web) to host your app on a cloud provider like [Heroku](https://www.heroku.com/) or [Fly.io](https://fly.io/).
 
 When you reach the step for [setting up environment variables](https://shopify.dev/apps/deployment/web#set-env-vars), you also need to set the variable `NODE_ENV=production`.
-
-## Some things to watch out for
-
-### Using `express.json` middleware
-
-If you use the `express.json()` middleware in your app **and** if you use `Shopify.Webhooks.Registry.process()` to process webhooks API calls from Shopify (which we recommend), the webhook processing must occur **_before_** calling `app.use(express.json())`. See the [API documentation](https://github.com/Shopify/shopify-api-node/blob/main/docs/usage/webhooks.md#note-regarding-use-of-body-parsers) for more details.
 
 ## Known issues
 
@@ -205,7 +199,9 @@ To do that, you can [install the `cloudflared` CLI tool](https://developers.clou
 # Note that you can also use a different port
 cloudflared tunnel --url http://localhost:3000
 ```
+
 Out of the logs produced by cloudflare you will notice a https URL where the domain ends with `trycloudflare.com`. This is your tunnel URL. You need to copy this URL as you will need it in the next step.
+
 ```shell
 2022-11-11T19:57:55Z INF Requesting new quick Tunnel on trycloudflare.com...
 2022-11-11T19:57:58Z INF +--------------------------------------------------------------------------------------------+
