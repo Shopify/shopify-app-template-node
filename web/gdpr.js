@@ -1,17 +1,17 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
 import shopify from "./shopify.js";
 
-export function setupGDPRWebHooks() {
+export async function setupGDPRWebHooks(path) {
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request
    */
-  shopify.webhooks.addHandlers({
+  await shopify.webhooks.addHandlers({
     CUSTOMERS_DATA_REQUEST: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/api/webhooks",
+      callbackUrl: path,
       callback: async (topic, shop, body) => {
         const payload = JSON.parse(body);
         // Payload has the following shape:
@@ -42,10 +42,10 @@ export function setupGDPRWebHooks() {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-redact
    */
-  shopify.webhooks.addHandlers({
+  await shopify.webhooks.addHandlers({
     CUSTOMERS_REDACT: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/api/webhooks",
+      callbackUrl: path,
       callback: async (topic, shop, body) => {
         const payload = JSON.parse(body);
         // Payload has the following shape:
@@ -73,10 +73,10 @@ export function setupGDPRWebHooks() {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#shop-redact
    */
-  shopify.webhooks.addHandlers({
+  await shopify.webhooks.addHandlers({
     SHOP_REDACT: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/api/webhooks",
+      callbackUrl: path,
       callback: async (topic, shop, body) => {
         const payload = JSON.parse(body);
         // Payload has the following shape:

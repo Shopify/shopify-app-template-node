@@ -3,16 +3,15 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
-import "@shopify/shopify-api/adapters/node";
 import { DeliveryMethod } from "@shopify/shopify-api";
 import shopify from "./shopify.js";
-
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import productCreator from "./helpers/product-creator.js";
 import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { AppInstallations } from "./app_installations.js";
+import { sqliteSessionStorage } from "./sqlite-session-storage.js";
 
 const USE_ONLINE_TOKENS = false;
 
@@ -22,7 +21,7 @@ const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
 const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
 
-shopify.webhooks.addHandlers({
+await shopify.webhooks.addHandlers({
   APP_UNINSTALLED: {
     deliveryMethod: DeliveryMethod.Http,
     callbackUrl: "/api/webhooks",
@@ -38,7 +37,7 @@ shopify.webhooks.addHandlers({
 //
 // More details can be found on shopify.dev:
 // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
-setupGDPRWebHooks();
+setupGDPRWebHooks("/api/webhooks");
 
 // export for test use only
 export async function createServer(
@@ -60,10 +59,10 @@ export async function createServer(
         rawResponse: res,
       });
       console.log(`Webhook processed, returned status code 200`);
-    } catch (e) {
-      console.log(`Failed to process webhook: ${e.message}`);
+    } catch (error) {
+      console.log(`Failed to process webhook: ${error.message}`);
       if (!res.headersSent) {
-        res.status(500).send(e.message);
+        res.status(500).send(error.message);
       }
     }
   });
@@ -76,22 +75,24 @@ export async function createServer(
   app.use("/api/*", verifyRequest(app));
 
   app.get("/api/products/count", async (req, res) => {
-    const session = await shopify.session.getCurrent({
-      isOnline: app.get("use-online-tokens"),
+    const sessionId = await shopify.session.getCurrentId({
       rawRequest: req,
       rawResponse: res,
+      isOnline: app.get("use-online-tokens"),
     });
+    const session = await sqliteSessionStorage.loadSession(sessionId);
 
     const countData = await shopify.rest.Product.count({ session });
     res.status(200).send(countData);
   });
 
   app.get("/api/products/create", async (req, res) => {
-    const session = await shopify.session.getCurrent({
-      isOnline: app.get("use-online-tokens"),
+    const sessionId = await shopify.session.getCurrentId({
       rawRequest: req,
       rawResponse: res,
+      isOnline: app.get("use-online-tokens"),
     });
+    const session = await sqliteSessionStorage.loadSession(sessionId);
     let status = 200;
     let error = null;
 

@@ -33,7 +33,7 @@ const ADJECTIVES = [
   "frosty",
   "green",
   "long",
-]
+];
 
 const NOUNS = [
   "waterfall",
@@ -67,7 +67,7 @@ const NOUNS = [
   "field",
   "fire",
   "flower",
-]
+];
 
 export const DEFAULT_PRODUCTS_COUNT = 5;
 const CREATE_PRODUCTS_MUTATION = `
@@ -78,13 +78,13 @@ const CREATE_PRODUCTS_MUTATION = `
       }
     }
   }
-`
+`;
 
-export default async function productCreator(session, count = DEFAULT_PRODUCTS_COUNT) {
-  const client = new shopify.clients.Graphql({
-    domain: session.shop,
-    accessToken: session.accessToken
-  });
+export default async function productCreator(
+  session,
+  count = DEFAULT_PRODUCTS_COUNT
+) {
+  const client = new shopify.clients.Graphql({ session });
 
   try {
     for (let i = 0; i < count; i++) {
@@ -102,7 +102,9 @@ export default async function productCreator(session, count = DEFAULT_PRODUCTS_C
     }
   } catch (error) {
     if (error instanceof GraphqlQueryError) {
-      throw new Error(`${error.message}\n${JSON.stringify(error.response, null, 2)}`);
+      throw new Error(
+        `${error.message}\n${JSON.stringify(error.response, null, 2)}`
+      );
     } else {
       throw error;
     }

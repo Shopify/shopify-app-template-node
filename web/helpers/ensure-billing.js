@@ -22,9 +22,9 @@ export default async function ensureBilling(
     });
 
     if (!hasPayment) {
-      // realistically, if there are more than one plan to choose from, you should redirect to
-      // a page that allows the merchant to choose a plan
-      // for this example, we'll just redirect to the first plan
+      // Realistically, if there are more than one plan to choose from, you should redirect to
+      // a page that allows the merchant to choose a plan.
+      // For this example, we'll just redirect to the first plan
       confirmationUrl = await shopify.billing.request({
         session: callback.session,
         plan: Object.keys(shopify.config.billing)[0],

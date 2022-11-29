@@ -1,12 +1,12 @@
+import "@shopify/shopify-api/adapters/node";
 import {
   shopifyApi,
   BillingInterval,
-  LATEST_API_VERSION
+  LATEST_API_VERSION,
 } from "@shopify/shopify-api";
-import {restResources} from '@shopify/shopify-api/rest/admin/2022-10';
-import {SQLiteSessionStorage} from '@shopify/shopify-api/session-storage/sqlite';
-
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+let { restResources } = await import(
+  `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
+);
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
@@ -19,7 +19,7 @@ const billingConfig = {
   },
 };
 
-const appConfig = {
+const apiConfig = {
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   scopes: process.env.SCOPES.split(","),
@@ -27,12 +27,13 @@ const appConfig = {
   hostScheme: process.env.HOST.split("://")[0],
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,
-  // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
-  billing: undefined,  // or replace with billingConfig above to enable example billing
+  ...(process.env.SHOP_CUSTOM_DOMAIN && {
+    customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN],
+  }),
+  billing: undefined, // or replace with billingConfig above to enable example billing
   restResources,
 };
 
-const shopify = shopifyApi(appConfig);
+const shopify = shopifyApi(apiConfig);
 
 export default shopify;

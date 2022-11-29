@@ -12,7 +12,8 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^6.0.0-rc3",
+    "@shopify/shopify-api": "^6.0.0",
+    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",

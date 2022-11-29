@@ -1,8 +1,10 @@
-import shopify from "./shopify.js";
+import { sqliteSessionStorage } from "./sqlite-session-storage.js";
 
 export const AppInstallations = {
   includes: async function (shopDomain) {
-    const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
+    const shopSessions = await sqliteSessionStorage.findSessionsByShop(
+      shopDomain
+    );
 
     if (shopSessions.length > 0) {
       for (const session of shopSessions) {
@@ -14,9 +16,13 @@ export const AppInstallations = {
   },
 
   delete: async function (shopDomain) {
-    const shopSessions = await shopify.config.sessionStorage.findSessionsByShop(shopDomain);
+    const shopSessions = await sqliteSessionStorage.findSessionsByShop(
+      shopDomain
+    );
     if (shopSessions.length > 0) {
-      await shopify.config.sessionStorage.deleteSessions(shopSessions.map((session) => session.id));
+      await sqliteSessionStorage.deleteSessions(
+        shopSessions.map((session) => session.id)
+      );
     }
   },
 };
