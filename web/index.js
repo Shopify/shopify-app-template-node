@@ -23,6 +23,8 @@ app.use("/api", shopify.app({ webhookHandlers: GDPRWebhookHandlers }));
 // All endpoints after this point will require an active session
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
+app.use(express.json());
+
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
