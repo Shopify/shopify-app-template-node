@@ -12,6 +12,13 @@ const shopify = shopifyApp({
     apiVersion: LATEST_API_VERSION,
     restResources,
   },
+  auth: {
+    path: "/api/auth",
+    callbackPath: "/api/auth/callback",
+  },
+  webhooks: {
+    path: "/api/webhooks",
+  },
   // This should be replaced with your preferred storage strategy
   sessionStorage: new SQLiteSessionStorage(DB_PATH),
 });

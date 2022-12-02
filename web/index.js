@@ -17,8 +17,17 @@ const STATIC_PATH =
 
 const app = express();
 
-// Connect the Shopify middleware to the app at '/api'
-app.use("/api", shopify.app({ webhookHandlers: GDPRWebhookHandlers }));
+// Set up Shopify authentication and webhook handling
+app.get(shopify.config.auth.path, shopify.auth.begin());
+app.get(
+  shopify.config.auth.callbackPath,
+  shopify.auth.callback(),
+  shopify.redirectToShopifyOrAppRoot()
+);
+app.post(
+  shopify.config.webhooks.path,
+  shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
+);
 
 // All endpoints after this point will require an active session
 app.use("/api/*", shopify.validateAuthenticatedSession());
