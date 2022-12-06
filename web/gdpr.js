@@ -1,15 +1,16 @@
-import { Shopify } from "@shopify/shopify-api";
+import { DeliveryMethod } from "@shopify/shopify-api";
 
-export function setupGDPRWebHooks(path) {
+export default {
   /**
    * Customers can request their data from a store owner. When this happens,
    * Shopify invokes this webhook.
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-data_request
    */
-  Shopify.Webhooks.Registry.addHandler("CUSTOMERS_DATA_REQUEST", {
-    path,
-    webhookHandler: async (topic, shop, body) => {
+  CUSTOMERS_DATA_REQUEST: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
       // {
@@ -30,7 +31,7 @@ export function setupGDPRWebHooks(path) {
       //   }
       // }
     },
-  });
+  },
 
   /**
    * Store owners can request that data is deleted on behalf of a customer. When
@@ -38,9 +39,10 @@ export function setupGDPRWebHooks(path) {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#customers-redact
    */
-  Shopify.Webhooks.Registry.addHandler("CUSTOMERS_REDACT", {
-    path,
-    webhookHandler: async (topic, shop, body) => {
+  CUSTOMERS_REDACT: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
       // {
@@ -58,7 +60,7 @@ export function setupGDPRWebHooks(path) {
       //   ]
       // }
     },
-  });
+  },
 
   /**
    * 48 hours after a store owner uninstalls your app, Shopify invokes this
@@ -66,9 +68,10 @@ export function setupGDPRWebHooks(path) {
    *
    * https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks#shop-redact
    */
-  Shopify.Webhooks.Registry.addHandler("SHOP_REDACT", {
-    path,
-    webhookHandler: async (topic, shop, body) => {
+  SHOP_REDACT: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
       const payload = JSON.parse(body);
       // Payload has the following shape:
       // {
@@ -76,5 +79,5 @@ export function setupGDPRWebHooks(path) {
       //   "shop_domain": "{shop}.myshopify.com"
       // }
     },
-  });
-}
+  },
+};
