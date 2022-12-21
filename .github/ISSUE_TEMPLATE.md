@@ -1,27 +1,46 @@
+---
+name: "🐛 Bug Report"
+about: Something isn't working
+labels: "Type: Bug 🐛"
+---
+
 # Issue summary
 
-Write a short description of the issue here ↓
+<!--
+
+Write a short description of the issue here. Please provide any details or logs that
+can help us debug it.
+
+To increase logging, change these settings when calling shopifyApp in web/shopify.js:
+  api: {
+    logger: {
+      level: LogSeverity.Debug,
+      httpRequests: true, // if the error seems to be related to requests
+    }
+  }
+
+Learn more: https://github.com/Shopify/shopify-api-js/blob/main/docs/reference/shopifyApi.md#logger
+
+-->
+
+- `@shopify/shopify-app-express` version:
+- Node version:
+- Operating system:
+
+```
+// Paste any relevant logs here
+```
 
 ## Expected behavior
 
-What do you think should happen?
+<!-- What do you think should happen? -->
 
 ## Actual behavior
 
-What actually happens?
-
-Tip: include an error message (in a `<details></details>` tag) if your issue is related to an error
+<!-- What actually happens? -->
 
 ## Steps to reproduce the problem
 
-1. 1. 1.
-
-## Reduced test case
-
-The best way to get your bug fixed is to provide a reduced test case.
-
-## Specifications
-
-- Browser:
-- Device:
-- Operating System:
+1.
+1.
+1.
