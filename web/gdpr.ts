@@ -1,4 +1,5 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
+import { WebhookHandlersParam } from "@shopify/shopify-app-express";
 
 export default {
   /**
@@ -80,4 +81,4 @@ export default {
       // }
     },
   },
-};
+} as WebhookHandlersParam;

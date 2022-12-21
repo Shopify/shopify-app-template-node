@@ -1,4 +1,4 @@
-import { GraphqlQueryError } from "@shopify/shopify-api";
+import { Session, GraphqlQueryError } from "@shopify/shopify-api";
 import shopify from "./shopify.js";
 
 const ADJECTIVES = [
@@ -81,9 +81,9 @@ const CREATE_PRODUCTS_MUTATION = `
 `;
 
 export default async function productCreator(
-  session,
+  session: Session,
   count = DEFAULT_PRODUCTS_COUNT
-) {
+): Promise<void> {
   const client = new shopify.api.clients.Graphql({ session });
 
   try {

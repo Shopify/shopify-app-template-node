@@ -43,7 +43,7 @@ app.get("/api/products/count", async (_req, res) => {
 
 app.get("/api/products/create", async (_req, res) => {
   let status = 200;
-  let error = null;
+  let error: string | null = null;
 
   try {
     await productCreator(res.locals.shopify.session);

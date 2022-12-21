@@ -26,3 +26,6 @@ extensions/*/build
 
 # Node library SQLite database
 web/database.sqlite
+
+# TS output path
+web/build
