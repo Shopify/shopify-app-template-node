@@ -19,7 +19,6 @@
     "serve-static": "^1.14.1"
   },
   "devDependencies": {
-    "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",
     "pretty-quick": "^3.1.3"
