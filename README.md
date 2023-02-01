@@ -41,7 +41,7 @@ The following Shopify tools complement these third-party tools to ease app devel
 
 1. You must [download and install Node.js](https://nodejs.org/en/download/) if you don't already have it.
 1. You must [create a Shopify partner account](https://partners.shopify.com/signup) if you don’t have one.
-1. You must [create a development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) or [Shopify Plus sandbox](https://help.shopify.com/en/partners/dashboard/managing-stores/plus-sandbox-store) store if you don’t have one.
+1. You must create a store for testing if you don't have one, either a [development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) or a [Shopify Plus sandbox store](https://help.shopify.com/en/partners/dashboard/managing-stores/plus-sandbox-store).
 
 ### Installing the template
 
