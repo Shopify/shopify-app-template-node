@@ -17,11 +17,8 @@
     "@fastify/url-data": "^5.2.0",
     "@shopify/shopify-api": "^6.0.0-rc10",
     "@shopify/shopify-app-session-storage-sqlite": "^1.0.0-rc.0",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
-    "fastify": "^4.12.0",
-    "serve-static": "^1.14.1"
+    "fastify": "^4.12.0"
   },
   "devDependencies": {
     "jsonwebtoken": "^8.5.1",
