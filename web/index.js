@@ -1,10 +1,12 @@
 // @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
-import express from "express";
-import cookieParser from "cookie-parser";
+import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import fastifyUrlData from "@fastify/url-data";
+import fastifyCookie from "@fastify/cookie";
 import { DeliveryMethod } from "@shopify/shopify-api";
-import shopify from "./shopify.js";
+import shopify, { USE_ONLINE_TOKENS } from "./shopify.js";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
@@ -13,13 +15,12 @@ import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { AppInstallations } from "./app_installations.js";
 import { sqliteSessionStorage } from "./sqlite-session-storage.js";
 
-const USE_ONLINE_TOKENS = false;
-
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
-// TODO: There should be provided by env vars
-const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
-const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
+const INDEX_PATH =
+  process.env.NODE_ENV === "production"
+    ? `${process.cwd()}/frontend/dist/`
+    : `${process.cwd()}/frontend/`;
 
 await shopify.webhooks.addHandlers({
   APP_UNINSTALLED: {
@@ -39,133 +40,165 @@ await shopify.webhooks.addHandlers({
 // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
 setupGDPRWebHooks("/api/webhooks");
 
-// export for test use only
-export async function createServer(
-  root = process.cwd(),
-  isProd = process.env.NODE_ENV === "production"
-) {
-  const app = express();
+const fastify = Fastify({
+  logger: false,
+});
+fastify.register(fastifyUrlData);
 
-  app.set("use-online-tokens", USE_ONLINE_TOKENS);
-  app.use(cookieParser(shopify.config.apiSecretKey));
-
-  applyAuthMiddleware(app);
-
-  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {
+fastify.removeContentTypeParser("application/json");
+fastify.addContentTypeParser(
+  "application/json",
+  { parseAs: "string" },
+  function (_req, body, done) {
     try {
-      await shopify.webhooks.process({
-        rawBody: req.body,
-        rawRequest: req,
-        rawResponse: res,
-      });
-      console.log(`Webhook processed, returned status code 200`);
+      var newBody = {
+        raw: body,
+        parsed: JSON.parse(body),
+      };
+      done(null, newBody);
     } catch (error) {
-      console.log(`Failed to process webhook: ${error.message}`);
-      if (!res.headersSent) {
-        res.status(500).send(error.message);
-      }
+      error.statusCode = 400;
+      done(error, undefined);
     }
-  });
+  }
+);
 
-  // All endpoints after this point will have access to a request.body
-  // attribute, as a result of the express.json() middleware
-  app.use(express.json());
+fastify.register(fastifyCookie, {
+  secret: shopify.config.apiSecretKey,
+});
 
-  // All endpoints after this point will require an active session
-  app.use("/api/*", verifyRequest(app));
+fastify.register(applyAuthMiddleware);
 
-  app.get("/api/products/count", async (req, res) => {
-    const sessionId = await shopify.session.getCurrentId({
-      rawRequest: req,
-      rawResponse: res,
-      isOnline: app.get("use-online-tokens"),
+fastify.post("/api/webhooks", async (request, reply) => {
+  try {
+    await shopify.webhooks.process({
+      rawBody: request.body.raw,
+      rawRequest: request.raw,
+      rawResponse: reply.raw,
     });
-    const session = await sqliteSessionStorage.loadSession(sessionId);
-
-    const countData = await shopify.rest.Product.count({ session });
-    res.status(200).send(countData);
-  });
-
-  app.get("/api/products/create", async (req, res) => {
-    const sessionId = await shopify.session.getCurrentId({
-      rawRequest: req,
-      rawResponse: res,
-      isOnline: app.get("use-online-tokens"),
-    });
-    const session = await sqliteSessionStorage.loadSession(sessionId);
-    let status = 200;
-    let error = null;
-
-    try {
-      await productCreator(session);
-    } catch (e) {
-      console.log(`Failed to process products/create: ${e.message}`);
-      status = 500;
-      error = e.message;
+    console.log(`Webhook processed, returned status code 200`);
+  } catch (error) {
+    console.log(`Failed to process webhook: ${error.message}`);
+    if (!reply.sent) {
+      reply.status(500).send(error.message);
     }
-    res.status(status).send({ success: status === 200, error });
-  });
+  }
+});
 
-  app.use((req, res, next) => {
-    const shop = shopify.utils.sanitizeShop(req.query.shop);
-    if (shopify.config.isEmbeddedApp && shop) {
-      res.setHeader(
-        "Content-Security-Policy",
-        `frame-ancestors https://${encodeURIComponent(
-          shop
-        )} https://admin.shopify.com;`
-      );
-    } else {
-      res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
-    }
-    next();
-  });
+// All /api endpoints will require an active session
+fastify.addHook("preHandler", async (request, reply) => {
+  console.log(
+    `DEBUG: preHandler - check if "/api/", exclude "/api/auth" and "/api/webhooks", ${request.url}`
+  );
+  if (
+    request.url.match(/^\/api\//i) &&
+    !request.url.match(/^\/api\/auth/i) &&
+    !request.url.match(/^\/api\/webhooks/i)
+  ) {
+    verifyRequest(request, reply);
+  }
+});
 
-  if (isProd) {
-    const compression = await import("compression").then(
-      ({ default: fn }) => fn
+fastify.get("/api/products/count", async (request, reply) => {
+  console.log(`DEBUG: GET /api/products/count, ${request.url}`);
+
+  const sessionId = await shopify.session.getCurrentId({
+    rawRequest: request.raw,
+    rawResponse: reply.raw,
+    isOnline: USE_ONLINE_TOKENS,
+  });
+  const session = await sqliteSessionStorage.loadSession(sessionId);
+
+  const countData = await shopify.rest.Product.count({ session });
+  reply.code(200).send(countData);
+});
+
+fastify.get("/api/products/create", async (request, reply) => {
+  console.log(`DEBUG: GET /api/products/create, ${request.url}`);
+  const sessionId = await shopify.session.getCurrentId({
+    rawRequest: request.raw,
+    rawResponse: reply.raw,
+    isOnline: USE_ONLINE_TOKENS,
+  });
+  const session = await sqliteSessionStorage.loadSession(sessionId);
+  let status = 200;
+  let error = null;
+
+  try {
+    await productCreator(session);
+  } catch (e) {
+    console.log(`Failed to process products/create: ${e.message}`);
+    status = 500;
+    error = e.message;
+  }
+  reply.code(status).send({ success: status === 200, error });
+});
+
+fastify.addHook("preHandler", async (request, reply) => {
+  console.log(`DEBUG: preHandler - setting CSP header, ${request.url}`);
+  const shop = shopify.utils.sanitizeShop(request.query.shop);
+  if (shopify.config.isEmbeddedApp && shop) {
+    reply.header(
+      "Content-Security-Policy",
+      `frame-ancestors https://${encodeURIComponent(
+        shop
+      )} https://admin.shopify.com;`
     );
-    const serveStatic = await import("serve-static").then(
-      ({ default: fn }) => fn
-    );
-    app.use(compression());
-    app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
+  } else {
+    reply.header("Content-Security-Policy", `frame-ancestors 'none';`);
+  }
+});
+
+fastify.get("/", async (request, reply) => {
+  console.log(`DEBUG: GET /, ${request.url}`);
+  if (typeof request.query.shop !== "string") {
+    reply.code(500).send("No shop provided");
+    return;
   }
 
-  app.use("/*", async (req, res, next) => {
-    if (typeof req.query.shop !== "string") {
-      res.status(500);
-      return res.send("No shop provided");
-    }
+  const shop = shopify.utils.sanitizeShop(request.query.shop);
+  const appInstalled = await AppInstallations.includes(shop);
 
-    const shop = shopify.utils.sanitizeShop(req.query.shop);
-    const appInstalled = await AppInstallations.includes(shop);
+  if (!appInstalled && !request.url.match(/^\/exitiframe/i)) {
+    await redirectToAuth(request, reply);
+    return;
+  }
 
-    if (!appInstalled && !req.originalUrl.match(/^\/exitiframe/i)) {
-      return redirectToAuth(req, res, app);
-    }
+  if (shopify.config.isEmbeddedApp && request.query.embedded !== "1") {
+    const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
+      rawRequest: request.raw,
+      rawResponse: reply.raw,
+    });
 
-    if (shopify.config.isEmbeddedApp && req.query.embedded !== "1") {
-      const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
-        rawRequest: req,
-        rawResponse: res,
-      });
-
-      return res.redirect(embeddedUrl + req.path);
-    }
-
-    const htmlFile = join(
-      isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
-      "index.html"
+    console.log(
+      `DEBUG: redirecting to embedded app, ${
+        embeddedUrl + request.urlData("path")
+      }`
     );
+    reply.redirect(embeddedUrl + request.urlData("path"));
+    return;
+  }
 
-    return res
-      .status(200)
-      .set("Content-Type", "text/html")
-      .send(readFileSync(htmlFile));
-  });
+  const htmlFile = join(INDEX_PATH, "index.html");
+  console.log(`DEBUG: serving ${htmlFile}`);
 
-  return { app };
-}
+  reply
+    .code(200)
+    .header("Content-Type", "text/html")
+    .send(readFileSync(htmlFile));
+  return;
+});
 
-createServer().then(({ app }) => app.listen(PORT));
+fastify.register(fastifyStatic, {
+  root: INDEX_PATH,
+  index: false,
+});
+
+// Run the server!
+fastify.listen({ port: PORT }, function (err, address) {
+  if (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+  console.log(`Fastify Server is now listening on ${address}`);
+});

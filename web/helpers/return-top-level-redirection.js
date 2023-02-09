@@ -1,14 +1,15 @@
-export default function returnTopLevelRedirection(req, res, redirectUrl) {
-  const bearerPresent = req.headers.authorization?.match(/Bearer (.*)/);
+export default function returnTopLevelRedirection(request, reply, redirectUrl) {
+  const bearerPresent = request.headers.authorization?.match(/Bearer (.*)/);
 
   // If the request has a bearer token, the app is currently embedded, and must break out of the iframe to
   // re-authenticate
   if (bearerPresent) {
-    res.status(403);
-    res.header("X-Shopify-API-Request-Failure-Reauthorize", "1");
-    res.header("X-Shopify-API-Request-Failure-Reauthorize-Url", redirectUrl);
-    res.end();
+    reply
+      .status(403)
+      .header("X-Shopify-API-Request-Failure-Reauthorize", "1")
+      .header("X-Shopify-API-Request-Failure-Reauthorize-Url", redirectUrl)
+      .end();
   } else {
-    res.redirect(redirectUrl);
+    reply.redirect(redirectUrl);
   }
 }

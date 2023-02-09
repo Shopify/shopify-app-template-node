@@ -4,22 +4,21 @@ import {
   CookieNotFound,
 } from "@shopify/shopify-api";
 
-import shopify from "../shopify.js";
+import shopify, { USE_ONLINE_TOKENS } from "../shopify.js";
 import { sqliteSessionStorage } from "../sqlite-session-storage.js";
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
-export default function applyAuthMiddleware(app) {
-  app.get("/api/auth", async (req, res) => {
-    return redirectToAuth(req, res, app);
+export default async function applyAuthMiddleware(fastify, _options) {
+  fastify.get("/api/auth", async (request, reply) => {
+    await redirectToAuth(request, reply);
   });
 
-  app.get("/api/auth/callback", async (req, res) => {
+  fastify.get("/api/auth/callback", async (request, reply) => {
     try {
       const callbackResponse = await shopify.auth.callback({
-        rawRequest: req,
-        rawResponse: res,
-        isOnline: app.get("use-online-tokens"),
+        rawRequest: request.raw,
+        rawResponse: reply.raw,
       });
 
       // save the session
@@ -68,34 +67,34 @@ export default function applyAuthMiddleware(app) {
       );
 
       if (!hasPayment) {
-        return res.redirect(confirmationUrl);
+        reply.redirect(confirmationUrl);
+        return;
       }
 
-      const host = shopify.utils.sanitizeHost(req.query.host);
+      const host = shopify.utils.sanitizeHost(request.query.host);
       const redirectUrl = shopify.config.isEmbeddedApp
         ? await shopify.auth.getEmbeddedAppUrl({
-            rawRequest: req,
-            rawResponse: res,
+            rawRequest: request.raw,
+            rawResponse: reply.raw,
           })
         : `/?shop=${callbackResponse.session.shop}&host=${encodeURIComponent(
             host
           )}`;
 
-      res.redirect(redirectUrl);
+      reply.redirect(redirectUrl);
     } catch (e) {
       console.warn(e);
       switch (true) {
         case e instanceof InvalidOAuthError:
-          res.status(400);
-          res.send(e.message);
+          reply.code(400).send(e.message);
           break;
         case e instanceof CookieNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          return redirectToAuth(req, res, app);
+          console.log("DEBUG: CookieNotFound, redirecting to auth");
+          await redirectToAuth(request, reply);
           break;
         default:
-          res.status(500);
-          res.send(e.message);
+          reply.code(500).send(e.message);
           break;
       }
     }
