@@ -1,39 +1,41 @@
-import shopify from "../shopify.js";
+import shopify, { USE_ONLINE_TOKENS } from "../shopify.js";
 
-export default async function redirectToAuth(req, res, app) {
-  if (!req.query.shop) {
-    res.status(500);
-    return res.send("No shop provided");
+export default async function redirectToAuth(ctx) {
+  if (!ctx.request.query.shop) {
+    ctx.status = 500;
+    ctx.body = "No shop provided";
+    return;
   }
 
-  if (req.query.embedded === "1") {
-    return clientSideRedirect(req, res);
+  if (ctx.request.query.embedded === "1") {
+    return clientSideRedirect(ctx);
   }
 
-  return await serverSideRedirect(req, res, app);
+  return await serverSideRedirect(ctx);
 }
 
-function clientSideRedirect(req, res) {
-  const shop = shopify.utils.sanitizeShop(req.query.shop);
+function clientSideRedirect(ctx) {
+  const shop = shopify.utils.sanitizeShop(ctx.request.query.shop);
   const redirectUriParams = new URLSearchParams({
     shop,
-    host: req.query.host,
+    host: ctx.request.query.host,
   }).toString();
   const queryParams = new URLSearchParams({
-    ...req.query,
+    ...ctx.request.query,
     shop,
     redirectUri: `https://${shopify.config.hostName}/api/auth?${redirectUriParams}`,
   }).toString();
 
-  return res.redirect(`/exitiframe?${queryParams}`);
+  return ctx.redirect(`/exitiframe?${queryParams}`);
 }
 
-async function serverSideRedirect(req, res, app) {
+async function serverSideRedirect(ctx) {
+  // ctx.respond = false;
   await shopify.auth.begin({
-    rawRequest: req,
-    rawResponse: res,
-    shop: req.query.shop,
+    rawRequest: ctx.req,
+    rawResponse: ctx.res,
+    shop: ctx.request.query.shop,
     callbackPath: "/api/auth/callback",
-    isOnline: app.get("use-online-tokens"),
+    isOnline: USE_ONLINE_TOKENS,
   });
 }

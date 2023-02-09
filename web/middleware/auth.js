@@ -9,17 +9,21 @@ import { sqliteSessionStorage } from "../sqlite-session-storage.js";
 import ensureBilling from "../helpers/ensure-billing.js";
 import redirectToAuth from "../helpers/redirect-to-auth.js";
 
-export default function applyAuthMiddleware(app) {
-  app.get("/api/auth", async (req, res) => {
-    return redirectToAuth(req, res, app);
+export default function applyAuthMiddleware(router) {
+  router.get("/api/auth", async (ctx, _next) => {
+    console.log("DEBUG: /api/auth, ctx.request.url: ", ctx.request.url);
+    return redirectToAuth(ctx);
   });
 
-  app.get("/api/auth/callback", async (req, res) => {
+  router.get("/api/auth/callback", async (ctx, _next) => {
+    console.log(
+      "DEBUG: /api/auth/callback, ctx.request.url: ",
+      ctx.request.url
+    );
     try {
       const callbackResponse = await shopify.auth.callback({
-        rawRequest: req,
-        rawResponse: res,
-        isOnline: app.get("use-online-tokens"),
+        rawRequest: ctx.req,
+        rawResponse: ctx.res,
       });
 
       // save the session
@@ -68,34 +72,37 @@ export default function applyAuthMiddleware(app) {
       );
 
       if (!hasPayment) {
-        return res.redirect(confirmationUrl);
+        return ctx.redirect(confirmationUrl);
       }
 
-      const host = shopify.utils.sanitizeHost(req.query.host);
+      const host = shopify.utils.sanitizeHost(ctx.request.query.host);
+      const embeddedUrl =
+        "https://admin.shopify.com/store/the-dog-hates-me-too/apps/35b348fd8ac75d025cceee9555fe4ef3";
       const redirectUrl = shopify.config.isEmbeddedApp
-        ? await shopify.auth.getEmbeddedAppUrl({
-            rawRequest: req,
-            rawResponse: res,
-          })
-        : `/?shop=${callbackResponse.session.shop}&host=${encodeURIComponent(
+        ? embeddedUrl
+        : // ? await shopify.auth.getEmbeddedAppUrl({
+          //     rawRequest: ctx.req,
+          //     rawResponse: ctx.res,
+          //   })
+          `/?shop=${callbackResponse.session.shop}&host=${encodeURIComponent(
             host
           )}`;
 
-      res.redirect(redirectUrl);
+      ctx.redirect(redirectUrl);
     } catch (e) {
       console.warn(e);
       switch (true) {
         case e instanceof InvalidOAuthError:
-          res.status(400);
-          res.send(e.message);
+          ctx.status = 400;
+          ctx.body = e.message;
           break;
         case e instanceof CookieNotFound:
           // This is likely because the OAuth session cookie expired before the merchant approved the request
-          return redirectToAuth(req, res, app);
+          return redirectToAuth(ctx);
           break;
         default:
-          res.status(500);
-          res.send(e.message);
+          ctx.status = 500;
+          ctx.body = e.message;
           break;
       }
     }

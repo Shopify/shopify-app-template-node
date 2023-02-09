@@ -17,7 +17,10 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
-    "express": "^4.17.3",
+    "koa": "^2.14.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^12.0.0",
+    "koa-static": "^5.0.0",
     "serve-static": "^1.14.1"
   },
   "devDependencies": {

@@ -3,6 +3,7 @@ import {
   shopifyApi,
   BillingInterval,
   LATEST_API_VERSION,
+  LogSeverity,
 } from "@shopify/shopify-api";
 let { restResources } = await import(
   `@shopify/shopify-api/rest/admin/${LATEST_API_VERSION}`
@@ -32,8 +33,13 @@ const apiConfig = {
   }),
   billing: undefined, // or replace with billingConfig above to enable example billing
   restResources,
+  logger: {
+    level: LogSeverity.Debug,
+  },
 };
 
 const shopify = shopifyApi(apiConfig);
+const USE_ONLINE_TOKENS = false;
 
 export default shopify;
+export { USE_ONLINE_TOKENS };

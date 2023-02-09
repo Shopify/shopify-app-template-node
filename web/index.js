@@ -1,10 +1,12 @@
 // @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
-import express from "express";
-import cookieParser from "cookie-parser";
+import Koa from "koa";
+import Router from "koa-router";
+import koaStatic from "koa-static";
+import bodyParser from "koa-bodyparser";
 import { DeliveryMethod } from "@shopify/shopify-api";
-import shopify from "./shopify.js";
+import shopify, { USE_ONLINE_TOKENS } from "./shopify.js";
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
@@ -13,13 +15,12 @@ import redirectToAuth from "./helpers/redirect-to-auth.js";
 import { AppInstallations } from "./app_installations.js";
 import { sqliteSessionStorage } from "./sqlite-session-storage.js";
 
-const USE_ONLINE_TOKENS = false;
-
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
-// TODO: There should be provided by env vars
-const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
-const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
+const INDEX_PATH =
+  process.env.NODE_ENV === "production"
+    ? `${process.cwd()}/frontend/dist/`
+    : `${process.cwd()}/frontend/`;
 
 await shopify.webhooks.addHandlers({
   APP_UNINSTALLED: {
@@ -39,133 +40,123 @@ await shopify.webhooks.addHandlers({
 // https://shopify.dev/apps/webhooks/configuration/mandatory-webhooks
 setupGDPRWebHooks("/api/webhooks");
 
-// export for test use only
-export async function createServer(
-  root = process.cwd(),
-  isProd = process.env.NODE_ENV === "production"
-) {
-  const app = express();
+const app = new Koa();
+app.use(bodyParser());
+const router = new Router();
 
-  app.set("use-online-tokens", USE_ONLINE_TOKENS);
-  app.use(cookieParser(shopify.config.apiSecretKey));
+app.keys = [shopify.config.apiSecretKey];
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-  applyAuthMiddleware(app);
+applyAuthMiddleware(router);
 
-  app.post("/api/webhooks", express.text({ type: "*/*" }), async (req, res) => {
-    try {
-      await shopify.webhooks.process({
-        rawBody: req.body,
-        rawRequest: req,
-        rawResponse: res,
-      });
-      console.log(`Webhook processed, returned status code 200`);
-    } catch (error) {
-      console.log(`Failed to process webhook: ${error.message}`);
-      if (!res.headersSent) {
-        res.status(500).send(error.message);
-      }
-    }
-  });
-
-  // All endpoints after this point will have access to a request.body
-  // attribute, as a result of the express.json() middleware
-  app.use(express.json());
-
-  // All endpoints after this point will require an active session
-  app.use("/api/*", verifyRequest(app));
-
-  app.get("/api/products/count", async (req, res) => {
-    const sessionId = await shopify.session.getCurrentId({
-      rawRequest: req,
-      rawResponse: res,
-      isOnline: app.get("use-online-tokens"),
+router.post("/api/webhooks", async (ctx, next) => {
+  try {
+    // ctx.respond = false;
+    await shopify.webhooks.process({
+      rawBody: ctx.request.rawBody,
+      rawRequest: ctx.req,
+      rawResponse: ctx.res,
     });
-    const session = await sqliteSessionStorage.loadSession(sessionId);
-
-    const countData = await shopify.rest.Product.count({ session });
-    res.status(200).send(countData);
-  });
-
-  app.get("/api/products/create", async (req, res) => {
-    const sessionId = await shopify.session.getCurrentId({
-      rawRequest: req,
-      rawResponse: res,
-      isOnline: app.get("use-online-tokens"),
-    });
-    const session = await sqliteSessionStorage.loadSession(sessionId);
-    let status = 200;
-    let error = null;
-
-    try {
-      await productCreator(session);
-    } catch (e) {
-      console.log(`Failed to process products/create: ${e.message}`);
-      status = 500;
-      error = e.message;
+    console.log(`Webhook processed, returned status code 200`);
+  } catch (error) {
+    console.log(`Failed to process webhook: ${error.message}`);
+    if (!ctx.headerSent) {
+      ctx.status = 500;
+      ctx.body = error.message;
     }
-    res.status(status).send({ success: status === 200, error });
-  });
+  }
+});
 
-  app.use((req, res, next) => {
-    const shop = shopify.utils.sanitizeShop(req.query.shop);
-    if (shopify.config.isEmbeddedApp && shop) {
-      res.setHeader(
-        "Content-Security-Policy",
-        `frame-ancestors https://${encodeURIComponent(
-          shop
-        )} https://admin.shopify.com;`
-      );
-    } else {
-      res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
-    }
-    next();
+router.get("/api/products/count", verifyRequest(), async (ctx, _next) => {
+  console.log("DEBUG: /api/products/count, ctx.request.url: ", ctx.request.url);
+  const sessionId = await shopify.session.getCurrentId({
+    rawRequest: ctx.req,
+    rawResponse: ctx.res,
+    isOnline: USE_ONLINE_TOKENS,
   });
+  const session = await sqliteSessionStorage.loadSession(sessionId);
 
-  if (isProd) {
-    const compression = await import("compression").then(
-      ({ default: fn }) => fn
+  const countData = await shopify.rest.Product.count({ session });
+  ctx.status = 200;
+  ctx.body = countData;
+});
+
+router.get("/api/products/create", verifyRequest(), async (ctx, _next) => {
+  console.log(
+    "DEBUG: /api/products/create, ctx.request.url: ",
+    ctx.request.url
+  );
+
+  const sessionId = await shopify.session.getCurrentId({
+    rawRequest: ctx.req,
+    rawResponse: ctx.res,
+    isOnline: USE_ONLINE_TOKENS,
+  });
+  const session = await sqliteSessionStorage.loadSession(sessionId);
+  let status = 200;
+  let error = null;
+
+  try {
+    await productCreator(session);
+  } catch (e) {
+    console.log(`Failed to process products/create: ${e.message}`);
+    status = 500;
+    error = e.message;
+  }
+  ctx.status = status;
+  ctx.body = { success: status === 200, error };
+});
+
+app.use(async (ctx, next) => {
+  console.log("DEBUG: adding CSP header, ctx.request.url: ", ctx.request.url);
+  const shop = shopify.utils.sanitizeShop(ctx.request.query.shop);
+  if (shopify.config.isEmbeddedApp && shop) {
+    ctx.set(
+      "Content-Security-Policy",
+      `frame-ancestors https://${encodeURIComponent(
+        shop
+      )} https://admin.shopify.com;`
     );
-    const serveStatic = await import("serve-static").then(
-      ({ default: fn }) => fn
-    );
-    app.use(compression());
-    app.use(serveStatic(PROD_INDEX_PATH, { index: false }));
+  } else {
+    ctx.set("Content-Security-Policy", `frame-ancestors 'none';`);
+  }
+  await next();
+});
+
+app.use(koaStatic(INDEX_PATH, { index: false }));
+
+router.all("/", async (ctx, next) => {
+  console.log("DEBUG: /, ctx.request.url: ", ctx.request.url);
+  if (typeof ctx.request.query.shop !== "string") {
+    ctx.status = 500;
+    ctx.body = "No shop provided";
+    return;
   }
 
-  app.use("/*", async (req, res, next) => {
-    if (typeof req.query.shop !== "string") {
-      res.status(500);
-      return res.send("No shop provided");
-    }
+  const shop = shopify.utils.sanitizeShop(ctx.request.query.shop);
+  const appInstalled = await AppInstallations.includes(shop);
 
-    const shop = shopify.utils.sanitizeShop(req.query.shop);
-    const appInstalled = await AppInstallations.includes(shop);
+  if (!appInstalled && !ctx.request.originalUrl.match(/^\/exitiframe/i)) {
+    return redirectToAuth(ctx);
+  }
 
-    if (!appInstalled && !req.originalUrl.match(/^\/exitiframe/i)) {
-      return redirectToAuth(req, res, app);
-    }
+  if (shopify.config.isEmbeddedApp && ctx.request.query.embedded !== "1") {
+    const embeddedUrl =
+      "https://admin.shopify.com/store/the-dog-hates-me-too/apps/35b348fd8ac75d025cceee9555fe4ef3";
+    // const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
+    //   rawRequest: ctx.req,
+    //   rawResponse: ctx.res,
+    // });
 
-    if (shopify.config.isEmbeddedApp && req.query.embedded !== "1") {
-      const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
-        rawRequest: req,
-        rawResponse: res,
-      });
+    return ctx.redirect(embeddedUrl + ctx.request.path);
+  }
 
-      return res.redirect(embeddedUrl + req.path);
-    }
+  const htmlFile = join(INDEX_PATH, "index.html");
 
-    const htmlFile = join(
-      isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
-      "index.html"
-    );
+  ctx.status = 200;
+  ctx.set("Content-Type", "text/html");
+  ctx.body = readFileSync(htmlFile);
+});
 
-    return res
-      .status(200)
-      .set("Content-Type", "text/html")
-      .send(readFileSync(htmlFile));
-  });
-
-  return { app };
-}
-
-createServer().then(({ app }) => app.listen(PORT));
+app.listen(PORT);
