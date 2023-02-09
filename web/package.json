@@ -15,8 +15,8 @@
     "@fastify/cookie": "^8.3.0",
     "@fastify/static": "^6.8.0",
     "@fastify/url-data": "^5.2.0",
-    "@shopify/shopify-api": "^6.0.0-rc10",
-    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0-rc.0",
+    "@shopify/shopify-app-express": "^1.1.0",
+    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0",
     "cross-env": "^7.0.3",
     "fastify": "^4.12.0"
   },
