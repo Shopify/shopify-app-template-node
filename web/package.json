@@ -12,16 +12,13 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^6.0.0-rc10",
-    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0-rc.0",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
+    "@shopify/shopify-app-express": "^1.1.0",
+    "@shopify/shopify-app-session-storage-sqlite": "^1.0.0",
     "cross-env": "^7.0.3",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^12.0.0",
-    "koa-static": "^5.0.0",
-    "serve-static": "^1.14.1"
+    "koa-static": "^5.0.0"
   },
   "devDependencies": {
     "jsonwebtoken": "^8.5.1",

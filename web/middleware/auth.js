@@ -76,15 +76,12 @@ export default function applyAuthMiddleware(router) {
       }
 
       const host = shopify.utils.sanitizeHost(ctx.request.query.host);
-      const embeddedUrl =
-        "https://admin.shopify.com/store/the-dog-hates-me-too/apps/35b348fd8ac75d025cceee9555fe4ef3";
       const redirectUrl = shopify.config.isEmbeddedApp
-        ? embeddedUrl
-        : // ? await shopify.auth.getEmbeddedAppUrl({
-          //     rawRequest: ctx.req,
-          //     rawResponse: ctx.res,
-          //   })
-          `/?shop=${callbackResponse.session.shop}&host=${encodeURIComponent(
+        ? await shopify.auth.getEmbeddedAppUrl({
+            rawRequest: ctx.req,
+            rawResponse: ctx.res,
+          })
+        : `/?shop=${callbackResponse.session.shop}&host=${encodeURIComponent(
             host
           )}`;
 

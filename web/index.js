@@ -142,12 +142,10 @@ router.all("/", async (ctx, next) => {
   }
 
   if (shopify.config.isEmbeddedApp && ctx.request.query.embedded !== "1") {
-    const embeddedUrl =
-      "https://admin.shopify.com/store/the-dog-hates-me-too/apps/35b348fd8ac75d025cceee9555fe4ef3";
-    // const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
-    //   rawRequest: ctx.req,
-    //   rawResponse: ctx.res,
-    // });
+    const embeddedUrl = await shopify.auth.getEmbeddedAppUrl({
+      rawRequest: ctx.req,
+      rawResponse: ctx.res,
+    });
 
     return ctx.redirect(embeddedUrl + ctx.request.path);
   }
