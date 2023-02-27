@@ -29,7 +29,9 @@ app.post(
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
-// All endpoints after this point will require an active session
+// If you are adding routes outside of the /api path, remember to
+// also add a proxy rule for them in web/frontend/vite.config.js
+
 app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
