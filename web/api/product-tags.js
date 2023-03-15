@@ -5,14 +5,11 @@ export async function getTags(req, res) {
     session: res.locals.shopify.session,
   });
 
-  // for now, update the first product
   const response = await client.query({
     data: {
       query: GET_TAGS_QUERY,
     },
   });
-
-  console.log(response);
 
   const tags =
     response?.body?.data?.shop?.productTags?.edges?.map((edge) => edge.node) ||
@@ -26,16 +23,20 @@ export async function addTags(req, res) {
     session: res.locals.shopify.session,
   });
 
-  // for now, update the first product
-  const response = await client.query({
-    data: {
-      query: ADD_TAGS_QUERY,
-      variables: {
-        id: req.body.products[0],
-        tags: req.body.tags,
-      },
-    },
-  });
+  // each product gets its own request
+  const responses = await Promise.all(
+    req.body.products.map((productId) =>
+      client.query({
+        data: {
+          query: ADD_TAGS_QUERY,
+          variables: {
+            id: productId,
+            tags: req.body.tags,
+          },
+        },
+      })
+    )
+  );
 
   res.status(200).send({ success: true, tags: req.body.tags });
 }
@@ -45,16 +46,20 @@ export async function deleteTags(req, res) {
     session: res.locals.shopify.session,
   });
 
-  // for now, update the first product
-  const response = await client.query({
-    data: {
-      query: REMOVE_TAGS_QUERY,
-      variables: {
-        id: req.body.products[0],
-        tags: req.body.tags,
-      },
-    },
-  });
+  // each product gets its own request
+  const responses = await Promise.all(
+    req.body.products.map((productId) =>
+      client.query({
+        data: {
+          query: REMOVE_TAGS_QUERY,
+          variables: {
+            id: productId,
+            tags: req.body.tags,
+          },
+        },
+      })
+    )
+  );
 
   res.status(200).send({ success: true, tags: req.body.tags });
 }
