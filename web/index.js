@@ -8,7 +8,7 @@ import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 
-import { addTags, deleteTags } from "./api/product-tags.js";
+import { getTags, addTags, deleteTags } from "./api/product-tags.js";
 
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
@@ -39,6 +39,7 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use(express.json());
 
 // Product Tagging Examples
+app.get("/api/producttags", getTags);
 app.post("/api/producttags", addTags);
 app.delete("/api/producttags", deleteTags);
 

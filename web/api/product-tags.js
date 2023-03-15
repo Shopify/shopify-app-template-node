@@ -1,5 +1,26 @@
 import shopify from "../shopify.js";
 
+export async function getTags(req, res) {
+  const client = new shopify.api.clients.Graphql({
+    session: res.locals.shopify.session,
+  });
+
+  // for now, update the first product
+  const response = await client.query({
+    data: {
+      query: GET_TAGS_QUERY,
+    },
+  });
+
+  console.log(response);
+
+  const tags =
+    response?.body?.data?.shop?.productTags?.edges?.map((edge) => edge.node) ||
+    [];
+
+  res.status(200).send({ success: true, tags: tags });
+}
+
 export async function addTags(req, res) {
   const client = new shopify.api.clients.Graphql({
     session: res.locals.shopify.session,
@@ -37,6 +58,18 @@ export async function deleteTags(req, res) {
 
   res.status(200).send({ success: true, tags: req.body.tags });
 }
+
+const GET_TAGS_QUERY = `#graphql
+{
+	shop {
+    productTags(first: 50) {
+      edges {
+        node
+      }
+    }
+  }
+}
+`;
 
 const ADD_TAGS_QUERY = `#graphql
   mutation tagsAdd($id: ID!, $tags: [String!]!) {
