@@ -1,5 +1,8 @@
 import shopify from "../shopify.js";
 
+// GraphQL API calls used in this template
+// shopify.api.rest exists for REST API calls
+
 export async function getTags(req, res) {
   const client = new shopify.api.clients.Graphql({
     session: res.locals.shopify.session,
@@ -65,15 +68,15 @@ export async function deleteTags(req, res) {
 }
 
 const GET_TAGS_QUERY = `#graphql
-{
-	shop {
-    productTags(first: 50) {
-      edges {
-        node
+  query getTags{
+    shop {
+      productTags(first: 50) {
+        edges {
+          node
+        }
       }
     }
   }
-}
 `;
 
 const ADD_TAGS_QUERY = `#graphql
@@ -92,14 +95,14 @@ const ADD_TAGS_QUERY = `#graphql
 
 const REMOVE_TAGS_QUERY = `#graphql
   mutation tagsRemove($id: ID!, $tags: [String!]!) {
-  tagsRemove(id: $id, tags: $tags) {
-    node {
-      id
-    }
-    userErrors {
-      field
-      message
+    tagsRemove(id: $id, tags: $tags) {
+      node {
+        id
+      }
+      userErrors {
+        field
+        message
+      }
     }
   }
-}
 `;
