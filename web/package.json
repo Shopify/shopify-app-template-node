@@ -1,5 +1,6 @@
 {
   "name": "shopify-app-template-node",
+  "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
