@@ -2,7 +2,13 @@
   "name": "my-node-app",
   "version": "1.0.0",
   "main": "web/index.js",
+  "private": true,
   "license": "UNLICENSED",
+  "workspaces": [
+    "web",
+    "web/frontend",
+    "extensions/*"
+  ],
   "scripts": {
     "shopify": "shopify",
     "build": "shopify app build",
