@@ -1,5 +1,8 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
 
+/**
+ * @type {{[key: string]: import("@shopify/shopify-api").WebhookHandler}}
+ */
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,

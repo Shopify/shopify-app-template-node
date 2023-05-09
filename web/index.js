@@ -8,7 +8,10 @@ import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 
-const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
+const PORT = parseInt(
+  process.env.BACKEND_PORT || process.env.PORT || "3000",
+  10
+);
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
