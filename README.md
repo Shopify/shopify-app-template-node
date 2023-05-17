@@ -112,24 +112,24 @@ To use one of these, you need to change your session storage configuration. To h
 
 ### Build
 
-The frontend is a single page app. It requires the `SHOPIFY_API_KEY`, which you can find on the page for your app in your partners dashboard. Paste your app’s key in the command for the package manager of your choice:
+The frontend is a single page app. It requires the `SHOPIFY_APP_API_KEY`, which you can find on the page for your app in your partners dashboard. Paste your app’s key in the command for the package manager of your choice:
 
 Using yarn:
 
 ```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME yarn build
+cd web/frontend/ && SHOPIFY_APP_API_KEY=REPLACE_ME yarn build
 ```
 
 Using npm:
 
 ```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME npm run build
+cd web/frontend/ && SHOPIFY_APP_API_KEY=REPLACE_ME npm run build
 ```
 
 Using pnpm:
 
 ```shell
-cd web/frontend/ && SHOPIFY_API_KEY=REPLACE_ME pnpm run build
+cd web/frontend/ && SHOPIFY_APP_API_KEY=REPLACE_ME pnpm run build
 ```
 
 You do not need to build the backend.
@@ -152,8 +152,8 @@ We fixed this issue with v3.4.0 of the CLI, so after updating it, you can make t
 1. Change the definition `hmrConfig` object to be:
 
    ```js
-   const host = process.env.HOST
-     ? process.env.HOST.replace(/https?:\/\//, "")
+   const host = process.env.SHOPIFY_APP_URL
+     ? process.env.SHOPIFY_APP_URL.replace(/https?:\/\//, "")
      : "localhost";
 
    let hmrConfig;
@@ -173,6 +173,12 @@ We fixed this issue with v3.4.0 of the CLI, so after updating it, you can make t
      };
    }
    ```
+
+   <!-- TODO Update CLI version here -->
+
+   > **Note**: For apps created using Shopify CLI vX.Y.Z or earlier, some of the environment variables above use different names.
+   >
+   > For more information, refer to [Shopify CLI app structure](https://shopify.dev/docs/apps/tools/cli/structure#web-component-conventions).
 
 1. Change the `server.host` setting in the configs to `"localhost"`:
 
