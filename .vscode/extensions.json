@@ -1,5 +1,6 @@
 {
   "recommendations": [
-    "shopify.polaris-for-vscode"
+    "shopify.polaris-for-vscode",
+    "lokalise.i18n-ally"
   ]
 }
