@@ -240,3 +240,4 @@ pnpm dev --tunnel-url https://randomly-generated-hostname.trycloudflare.com:3000
   - [react-i18next](https://react.i18next.com/)
     - [`useTranslation` hook](https://react.i18next.com/latest/usetranslation-hook)
     - [`Trans` component usage with components array](https://react.i18next.com/latest/trans-component#alternative-usage-components-array)
+  - [i18n-ally VS Code extension](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
