@@ -1,4 +1,4 @@
-# Shopify App Template - Node
+# Shopify App Template for Node
 
 This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using Node and React. It contains the basics for building a Shopify app.
 
