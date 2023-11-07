@@ -6,7 +6,7 @@ import { DeliveryMethod } from "@shopify/shopify-api";
 export default {
   /**
    * Customers can request their data from a store owner. When this happens,
-   * Shopify invokes this webhook.
+   * Shopify invokes this privacy webhook.
    *
    * https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks#customers-data_request
    */
@@ -38,7 +38,7 @@ export default {
 
   /**
    * Store owners can request that data is deleted on behalf of a customer. When
-   * this happens, Shopify invokes this webhook.
+   * this happens, Shopify invokes this privacy webhook.
    *
    * https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks#customers-redact
    */
@@ -67,7 +67,7 @@ export default {
 
   /**
    * 48 hours after a store owner uninstalls your app, Shopify invokes this
-   * webhook.
+   * privacy webhook.
    *
    * https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks#shop-redact
    */
