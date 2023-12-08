@@ -2,8 +2,6 @@
 
 This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using Node and React. It contains the basics for building a Shopify app.
 
-Rather than cloning this repo, you can use your preferred package manager and the Shopify CLI with [these steps](#installing-the-template).
-
 ## Benefits
 
 Shopify apps are built on a variety of Shopify tools to create a great merchant experience. The [create an app](https://shopify.dev/docs/apps/getting-started/create) tutorial in our developer documentation will guide you through creating a Shopify app using this template.
@@ -50,29 +48,27 @@ The following Shopify tools complement these third-party tools to ease app devel
 1. You must [create a Shopify partner account](https://partners.shopify.com/signup) if you don’t have one.
 1. You must create a store for testing if you don't have one, either a [development store](https://help.shopify.com/en/partners/dashboard/development-stores#create-a-development-store) or a [Shopify Plus sandbox store](https://help.shopify.com/en/partners/dashboard/managing-stores/plus-sandbox-store).
 
-### Installing the template
+### Setup
 
-This template can be installed using your preferred package manager:
+Install the required dependencies.
 
 Using yarn:
 
 ```shell
-yarn create @shopify/app
+yarn install
 ```
 
 Using npm:
 
 ```shell
-npm init @shopify/app@latest
+npm install
 ```
 
 Using pnpm:
 
 ```shell
-pnpm create @shopify/app@latest
+pnpm install
 ```
-
-This will clone the template and install the required dependencies.
 
 #### Local Development
 
