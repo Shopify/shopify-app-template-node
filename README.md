@@ -57,19 +57,19 @@ This template can be installed using your preferred package manager:
 Using yarn:
 
 ```shell
-yarn create @shopify/app
+yarn create @shopify/app --template=node
 ```
 
 Using npm:
 
 ```shell
-npm init @shopify/app@latest
+npm init @shopify/app@latest -- --template=node
 ```
 
 Using pnpm:
 
 ```shell
-pnpm create @shopify/app@latest
+pnpm create @shopify/app@latest --template=node
 ```
 
 This will clone the template and install the required dependencies.
