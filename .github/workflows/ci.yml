@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14, 16, 18, 20]
+        node-version: [16, 18, 20]
 
     defaults:
       run:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
+      - run: yarn install --ignore-engines
       - name: Build FE for production test
         working-directory: ./web/frontend
-        run: yarn install && yarn build
+        run: yarn install --ignore-engines && yarn build
