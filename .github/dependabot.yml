@@ -7,3 +7,5 @@ updates:
     # Check the npm registry for updates every day (weekdays)
     schedule:
       interval: "daily"
+    # Dependabot defaults to 5 open pull requests at a time
+    open-pull-requests-limit: 100
