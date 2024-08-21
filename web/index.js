@@ -67,7 +67,11 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
   return res
     .status(200)
     .set("Content-Type", "text/html")
-    .send(readFileSync(join(STATIC_PATH, "index.html")));
+    .send(
+      readFileSync(join(STATIC_PATH, "index.html"))
+        .toString()
+        .replace("%VITE_SHOPIFY_API_KEY%", process.env.SHOPIFY_API_KEY || "")
+    );
 });
 
 app.listen(PORT);
