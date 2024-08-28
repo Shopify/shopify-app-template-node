@@ -40,10 +40,19 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use(express.json());
 
 app.get("/api/products/count", async (_req, res) => {
-  const countData = await shopify.api.rest.Product.count({
+  const client = new shopify.api.clients.Graphql({
     session: res.locals.shopify.session,
   });
-  res.status(200).send(countData);
+
+  const countData = await client.request(`
+    query shopifyProductCount {
+      productsCount {
+        count
+      }
+    }
+  `);
+
+  res.status(200).send({ count: countData.data.productsCount.count });
 });
 
 app.post("/api/products", async (_req, res) => {
