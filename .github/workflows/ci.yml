@@ -21,7 +21,7 @@ jobs:
       - name: Find any lock file
         run: if test -f ../yarn.lock || test -f ../pnpm-lock.yaml || test -f ../package-lock.json; then echo "Please don't commit lock files" && exit 1; fi
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@7c12f8017d5436eb855f1ed4399f037a36fbd9e8 # v2.5.2
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --ignore-engines
