@@ -9,11 +9,11 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@8348ea7f5d949b08c7f125a44b569c9626b05db3 # v1.7.0
+        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b # v2.4.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Approve and merge Dependabot PRs for patch versions
         if: ${{github.event.workflow_run.conclusion == 'success' && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
-        uses: ridedott/merge-me-action@94db76826489ddb8e3732265fd8f3cb9bf2b2c50 # v2.10.121
+        uses: ridedott/merge-me-action@f96a67511b4be051e77760230e6a3fb9cb7b1903 # v2.10.124
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
